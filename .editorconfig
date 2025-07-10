@@ -1,0 +1,5 @@
+[*.{kt,kts}]
+composeKtLint = enabled
+ktlint_disabled_rules = import-ordering  # (optional: disable other conflicting rules)
+ktlint_experimental = true
+compose_preview_public_check = enabled
