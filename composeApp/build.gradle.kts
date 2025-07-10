@@ -93,6 +93,7 @@ tasks.withType<Test> {
     filter {
         isFailOnNoMatchingTests = false
     }
+    systemProperty("allure.results.directory", project.buildDir.toString() + "/allure-results")
 }
 
 // allure {
