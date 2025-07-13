@@ -27,3 +27,15 @@ Gradle on niin kovaa kipua että se kyllä syö ison palan halua ja energiaa kok
 Seuraavaksi teen nopean käyttiksen ja alan pohtimaan alustavan käyttöohjeen tekoa.  
 Sitten joku alustava pelin voiton tunnistus jotta pääsee näkemään asioita.  
 Kun nämä on tehty voin alkaa siirtyä kunnolla minimaxin kimppuun.
+
+
+
+## Ajan käyttö:
+
+| Päivä           | aika | syy                       |
+|-----------------|-----|---------------------------|
+| 05-10/07        | ??? | Gradle tappelu -.-        |
+| 10/07           | 6h  | Alustus                   |
+| 11/07           | 6h  | Dokumentointi ja research |
+| total this week | ~12h |                    |
+| total total     | 12h |                    |
