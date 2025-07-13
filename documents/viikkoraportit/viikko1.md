@@ -33,9 +33,10 @@ Kun nämä on tehty voin alkaa siirtyä kunnolla minimaxin kimppuun.
 ## Ajan käyttö:
 
 | Päivä           | aika | syy                       |
-|-----------------|-----|---------------------------|
-| 05-10/07        | ??? | Gradle tappelu -.-        |
-| 10/07           | 6h  | Alustus                   |
-| 11/07           | 6h  | Dokumentointi ja research |
-| total this week | ~12h |                    |
-| total total     | 12h |                    |
+|-----------------|------|---------------------------|
+| 05-10/07        | ???  | Gradle tappelu -.-        |
+| 10/07           | 6h   | Alustus                   |
+| 11/07           | 6h   | Dokumentointi ja research |
+| 13/07           | 3h   | Dokumentoinnin muotoilu   |
+| total this week | ~15h |                           |
+| total total     | 15h  |                           |
