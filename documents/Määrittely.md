@@ -1,4 +1,4 @@
-# Määrittely dokumentti
+# Määrittelydokumentti
 
 ---
 ## Kielen valinta
