@@ -93,25 +93,24 @@ fun NiceTesting(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun BoardAndButtons() {
-    var state by remember { mutableStateOf(MoveHistory()) }
+fun BoardAndButtons(
+    boardHeight: Int = 6,
+    boardWidth: Int = 7,
+) {
+    val state = remember { mutableStateOf(MoveHistory()) }
+    val dropTokenAction: (Int) -> Unit = {
+        state.value = state.value.limitedAdd(it, boardHeight)
+    }
     Column {
-        Row {
-            repeat(7) { num ->
-                val real = num + 1
-                Button(onClick = {
-                    state = state.limitedAdd(real)
-                }) {
-                    Text("Drop@#$real")
-                }
-            }
-        }
-        Text("Hello, #${state.size()}" + if (state.size() > 0) "and ${state.list.last()}" else "")
-        Text("${state.list}")
+//        buttons(state)
+        buttons2(dropTokenAction)
+
+        Text("Hello, #${state.value.size()}" + if (state.value.size() > 0) " and ${state.value.list.last()}" else "")
+        Text("${state.value.list}")
 
         Button(onClick = {
-            if (state.size() > 0) {
-                state = state.undoLast()
+            if (state.value.size() > 0) {
+                state.value = state.value.undoLast()
             }
         }) {
             Text("Undo last move")
@@ -121,4 +120,48 @@ fun BoardAndButtons() {
 
 @Composable
 fun drawTheBoardState(state: State<List<Int>>) {
+}
+
+@Composable
+fun buttons(
+    state: MutableState<MoveHistory>,
+    boardHeight: Int = 6,
+    boardWidth: Int = 7,
+) {
+    val sdsdsd: (Int) -> Unit = {
+        state.value = state.value.limitedAdd(it, boardHeight)
+    }
+    Row {
+        repeat(boardWidth) { num ->
+            val real = num + 1
+//            Button(onClick = {
+//                state.value = state.value.limitedAdd(real, boardHeight)
+//            }) {
+//                Text("Drop@#$real")
+//            }
+
+            Button(onClick = {
+                sdsdsd(real)
+            }) {
+                Text("Drop@#$real")
+            }
+        }
+    }
+}
+
+@Composable
+fun buttons2(
+    dropTokenAction: (Int) -> Unit,
+    boardWidth: Int = 7,
+) {
+    Row {
+        repeat(boardWidth) { num ->
+            val real = num + 1
+            Button(onClick = {
+                dropTokenAction(real)
+            }) {
+                Text("Drop@#$real")
+            }
+        }
+    }
 }
