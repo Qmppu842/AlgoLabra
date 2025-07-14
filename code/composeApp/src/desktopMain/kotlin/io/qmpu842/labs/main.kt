@@ -9,6 +9,6 @@ fun main() =
             onCloseRequest = ::exitApplication,
             title = "onlydesktop",
         ) {
-            App()
+            App2()
         }
     }

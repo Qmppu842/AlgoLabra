@@ -22,7 +22,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @SuppressWarnings("ktlint:compose:modifier-missing-check", "ktlint:standard:function-naming", "unused")
 @Composable
-fun App() {
+fun App2() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
