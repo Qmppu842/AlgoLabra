@@ -26,7 +26,7 @@ Tähtään graafiseen käyttöliittymään jotta pelaaminen on simppeliä ja nop
 Minimax aika pitäisi olla O(b^d) missä d on tutkittu syvyys ja b on solmmujen määrä.   
 Koska ongelma alue on määrätty pelin puolesta, maksimi d on 42 ja solmuja on (max) 7 per kerros, 7^42 =~3E35.  
 Onneksi nämä kaikki ei ole sallittuja peli tilanteita.
-Pelitilanteet rejoitettuna määrä pitäis olla "`states (total)    4,531,985,219,092`" [^1].  
+Pelitilanteet rajoitettuna määrä pitäis olla "`states (total)    4,531,985,219,092`" [^1].  
 Vaikka rajoitetumpi, ei siltikään mieluisa pelata brute froce ratkaisua vastaan, täten minimaxin käyttö.
 
 Tilallisesti pitäisi tämän olla hieman hillitympi O(b*d) missä d on tutkittu syvyys ja b on solmmujen määrä.
@@ -40,7 +40,7 @@ Kun nämä vaiheet ovat tehty ja jos aikaa ja tarvetta vielä on niin näiden te
 
 ## Harjoitus työn sivu, asiat jotka ovat mukavia mutta eivät ole focus:
 
-Käyttöliittymä ja sen ympärillä olevat asiat.
+Käyttöliittymä ja sen ympärillä olevat asiat.  
 (Tämä osio on lähinnä muistuttamaan minua itseäni mihin ei kuulu upottaa liikaa aikaa.)
 
 
@@ -52,9 +52,9 @@ Teen tällä hetkellä tietojenkäsittelytieteen kandidaatti tutkintoa (TKT).
 
 ## Ohjelmointi kielet
 
-Kotlin ja java osaan mukavasti.
-Python menee kanssa.
-Kyllä varmaankin C/C++ tai C# myös toimivat.
+Kotlin ja java osaan mukavasti.  
+Python menee kanssa.  
+Kyllä varmaankin C/C++ tai C# myös toimivat.  
 Ja varmaan niitä muitakin menee kun vähän mietiskelee.
 
 ## Lähteitä
