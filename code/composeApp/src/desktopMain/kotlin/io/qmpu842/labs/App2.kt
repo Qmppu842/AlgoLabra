@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.logic.MoveHistory
+import io.qmpu842.labs.logic.profiles.OpponentProfile
+import io.qmpu842.labs.logic.profiles.RandomProfile
 import onlydesktop.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 
@@ -95,11 +97,17 @@ fun BoardAndButtons(
     boardHeight: Int = 6,
     boardWidth: Int = 7,
 ) {
+    var playerA: OpponentProfile = RandomProfile()
+    var playerB: OpponentProfile = RandomProfile()
+    var playerOnTurn = playerA
+
     val state =
         remember { mutableStateOf(MoveHistory(list = listOf(), boardHeight = boardHeight, boardWidth = boardWidth)) }
 
     val dropTokenAction: (Int) -> Unit = {
         state.value = state.value.limitedAdd(it, state.value.boardHeight)
+
+        playerOnTurn = if (playerOnTurn == playerA) playerB else playerA
     }
 
     val undoAction = {
@@ -121,9 +129,12 @@ fun BoardAndButtons(
         Row {
             Button(onClick = undoAction) {
                 Text("Undo last move")
-        }
+            }
             Button(onClick = clearBoardAction) {
                 Text("Restart")
+            }
+            Button(onClick = { dropTokenAction(playerOnTurn.nextMove(state = state.value)) }) {
+                Text("Play next move")
             }
         }
     }

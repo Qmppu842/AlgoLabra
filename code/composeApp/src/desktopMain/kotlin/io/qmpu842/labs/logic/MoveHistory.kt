@@ -1,8 +1,5 @@
 package io.qmpu842.labs.logic
 
-import kotlin.math.abs
-import kotlin.math.max
-
 data class MoveHistory(
     val list: List<Int> = listOf(),
     val boardHeight: Int = 6,
@@ -66,5 +63,17 @@ data class MoveHistory(
         }
         return board4
     }
-}
 
+    /**
+     * @return list of all possible drop places.
+     * The columns that are not full
+     */
+    fun getLegalMoves(): List<Int> {
+        val result = mutableListOf<Int>()
+        val board = getBoard()
+        board.forEachIndexed { index, column ->
+            if (column.size < boardHeight) result.add(index + 1)
+        }
+        return result.toList()
+    }
+}
