@@ -1,5 +1,8 @@
 package io.qmpu842.labs.logic
 
+import kotlin.math.abs
+import kotlin.math.max
+
 data class MoveHistory(
     val list: List<Int> = listOf(),
     val boardHeight: Int = 6,
@@ -49,6 +52,9 @@ data class MoveHistory(
      * @return MutableList<MutableList<Int>> that represents the board state.
      * In format of width or x as top level.
      * And as height or y as inner level.
+     *
+     * Positive numbers are for player one
+     * Negatives for player two
      */
     fun getBoard(): MutableList<MutableList<Int>> {
         val board4 =
@@ -60,4 +66,14 @@ data class MoveHistory(
         }
         return board4
     }
+}
+
+fun MutableList<MutableList<Int>>.getHighestAbs(): Int {
+    var highest = 0
+    this.forEach {
+        it.forEach { num ->
+            highest = max(abs(num), highest)
+        }
+    }
+    return highest
 }
