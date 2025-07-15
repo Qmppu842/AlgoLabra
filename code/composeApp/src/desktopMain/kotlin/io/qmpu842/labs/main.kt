@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:filename")
+
 package io.qmpu842.labs
 
 import androidx.compose.ui.window.Window
