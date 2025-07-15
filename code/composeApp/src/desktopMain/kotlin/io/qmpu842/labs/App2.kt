@@ -95,10 +95,11 @@ fun BoardAndButtons(
     boardHeight: Int = 6,
     boardWidth: Int = 7,
 ) {
-    val state = remember { mutableStateOf(MoveHistory()) }
+    val state =
+        remember { mutableStateOf(MoveHistory(list = listOf(), boardHeight = boardHeight, boardWidth = boardWidth)) }
 
     val dropTokenAction: (Int) -> Unit = {
-        state.value = state.value.limitedAdd(it, boardHeight)
+        state.value = state.value.limitedAdd(it, state.value.boardHeight)
     }
 
     val undoAction = {
@@ -108,9 +109,9 @@ fun BoardAndButtons(
     }
 
     Column {
-        Buttons(dropTokenAction)
+        DropButtons(dropTokenAction)
 
-        drawTheBoardState(state.value)
+        DrawTheBoardState(state.value)
 
         Text("Hello, #${state.value.size()}" + if (state.value.size() > 0) " and ${state.value.list.last()}" else "")
         Text("${state.value.list}")
@@ -122,19 +123,16 @@ fun BoardAndButtons(
 }
 
 @Composable
-fun drawTheBoardState(
-    state: MoveHistory,
-    boardHeight: Int = 6,
-    boardWidth: Int = 7,
-) {
+fun DrawTheBoardState(state: MoveHistory) {
     val board4 = state.getBoardPaddedWithZeros()
 
     Row {
-        repeat(boardWidth) { y ->
+        repeat(state.boardWidth) { y ->
             Column {
-                repeat(boardHeight) { x ->
+                repeat(state.boardHeight) { x ->
                     val target = board4[y][x]
-                    val resss =
+
+                    val resource =
                         if (target > 0) {
                             Res.drawable.yellow_cell
                         } else if (target < 0) {
@@ -144,8 +142,8 @@ fun drawTheBoardState(
                         }
 
                     Image(
-                        painter = painterResource(resss),
-                        contentDescription = "Board state",
+                        painter = painterResource(resource),
+                        contentDescription = "Cell $resource",
                     )
                 }
             }
@@ -154,7 +152,7 @@ fun drawTheBoardState(
 }
 
 @Composable
-fun Buttons(
+fun DropButtons(
     dropTokenAction: (Int) -> Unit,
     boardWidth: Int = 7,
 ) {
