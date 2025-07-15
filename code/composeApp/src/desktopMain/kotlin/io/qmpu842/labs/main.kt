@@ -7,7 +7,7 @@ fun main() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
-            title = "onlydesktop",
+            title = "Connect 4,  Bots",
         ) {
             App2()
         }
