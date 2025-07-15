@@ -76,4 +76,11 @@ data class MoveHistory(
         }
         return result.toList()
     }
+
+    fun didLastMoveWin(): Boolean {
+        val result = false
+
+
+        return result
+    }
 }

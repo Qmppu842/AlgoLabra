@@ -19,7 +19,7 @@ import io.qmpu842.labs.logic.profiles.RandomProfile
 import onlydesktop.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 
-@SuppressWarnings("ktlint:compose:modifier-missing-check", "ktlint:standard:function-naming", "unused")
+@SuppressWarnings("ktlint:compose:modifier-missing-check", "ktlint:standard:function-naming")
 @Composable
 fun App2() {
     MaterialTheme {
