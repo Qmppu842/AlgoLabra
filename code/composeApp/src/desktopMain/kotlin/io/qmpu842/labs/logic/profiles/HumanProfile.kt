@@ -1,7 +1,9 @@
 package io.qmpu842.labs.logic.profiles
 
+import io.qmpu842.labs.logic.Board
+
 class HumanProfile : OpponentProfile {
-    override fun nextMove(): Int {
+    override fun nextMove(board: Board): Int {
         TODO("Not yet implemented")
     }
 }
