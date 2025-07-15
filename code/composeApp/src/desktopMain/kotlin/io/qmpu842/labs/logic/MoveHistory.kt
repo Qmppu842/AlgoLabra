@@ -68,12 +68,3 @@ data class MoveHistory(
     }
 }
 
-fun MutableList<MutableList<Int>>.getHighestAbs(): Int {
-    var highest = 0
-    this.forEach {
-        it.forEach { num ->
-            highest = max(abs(num), highest)
-        }
-    }
-    return highest
-}

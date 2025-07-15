@@ -14,10 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.logic.MoveHistory
-import io.qmpu842.labs.logic.getHighestAbs
 import onlydesktop.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
-import kotlin.math.abs
 
 @SuppressWarnings("ktlint:compose:modifier-missing-check", "ktlint:standard:function-naming", "unused")
 @Composable
@@ -134,7 +132,6 @@ fun BoardAndButtons(
 @Composable
 fun DrawTheBoardState(state: MoveHistory) {
     val board4 = state.getBoardPaddedWithZeros()
-    val highest = board4.getHighestAbs()
 
     Row {
         repeat(state.boardWidth) { y ->
@@ -143,11 +140,7 @@ fun DrawTheBoardState(state: MoveHistory) {
                     val target = board4[y][x]
 
                     val resource =
-                        if (abs(target) == highest && target > 0) {
-                            Res.drawable.yellow_cell_latest2
-                        } else if (abs(target) == highest && target < 0) {
-                            Res.drawable.red_cell_latest2
-                        } else if (target > 0) {
+                        if (target > 0) {
                             Res.drawable.yellow_cell
                         } else if (target < 0) {
                             Res.drawable.red_cell
