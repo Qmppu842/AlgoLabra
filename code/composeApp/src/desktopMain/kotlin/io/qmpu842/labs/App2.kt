@@ -14,9 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.logic.MoveHistory
-import onlydesktop.composeapp.generated.resources.Res
-import onlydesktop.composeapp.generated.resources.board
-import onlydesktop.composeapp.generated.resources.compose_multiplatform
+import onlydesktop.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 
 @SuppressWarnings("ktlint:compose:modifier-missing-check", "ktlint:standard:function-naming", "unused")
@@ -98,59 +96,65 @@ fun BoardAndButtons(
     boardWidth: Int = 7,
 ) {
     val state = remember { mutableStateOf(MoveHistory()) }
+
     val dropTokenAction: (Int) -> Unit = {
         state.value = state.value.limitedAdd(it, boardHeight)
     }
+
+    val undoAction = {
+        if (state.value.size() > 0) {
+            state.value = state.value.undoLast()
+        }
+    }
+
     Column {
-//        buttons(state)
-        buttons2(dropTokenAction)
+        Buttons(dropTokenAction)
+
+        drawTheBoardState(state.value)
 
         Text("Hello, #${state.value.size()}" + if (state.value.size() > 0) " and ${state.value.list.last()}" else "")
         Text("${state.value.list}")
 
-        Button(onClick = {
-            if (state.value.size() > 0) {
-                state.value = state.value.undoLast()
-            }
-        }) {
+        Button(onClick = undoAction) {
             Text("Undo last move")
         }
     }
 }
 
 @Composable
-fun drawTheBoardState(state: State<List<Int>>) {
-}
-
-@Composable
-fun buttons(
-    state: MutableState<MoveHistory>,
+fun drawTheBoardState(
+    state: MoveHistory,
     boardHeight: Int = 6,
     boardWidth: Int = 7,
 ) {
-    val sdsdsd: (Int) -> Unit = {
-        state.value = state.value.limitedAdd(it, boardHeight)
-    }
-    Row {
-        repeat(boardWidth) { num ->
-            val real = num + 1
-//            Button(onClick = {
-//                state.value = state.value.limitedAdd(real, boardHeight)
-//            }) {
-//                Text("Drop@#$real")
-//            }
+    val board4 = state.getBoardPaddedWithZeros()
 
-            Button(onClick = {
-                sdsdsd(real)
-            }) {
-                Text("Drop@#$real")
+    Row {
+        repeat(boardWidth) { y ->
+            Column {
+                repeat(boardHeight) { x ->
+                    val target = board4[y][x]
+                    val resss =
+                        if (target > 0) {
+                            Res.drawable.yellow_cell
+                        } else if (target < 0) {
+                            Res.drawable.red_cell
+                        } else {
+                            Res.drawable.empty_cell
+                        }
+
+                    Image(
+                        painter = painterResource(resss),
+                        contentDescription = "Board state",
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun buttons2(
+fun Buttons(
     dropTokenAction: (Int) -> Unit,
     boardWidth: Int = 7,
 ) {
@@ -160,7 +164,7 @@ fun buttons2(
             Button(onClick = {
                 dropTokenAction(real)
             }) {
-                Text("Drop@#$real")
+                Text("Drop@$real")
             }
         }
     }
