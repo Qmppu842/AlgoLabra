@@ -104,7 +104,7 @@ data class Board(
         val lastOne = history.last()
         val wellSpace = min(getWellSpace(lastOne), board[lastOne].size-1)
         val startingPoint = Point(lastOne, wellSpace)
-        val ways = Way.entries.toTypedArray()
+        val ways = Way.entries
         var result: Boolean
         for (way in ways) {
             result =
