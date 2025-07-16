@@ -18,34 +18,33 @@ class BoardTest :
 
         test("getLastMove after moves should give the last well") {
             val height = 3
-            val board =
+            var board =
                 Board(
                     boardWidth = 3,
                     boardHeight = height,
                 )
             board.getLastMove() shouldBe -1
 
-            board.dropToken(0, 1)
-            board.dropToken(0, -2)
+            board = board.dropToken(0, 1)
+            board = board.dropToken(0, -2)
             board.getLastMove() shouldBe 0
 
-
-            board.dropToken(1, 3)
+            board = board.dropToken(1, 3)
             board.getLastMove() shouldBe 1
         }
 
         test("getLastMove full column should not go to history") {
             val height = 3
-            val board =
+            var board =
                 Board(
                     boardWidth = 3,
                     boardHeight = height,
                 )
 
-            board.dropToken(0, 1)
-            board.dropToken(0, -2)
-            board.dropToken(0, 3)
-            board.dropToken(0, -4)
+            board = board.dropToken(0, 1)
+            board = board.dropToken(0, -2)
+            board = board.dropToken(0, 3)
+            board = board.dropToken(0, -4)
             board.history shouldContainAll listOf(0, 0, 0)
         }
 
@@ -109,68 +108,62 @@ class BoardTest :
 
         test("dropToken returns the 0 height") {
             val height = 3
-            val board =
+            var board =
                 Board(
                     boardWidth = 1,
                     boardHeight = height,
                 )
-            val endHeight = board.dropToken(0, 1)
-            endHeight shouldBe height - 1
+            board = board.dropToken(0, 1)
+//            endHeight shouldBe height - 1
             board.board.first().toList() shouldContainAll listOf(0, 0, 1)
         }
 
         test("dropToken 3 times to same well will return the height") {
             val height = 3
-            val board =
+            var board =
                 Board(
                     boardWidth = 1,
                     boardHeight = height,
                 )
-            var endHeight: Int
             repeat(3) { num ->
-                endHeight = board.dropToken(0, 1)
-                endHeight shouldBe height - num - 1
+                board = board.dropToken(0, num)
             }
+            board.board.first().toList() shouldContainAll listOf(0, 1, 2)
         }
 
         test("dropToken returns -1 on over fill") {
-            val board =
+            var board =
                 Board(
                     boardWidth = 1,
                     boardHeight = 3,
                 )
-            var endHeight = 0
             repeat(4) { num ->
-                endHeight = board.dropToken(0, 1)
+                board = board.dropToken(0, 1)
             }
-            endHeight shouldBe -1
             board.board.first().toList() shouldContainAll listOf(1, 1, 1)
         }
 
         test("undoLastMove should remove the last until there is nothing to remove") {
             val height = 3
-            val board =
+            var board =
                 Board(
                     boardWidth = 3,
                     boardHeight = height,
                 )
 
-            board.dropToken(1, 1)
-            board.dropToken(2, -2)
-            board.dropToken(0, 3)
+            board = board.dropToken(1, 1)
+            board = board.dropToken(2, -2)
+            board = board.dropToken(0, 3)
             board.board.flatMap { it.toList() } shouldContainAll listOf(0, 1, -2, 3)
 
-            board.undoLastMove()
+            board = board.undoLastMove()
             board.board.flatMap { it.toList() } shouldContainAll listOf(0, 1, -2)
 
-            board.undoLastMove()
+            board = board.undoLastMove()
             board.board.flatMap { it.toList() } shouldContainAll listOf(0, 1)
 
-            var move = board.undoLastMove()
-            move shouldBe 1
+            board = board.undoLastMove()
             board.board.flatMap { it.toList() } shouldContainAll listOf(0)
 
-            move = board.undoLastMove()
-            move shouldBe -1
         }
     })

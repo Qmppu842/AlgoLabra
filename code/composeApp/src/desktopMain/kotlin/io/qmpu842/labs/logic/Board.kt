@@ -2,7 +2,7 @@ package io.qmpu842.labs.logic
 
 data class Board(
     val board: Array<IntArray>,
-    val history: MutableList<Int> = mutableListOf(-1)
+    val history: List<Int> = listOf(-1),
 ) {
     /**
      * @param boardWidth kuinka monta kuilua, same as x
@@ -39,7 +39,7 @@ data class Board(
     fun dropToken(
         column: Int,
         token: Int,
-    ): Int {
+    ): Board {
         val thing = board[column]
         var lastZero = -1
         thing.forEachIndexed { index, t ->
@@ -49,14 +49,17 @@ data class Board(
         }
         if (lastZero != -1) {
             board[column][lastZero] = token
-            history.add(column)
+//            history.add(column)
         }
-        return lastZero
+        return this.copy(
+            board,
+            history + column,
+        )
     }
 
-    fun undoLastMove(): Int {
+    fun undoLastMove(): Board {
         val lastWell = history.last()
-        if (lastWell == -1) return -1
+        if (lastWell == -1) return this
 
         val thing = board[lastWell]
         var toRemove = -1
@@ -67,12 +70,24 @@ data class Board(
                 toRemove = index
             }
         }
-        history.removeLast()
-        val removed = board[lastWell][toRemove]
+//        history.removeLast()
+//        val removed = board[lastWell][toRemove]
         board[lastWell][toRemove] = 0
-        return removed
+        return this.copy(
+            board,
+            history.take(history.size - 1),
+        )
     }
 
     fun getWells() = board.size
 
+    fun clear(): Board {
+        val board2 = board
+        for (x in board.indices) {
+            for (y in board[x].indices) {
+                board2[x][y] = 0
+            }
+        }
+        return this.copy(board = board2)
+    }
 }

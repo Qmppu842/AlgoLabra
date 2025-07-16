@@ -34,14 +34,26 @@ fun TheGame(modifier: Modifier = Modifier) {
     var boardState by remember { mutableStateOf(Board()) }
 
     val dropTokenAction: (Int) -> Unit = { column ->
-//        boardState.dropToken(column, 1)
-//        playerOnTurn = if (playerOnTurn == playerA) playerB else playerA
-        doThing.value = column
+        boardState = boardState.dropToken(column, boardState.history.size * doThing.value)
+        doThing.value *= -1
+        playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
     }
-    SideEffect {
-        if (doThing.value != -1) {
-            boardState.dropToken(doThing.value, 1)
-            playerOnTurn = if (playerOnTurn == playerA) playerB else playerA
+
+    val undoAction: () -> Unit = {
+        boardState = boardState.undoLastMove()
+    }
+    var doThing2 by remember { mutableStateOf(false) }
+    val clearBoardAction: () -> Unit = {
+        doThing2 = true
+    }
+    LaunchedEffect(doThing2) {
+        if (doThing2) {
+            boardState = boardState.clear()
+            doThing2 = !doThing2
+            dropTokenAction(0)
+            dropTokenAction(0)
+            boardState.undoLastMove()
+            boardState.undoLastMove()
         }
     }
 
@@ -52,13 +64,13 @@ fun TheGame(modifier: Modifier = Modifier) {
         )
         DrawTheBoard(board = boardState)
 
-        Column {
-//            Button(onClick = undoAction) {
-//                Text("Undo last move")
-//            }
-//            Button(onClick = clearBoardAction) {
-//                Text("Restart")
-//            }
+        Row {
+            Button(onClick = undoAction) {
+                Text("Undo last move")
+            }
+            Button(onClick = clearBoardAction) {
+                Text("Restart")
+            }
             Button(onClick = { dropTokenAction(playerOnTurn.nextMove(board = boardState)) }) {
                 Text("Play next move")
             }
