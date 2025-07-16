@@ -55,6 +55,21 @@ data class Board(
     }
 
     fun undoLastMove(): Int {
-        return -1
+        val lastWell = history.last()
+        if (lastWell == -1) return -1
+
+        val thing = board[lastWell]
+        var toRemove = -1
+        thing.forEachIndexed { index, t ->
+            if (toRemove != -1) return@forEachIndexed
+
+            if (t != 0) {
+                toRemove = index
+            }
+        }
+        history.removeLast()
+        val removed = board[lastWell][toRemove]
+        board[lastWell][toRemove] = 0
+        return removed
     }
 }
