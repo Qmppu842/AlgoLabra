@@ -16,6 +16,25 @@ class BoardTest :
             board.getLastMove() shouldBe -1
         }
 
+        test("getLastMove after moves should give the last well") {
+            val height = 3
+            val board =
+                Board(
+                    boardWidth = 3,
+                    boardHeight = height,
+                )
+            board.getLastMove() shouldBe -1
+
+            board.dropToken(0, 1)
+            board.dropToken(0, -2)
+            board.getLastMove() shouldBe 0
+
+
+            board.dropToken(1, 3)
+            board.getLastMove() shouldBe 1
+
+        }
+
         test("getLegalMoves should give all the empty wells") {
             val board =
                 Board(
@@ -58,44 +77,45 @@ class BoardTest :
                     boardWidth = 3,
                     boardHeight = 1,
                 )
-
-            var legals: MutableList<Int>
-            legals = board.getLegalMoves()
+            var legals: MutableList<Int> = board.getLegalMoves()
             legals shouldContainAll listOf(0, 1, 2)
-            board.dropToken(legals.removeLastOrNull()!!)
+            board.dropToken(legals.removeLastOrNull()!!, 1)
 
             legals = board.getLegalMoves()
-            legals shouldContainAll listOf(1, 2)
-            board.dropToken(legals.removeLastOrNull()!!)
+            legals shouldContainAll listOf(0, 1)
+            board.dropToken(legals.removeLastOrNull()!!, 1)
 
             legals = board.getLegalMoves()
-            legals shouldContainAll listOf(2)
-            board.dropToken(legals.removeLastOrNull()!!)
+            legals shouldContainAll listOf(0)
+            board.dropToken(legals.removeLastOrNull()!!, 1)
 
             legals = board.getLegalMoves()
             legals shouldContainAll listOf()
         }
 
         test("dropToken returns the 0 height") {
+            val height = 3
             val board =
                 Board(
                     boardWidth = 1,
-                    boardHeight = 3,
+                    boardHeight = height,
                 )
-            val thing = board.dropToken(0)
-            thing shouldBe 0
+            val endHeight = board.dropToken(0, 1)
+            endHeight shouldBe height - 1
+            board.board.first().toList() shouldContainAll listOf(0, 0, 1)
         }
 
         test("dropToken 3 times to same well will return the height") {
+            val height = 3
             val board =
                 Board(
                     boardWidth = 1,
-                    boardHeight = 3,
+                    boardHeight = height,
                 )
             var endHeight: Int
             repeat(3) { num ->
-                endHeight = board.dropToken(0)
-                endHeight shouldBe num
+                endHeight = board.dropToken(0, 1)
+                endHeight shouldBe height - num - 1
             }
         }
 
@@ -107,8 +127,9 @@ class BoardTest :
                 )
             var endHeight = 0
             repeat(4) { num ->
-                endHeight = board.dropToken(0)
+                endHeight = board.dropToken(0, 1)
             }
             endHeight shouldBe -1
+            board.board.first().toList() shouldContainAll listOf(1, 1, 1)
         }
     })

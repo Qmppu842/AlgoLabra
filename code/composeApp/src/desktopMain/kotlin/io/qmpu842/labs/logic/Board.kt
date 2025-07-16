@@ -2,14 +2,8 @@ package io.qmpu842.labs.logic
 
 data class Board(
     val board: Array<IntArray>,
+    val history: MutableList<Int> = mutableListOf(-1)
 ) {
-    //    constructor(vararg wells: IntArray):this(wells.copyInto(arrayOf()))
-//    constructor(vararg wells: IntArray) : this(
-//        Array<IntArray>(wells.size) {
-//            wells[it]
-//        },
-//    )
-
     /**
      * @param boardWidth kuinka monta kuilua, same as x
      * @param boardHeight kuinka monta paikkaa per kuilu, same as y
@@ -22,25 +16,40 @@ data class Board(
     /**
      * @return the last token put in to the board
      */
-    fun getLastMove(): Int = 1
+    fun getLastMove(): Int = history.last()
 
     /**
      * @return list of all the wells with space
      */
     fun getLegalMoves(): MutableList<Int> {
         val result = mutableListOf<Int>()
-//        board.forEachIndexed { index, ints ->
-//        }
+        board.forEachIndexed { index, ints ->
+            if (ints.first() == 0) result.add(index)
+        }
         return result
     }
 
     /**
      * Drops the token to the well
      * @param column the well to drop in
+     * @param token the token to drop
      *
      * @return -1 if no space otherwise the height the token was put in
      */
-    fun dropToken(column: Int): Int {
-        return -1
+    fun dropToken(
+        column: Int,
+        token: Int,
+    ): Int {
+        val thing = board[column]
+        var lastZero = -1
+        thing.forEachIndexed { index, t ->
+            if (t == 0) {
+                lastZero = index
+            }
+        }
+        if (lastZero != -1) {
+            board[column][lastZero] = token
+        }
+        return lastZero
     }
 }
