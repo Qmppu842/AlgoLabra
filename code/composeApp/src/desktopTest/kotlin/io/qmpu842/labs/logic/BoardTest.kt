@@ -3,6 +3,7 @@ package io.qmpu842.labs.logic
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
+import java.awt.Point
 
 class BoardTest :
     FunSpec({
@@ -114,7 +115,6 @@ class BoardTest :
                     boardHeight = height,
                 )
             board = board.dropToken(0, 1)
-//            endHeight shouldBe height - 1
             board.board.first().toList() shouldContainAll listOf(0, 0, 1)
         }
 
@@ -189,6 +189,27 @@ class BoardTest :
             thing shouldBe 2
         }
 
+        test("checker on straight line down") {
+            val height = 6
+            val width = 7
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            repeat(5) {
+                board = board.dropToken(1, it + 1)
+            }
+           val arvo =  board.checker(
+                currentPoint = Point(1, 2),
+                way = Way.Down,
+                counter = 1,
+                value = 0,
+                maxCounter = 4
+            )
+            arvo shouldBe true
+        }
+
         test("isLastPlayWinning on straight line down") {
             val height = 6
             val width = 7
@@ -205,8 +226,6 @@ class BoardTest :
             }
             board = board.dropToken(1, 4)
             val winning = board.isLastPlayWinning(4)
-            println("The board:")
-            println(board.board.contentDeepToString())
             winning shouldBe true
         }
 

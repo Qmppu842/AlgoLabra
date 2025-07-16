@@ -107,8 +107,6 @@ data class Board(
         val startingPoint = Point(lastOne, wellSpace)
         val ways = Way.entries.toTypedArray()
         var result: Boolean
-        println("Entering check The board:")
-        println(board.contentDeepToString())
         for (way in ways) {
             result =
                 checker(
@@ -130,29 +128,23 @@ data class Board(
         value: Int = 0,
         maxCounter: Int = 4,
     ): Boolean {
-        println("Gonna check ${way.name}")
         val currentPointValue = board.get(currentPoint) ?: return false
-        println("CurrThing: $currentPointValue")
 
         val valueSum = value + currentPointValue
-        println("NextValue $valueSum")
         if (abs(value) >= abs(valueSum)) return false
 
         val next = board.next(currentPoint, way)
-        println("Next $next")
-        if (next == null) return false
+        if (next == null && counter < maxCounter) return false
 
         if (counter < maxCounter) {
-            println("Another layer:")
             return checker(
-                currentPoint = next,
+                currentPoint = next!!,
                 way = way,
                 counter = counter + 1,
                 value = valueSum,
                 maxCounter = maxCounter,
             )
         }
-        println("Finally")
         return true
     }
 }
