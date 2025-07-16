@@ -72,4 +72,7 @@ data class Board(
         board[lastWell][toRemove] = 0
         return removed
     }
+
+    fun getWells() = board.size
+
 }

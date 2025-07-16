@@ -7,6 +7,6 @@ class RandomProfile : OpponentProfile {
     val rand = MyRandom.random
 
     override fun nextMove(board: Board): Int {
-        TODO("Not yet implemented")
+       return board.getLegalMoves().random(rand)
     }
 }

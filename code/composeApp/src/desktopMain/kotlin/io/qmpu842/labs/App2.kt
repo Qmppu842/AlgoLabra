@@ -3,11 +3,15 @@ package io.qmpu842.labs
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import io.qmpu842.labs.logic.Board
+import io.qmpu842.labs.logic.profiles.OpponentProfile
+import io.qmpu842.labs.logic.profiles.RandomProfile
 import onlydesktop.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -21,8 +25,45 @@ fun App2() {
 }
 
 @Composable
-fun TheGame() {
-    DrawTheBoard(board = Board(arrayOf(intArrayOf(0, 1, -1, 2, -3))))
+fun TheGame(modifier: Modifier = Modifier) {
+    val playerA: OpponentProfile = RandomProfile()
+    val playerB: OpponentProfile = RandomProfile()
+    var playerOnTurn = playerA
+
+    val doThing = remember { mutableIntStateOf(-1) }
+    var boardState by remember { mutableStateOf(Board()) }
+
+    val dropTokenAction: (Int) -> Unit = { column ->
+//        boardState.dropToken(column, 1)
+//        playerOnTurn = if (playerOnTurn == playerA) playerB else playerA
+        doThing.value = column
+    }
+    SideEffect {
+        if (doThing.value != -1) {
+            boardState.dropToken(doThing.value, 1)
+            playerOnTurn = if (playerOnTurn == playerA) playerB else playerA
+        }
+    }
+
+    Column(modifier = modifier) {
+        DropButtons(
+            dropTokenAction = dropTokenAction,
+            boardWidth = boardState.getWells(),
+        )
+        DrawTheBoard(board = boardState)
+
+        Column {
+//            Button(onClick = undoAction) {
+//                Text("Undo last move")
+//            }
+//            Button(onClick = clearBoardAction) {
+//                Text("Restart")
+//            }
+            Button(onClick = { dropTokenAction(playerOnTurn.nextMove(board = boardState)) }) {
+                Text("Play next move")
+            }
+        }
+    }
 }
 
 @Composable
@@ -79,4 +120,21 @@ fun ChoosePic(
         modifier = modifier,
         contentScale = ContentScale.None,
     )
+}
+
+@Composable
+fun DropButtons(
+    dropTokenAction: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    boardWidth: Int = 7,
+) {
+    Row {
+        repeat(boardWidth) { num ->
+            Button(onClick = {
+                dropTokenAction(num)
+            }) {
+                Text("Drop@${num + 1}")
+            }
+        }
+    }
 }
