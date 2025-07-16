@@ -189,7 +189,7 @@ class BoardTest :
             thing shouldBe 2
         }
 
-        test("isLastPlayWinning on straight line") {
+        test("isLastPlayWinning on straight line down") {
             val height = 6
             val width = 7
             var board =
@@ -199,12 +199,14 @@ class BoardTest :
                 )
             repeat(3) {
 
-                board = board.dropToken(1, 1)
+                board = board.dropToken(1, it+1)
                 val winning = board.isLastPlayWinning(4)
                 winning shouldBe false
             }
-            board = board.dropToken(1, 1)
+            board = board.dropToken(1, 4)
             val winning = board.isLastPlayWinning(4)
+            println("The board:")
+            println(board.board.contentDeepToString())
             winning shouldBe true
         }
 
@@ -244,14 +246,14 @@ class BoardTest :
                             intArrayOf(0, 0, 0, 0, 0, 1),
                             intArrayOf(0, 0, 0, 0, 3, -2),
                             intArrayOf(0, 0, 0, 7, 5, -4),
-                            intArrayOf(0, 0, 0, -9, 8, -6),
-                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 0, -10),
                             intArrayOf(0, 0, 0, 0, 0, 0),
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
 
-            board = board.dropToken(3, 10)
+            board = board.dropToken(3, 11)
             var winning = board.isLastPlayWinning(4)
             winning shouldBe true
         }
@@ -264,14 +266,14 @@ class BoardTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                             intArrayOf(0, 0, 0, 0, 3, -2),
                             intArrayOf(0, 0, 0, 7, 5, -4),
-                            intArrayOf(0, 0, 1, -9, 8, -6),
-                            intArrayOf(0, 0, 0, 0, 0, 0),
-                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 11, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, -12, 1),
+                            intArrayOf(0, 0, 0, 0, 0, -10),
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
 
-            board = board.dropToken(0, 10)
+            board = board.dropToken(0, 13)
             var winning = board.isLastPlayWinning(4)
             winning shouldBe true
         }
@@ -284,14 +286,14 @@ class BoardTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                             intArrayOf(0, 0, 0, 0, 3, -2),
                             intArrayOf(0, 0, 0, 7, 5, -4),
-                            intArrayOf(0, 0, 1, -9, 8, -6),
-                            intArrayOf(0, 0, 0, 0, 0, 10),
+                            intArrayOf(0, 0, -10, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 11, 1),
                             intArrayOf(0, 0, 0, 0, 0, 0),
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
 
-            board = board.dropToken(0, -11)
+            board = board.dropToken(0, -12)
             var winning = board.isLastPlayWinning(4)
             winning shouldBe true
         }

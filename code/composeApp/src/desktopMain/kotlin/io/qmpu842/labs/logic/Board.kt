@@ -1,5 +1,9 @@
 package io.qmpu842.labs.logic
 
+import java.awt.Point
+import kotlin.math.abs
+import kotlin.math.min
+
 data class Board(
     val board: Array<IntArray>,
     val history: List<Int> = listOf(-1),
@@ -98,7 +102,99 @@ data class Board(
 
 
     fun isLastPlayWinning(neededForWin : Int = 4): Boolean {
-        println("asd")
+        val lastOne = history.last()
+        val wellSpace = min(getWellSpace(lastOne), board[lastOne].size-1)
+        val startingPoint = Point(lastOne, wellSpace)
+        val ways = Way.entries.toTypedArray()
+        var result: Boolean
+        println("Entering check The board:")
+        println(board.contentDeepToString())
+        for (way in ways) {
+            result =
+                checker(
+                    currentPoint = startingPoint,
+                    way = way,
+                    counter = 1,
+                    value = 0,
+                    maxCounter = neededForWin,
+                )
+            if (result) return true
+        }
         return false
     }
+
+    fun checker(
+        currentPoint: Point,
+        way: Way = Way.Up,
+        counter: Int = 0,
+        value: Int = 0,
+        maxCounter: Int = 4,
+    ): Boolean {
+        println("Gonna check ${way.name}")
+        val currentPointValue = board.get(currentPoint) ?: return false
+        println("CurrThing: $currentPointValue")
+
+        val valueSum = value + currentPointValue
+        println("NextValue $valueSum")
+        if (abs(value) >= abs(valueSum)) return false
+
+        val next = board.next(currentPoint, way)
+        println("Next $next")
+        if (next == null) return false
+
+        if (counter < maxCounter) {
+            println("Another layer:")
+            return checker(
+                currentPoint = next,
+                way = way,
+                counter = counter + 1,
+                value = valueSum,
+                maxCounter = maxCounter,
+            )
+        }
+        println("Finally")
+        return true
+    }
+}
+
+private fun Array<IntArray>.get(current: Point): Int? {
+    val x = current.x
+    if (x !in 0..<this.size) return null
+
+    val y = current.y
+    if (y !in 0..<this[x].size) return null
+
+    return this[current.x][current.y]
+}
+
+private fun Array<IntArray>.next(
+    current: Point,
+    way: Way,
+): Point? {
+    val x = current.x + way.x
+    if (x !in 0..<this.size) return null
+
+    val y = current.y + way.y
+    if (y !in 0..<this[x].size) return null
+    return Point(x, y)
+}
+
+/**
+ * Right +x
+ * Left  -x
+ * Up    -y
+ * Down  +y
+ */
+enum class Way(
+    val x: Int,
+    val y: Int,
+) {
+    Up(0, -1),
+    UpRight(1, -1),
+    Right(1, 0),
+    RightDown(1, 1),
+    Down(0, 1),
+    DownLeft(-1, 1),
+    Left(-1, 0),
+    LeftUp(-1, -1),
 }
