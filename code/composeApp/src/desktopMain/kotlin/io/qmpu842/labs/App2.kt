@@ -54,16 +54,16 @@ fun TheGame(modifier: Modifier = Modifier) {
     }
 
     val clearBoardAction: () -> Unit = {
-        boardState = boardState.clear()
-        playerOnTurn = playerA
-        forSide.value = -1
-        isThereWinner = 0
-
         // This is work around to refresh the screen cuz compose magic...
         dropTokenAction(0)
         dropTokenAction(0)
         boardState = boardState.undoLastMove()
         boardState = boardState.undoLastMove()
+
+        boardState = boardState.clear()
+        playerOnTurn = playerA
+        forSide.value = -1
+        isThereWinner = 0
     }
 
     val heuristicWells = HeuristicThing.allTheWells(boardState, forSide = forSide.value, maxDepth = 5)
