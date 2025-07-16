@@ -3,6 +3,13 @@ package io.qmpu842.labs.logic
 data class Board(
     val board: Array<IntArray>,
 ) {
+    //    constructor(vararg wells: IntArray):this(wells.copyInto(arrayOf()))
+//    constructor(vararg wells: IntArray) : this(
+//        Array<IntArray>(wells.size) {
+//            wells[it]
+//        },
+//    )
+
     /**
      * @param boardWidth kuinka monta kuilua, same as x
      * @param boardHeight kuinka monta paikkaa per kuilu, same as y
