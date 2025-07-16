@@ -49,7 +49,12 @@ data class Board(
         }
         if (lastZero != -1) {
             board[column][lastZero] = token
+            history.add(column)
         }
         return lastZero
+    }
+
+    fun undoLastMove(): Int {
+        return -1
     }
 }

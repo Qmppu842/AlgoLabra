@@ -32,7 +32,21 @@ class BoardTest :
 
             board.dropToken(1, 3)
             board.getLastMove() shouldBe 1
+        }
 
+        test("getLastMove full column should not go to history") {
+            val height = 3
+            val board =
+                Board(
+                    boardWidth = 3,
+                    boardHeight = height,
+                )
+
+            board.dropToken(0, 1)
+            board.dropToken(0, -2)
+            board.dropToken(0, 3)
+            board.dropToken(0, -4)
+            board.history shouldContainAll listOf(0, 0, 0)
         }
 
         test("getLegalMoves should give all the empty wells") {
@@ -131,5 +145,32 @@ class BoardTest :
             }
             endHeight shouldBe -1
             board.board.first().toList() shouldContainAll listOf(1, 1, 1)
+        }
+
+        test("undoLastMove should remove the last until there is nothing to remove") {
+            val height = 3
+            val board =
+                Board(
+                    boardWidth = 3,
+                    boardHeight = height,
+                )
+
+            board.dropToken(1, 1)
+            board.dropToken(2, -2)
+            board.dropToken(0, 3)
+            board.board.flatMap { it.toList() } shouldContainAll listOf(0, 1, -2, 3)
+
+            board.undoLastMove()
+            board.board.flatMap { it.toList() } shouldContainAll listOf(0, 1, -2)
+
+            board.undoLastMove()
+            board.board.flatMap { it.toList() } shouldContainAll listOf(0, 1)
+
+            var move = board.undoLastMove()
+            move shouldBe 1
+            board.board.flatMap { it.toList() } shouldContainAll listOf(0)
+
+            move = board.undoLastMove()
+            move shouldBe -1
         }
     })
