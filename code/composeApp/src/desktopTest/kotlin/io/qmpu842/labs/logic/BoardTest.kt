@@ -167,8 +167,7 @@ class BoardTest :
 
         }
 
-
-        test("getWellSpace"){
+        test("getWellSpace should give the correct amount of zeros still present") {
             val height = 3
             var board =
                 Board(
@@ -188,5 +187,112 @@ class BoardTest :
 
             thing = board.getWellSpace(2)
             thing shouldBe 2
+        }
+
+        test("isLastPlayWinning on straight line") {
+            val height = 6
+            val width = 7
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            repeat(3) {
+
+                board = board.dropToken(1, 1)
+                val winning = board.isLastPlayWinning(4)
+                winning shouldBe false
+            }
+            board = board.dropToken(1, 1)
+            val winning = board.isLastPlayWinning(4)
+            winning shouldBe true
+        }
+
+        test("isLastPlayWinning both should be winning when two are asked") {
+            val height = 6
+            val width = 7
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            var winning: Boolean
+            repeat(3) {
+
+                board = board.dropToken(1, 1)
+                winning = board.isLastPlayWinning(4)
+                winning shouldBe false
+
+                board = board.dropToken(2, -1)
+                winning = board.isLastPlayWinning(4)
+                winning shouldBe false
+            }
+            board = board.dropToken(1, 1)
+            winning = board.isLastPlayWinning(4)
+            winning shouldBe true
+
+            board = board.dropToken(1, 1)
+            winning = board.isLastPlayWinning(4)
+            winning shouldBe true
+        }
+
+        test("isLastPlayWinning with rising diagonal win") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 1),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(0, 0, 0, -9, 8, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            board = board.dropToken(3, 10)
+            var winning = board.isLastPlayWinning(4)
+            winning shouldBe true
+        }
+
+        test("isLastPlayWinning with lowering diagonal win") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(0, 0, 1, -9, 8, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            board = board.dropToken(0, 10)
+            var winning = board.isLastPlayWinning(4)
+            winning shouldBe true
+        }
+
+        test("isLastPlayWinning with negative straight win") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(0, 0, 1, -9, 8, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 10),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            board = board.dropToken(0, -11)
+            var winning = board.isLastPlayWinning(4)
+            winning shouldBe true
         }
     })

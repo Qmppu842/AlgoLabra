@@ -94,8 +94,11 @@ data class Board(
     /**
      *  @return the zeroes still in the well
      */
-    fun getWellSpace(column: Int): Int {
+    fun getWellSpace(column: Int): Int = board[column].count({ it == 0 })
+
+
+    fun isLastPlayWinning(neededForWin : Int = 4): Boolean {
         println("asd")
-        return -1
+        return false
     }
 }
