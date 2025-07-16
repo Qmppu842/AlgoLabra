@@ -33,30 +33,36 @@ fun TheGame(modifier: Modifier = Modifier) {
     var playerOnTurn = playerA
 
     val doThing = remember { mutableIntStateOf(-1) }
+    var isThereWinner by remember { mutableIntStateOf(0) }
     var boardState by remember { mutableStateOf(Board()) }
 
     val dropTokenAction: (Int) -> Unit = { column ->
-        boardState = boardState.dropToken(column, boardState.history.size * doThing.value)
-        doThing.value *= -1
-        playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
+        if (isThereWinner == 0) {
+            boardState = boardState.dropToken(column, boardState.history.size * doThing.value)
+            val voittaja = boardState.isLastPlayWinning(4)
+            if (voittaja) {
+                isThereWinner = doThing.value
+            }
+            doThing.value *= -1
+            playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
+        }
     }
 
     val undoAction: () -> Unit = {
         boardState = boardState.undoLastMove()
     }
-    var doThing2 by remember { mutableStateOf(false) }
+
     val clearBoardAction: () -> Unit = {
-        doThing2 = true
-    }
-    LaunchedEffect(doThing2) {
-        if (doThing2) {
-            boardState = boardState.clear()
-            doThing2 = !doThing2
-            dropTokenAction(0)
-            dropTokenAction(0)
-            boardState.undoLastMove()
-            boardState.undoLastMove()
-        }
+        boardState = boardState.clear()
+        playerOnTurn = playerA
+        doThing.value = -1
+        isThereWinner = 0
+
+        // This is work around to refresh the screen cuz compose magic...
+        dropTokenAction(0)
+        dropTokenAction(0)
+        boardState = boardState.undoLastMove()
+        boardState = boardState.undoLastMove()
     }
 
     Column(modifier = modifier) {
@@ -75,6 +81,18 @@ fun TheGame(modifier: Modifier = Modifier) {
             }
             Button(onClick = { dropTokenAction(playerOnTurn.nextMove(board = boardState)) }) {
                 Text("Play next move")
+            }
+            Button(onClick = {}) {
+                Text(
+                    text =
+                        if (isThereWinner != 0) {
+                            val voittaja =
+                                if (isThereWinner == 1) "Player B, The Yellow One!" else "Player A, The Red One!"
+                            "Winner is $voittaja"
+                        } else {
+                            "no winner, yet..."
+                        },
+                )
             }
         }
     }
