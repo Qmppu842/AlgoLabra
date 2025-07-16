@@ -90,4 +90,12 @@ data class Board(
         }
         return this.copy(board = board2)
     }
+
+    /**
+     *  @return the zeroes still in the well
+     */
+    fun getWellSpace(column: Int): Int {
+        println("asd")
+        return -1
+    }
 }

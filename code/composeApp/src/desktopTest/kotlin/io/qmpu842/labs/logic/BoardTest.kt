@@ -166,4 +166,27 @@ class BoardTest :
             board.board.flatMap { it.toList() } shouldContainAll listOf(0)
 
         }
+
+
+        test("getWellSpace"){
+            val height = 3
+            var board =
+                Board(
+                    boardWidth = 3,
+                    boardHeight = height,
+                )
+
+            board = board.dropToken(1, 1)
+            board = board.dropToken(2, -2)
+            board = board.dropToken(1, 3)
+
+            var thing = board.getWellSpace(0)
+            thing shouldBe 3
+
+            thing = board.getWellSpace(1)
+            thing shouldBe 1
+
+            thing = board.getWellSpace(2)
+            thing shouldBe 2
+        }
     })

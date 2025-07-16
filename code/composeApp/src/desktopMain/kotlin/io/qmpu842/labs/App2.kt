@@ -12,10 +12,12 @@ import androidx.compose.ui.layout.ContentScale
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import io.qmpu842.labs.logic.profiles.RandomProfile
-import onlydesktop.composeapp.generated.resources.*
+import onlydesktop.composeapp.generated.resources.Res
+import onlydesktop.composeapp.generated.resources.empty_cell
+import onlydesktop.composeapp.generated.resources.red_cell
+import onlydesktop.composeapp.generated.resources.yellow_cell
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import kotlin.math.abs
 
 @Composable
 fun App2() {
@@ -90,7 +92,7 @@ fun DrawTheBoard(
             ) {
                 repeat(board.board[rowNum].size) { columnNum ->
                     val move = board.board[rowNum][columnNum]
-                    ChoosePic(move, highest = board.getLastMove())
+                    ChoosePic(move)
                 }
             }
         }
@@ -101,25 +103,14 @@ fun DrawTheBoard(
 fun ChoosePic(
     move: Int,
     modifier: Modifier = Modifier,
-    highest: Int = 0,
 ) {
     var contentDescription: String
     val resource: DrawableResource
     if (move > 0) {
-        resource =
-            if (abs(move) == highest) {
-                Res.drawable.yellow_cell_latest
-            } else {
-                Res.drawable.yellow_cell
-            }
+        resource = Res.drawable.yellow_cell
         contentDescription = "Yellow Cell"
     } else if (move < 0) {
-        resource =
-            if (abs(move) == highest) {
-                Res.drawable.red_cell_latest
-            } else {
-                Res.drawable.red_cell
-            }
+        resource = Res.drawable.red_cell
         contentDescription = "Red Cell"
     } else {
         resource = Res.drawable.empty_cell
