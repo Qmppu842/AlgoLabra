@@ -1,5 +1,7 @@
 package io.qmpu842.labs.logic
 
+import io.qmpu842.labs.helpers.get
+import io.qmpu842.labs.helpers.next
 import java.awt.Point
 import kotlin.math.abs
 import kotlin.math.min
@@ -53,7 +55,6 @@ data class Board(
         }
         if (lastZero != -1) {
             board[column][lastZero] = token
-//            history.add(column)
         }
         return this.copy(
             board,
@@ -74,8 +75,6 @@ data class Board(
                 toRemove = index
             }
         }
-//        history.removeLast()
-//        val removed = board[lastWell][toRemove]
         board[lastWell][toRemove] = 0
         return this.copy(
             board,
@@ -121,10 +120,19 @@ data class Board(
         return false
     }
 
+    /**
+     * This is the actual win checker that follows
+     * @param way until there is no reason or conclusion has been reached.
+     *
+     * @param currentPoint is the starting point for the investigation
+     * @param way is the direction to go.
+     * @param counter is how many steps we have followed this path or how many point we have researched.
+     * @param maxCounter is how many consecutive steps are needed for win.
+     */
     fun checker(
         currentPoint: Point,
         way: Way = Way.Up,
-        counter: Int = 0,
+        counter: Int = 1,
         value: Int = 0,
         maxCounter: Int = 4,
     ): Boolean {
@@ -137,8 +145,9 @@ data class Board(
         if (next == null && counter < maxCounter) return false
 
         if (counter < maxCounter) {
+            check(next != null) { "Next should not be null at this point of checker" }
             return checker(
-                currentPoint = next!!,
+                currentPoint = next,
                 way = way,
                 counter = counter + 1,
                 value = valueSum,
@@ -147,46 +156,4 @@ data class Board(
         }
         return true
     }
-}
-
-private fun Array<IntArray>.get(current: Point): Int? {
-    val x = current.x
-    if (x !in 0..<this.size) return null
-
-    val y = current.y
-    if (y !in 0..<this[x].size) return null
-
-    return this[current.x][current.y]
-}
-
-private fun Array<IntArray>.next(
-    current: Point,
-    way: Way,
-): Point? {
-    val x = current.x + way.x
-    if (x !in 0..<this.size) return null
-
-    val y = current.y + way.y
-    if (y !in 0..<this[x].size) return null
-    return Point(x, y)
-}
-
-/**
- * Right +x
- * Left  -x
- * Up    -y
- * Down  +y
- */
-enum class Way(
-    val x: Int,
-    val y: Int,
-) {
-    Up(0, -1),
-    UpRight(1, -1),
-    Right(1, 0),
-    RightDown(1, 1),
-    Down(0, 1),
-    DownLeft(-1, 1),
-    Left(-1, 0),
-    LeftUp(-1, -1),
 }
