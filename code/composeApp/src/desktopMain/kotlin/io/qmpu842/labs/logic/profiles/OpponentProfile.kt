@@ -7,5 +7,5 @@ interface OpponentProfile {
 
     val id: Int
 
-    fun nextMove(board: Board): Int
+    fun nextMove(board: Board, forSide: Int): Int
 }

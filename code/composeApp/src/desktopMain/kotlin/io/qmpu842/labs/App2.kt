@@ -10,8 +10,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import io.qmpu842.labs.logic.Board
+import io.qmpu842.labs.logic.HeuristicThing
 import io.qmpu842.labs.logic.profiles.OpponentProfile
-import io.qmpu842.labs.logic.profiles.RandomProfile
+import io.qmpu842.labs.logic.profiles.SimpleHeuristicGuyProfile
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
 import onlydesktop.composeapp.generated.resources.red_cell
@@ -28,22 +29,22 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-    val playerA: OpponentProfile = RandomProfile()
-    val playerB: OpponentProfile = RandomProfile()
+    val playerA: OpponentProfile = SimpleHeuristicGuyProfile()
+    val playerB: OpponentProfile = SimpleHeuristicGuyProfile()
     var playerOnTurn = playerA
 
-    val doThing = remember { mutableIntStateOf(-1) }
+    val forSide = remember { mutableIntStateOf(-1) }
     var isThereWinner by remember { mutableIntStateOf(0) }
     var boardState by remember { mutableStateOf(Board()) }
 
     val dropTokenAction: (Int) -> Unit = { column ->
         if (isThereWinner == 0) {
-            boardState = boardState.dropToken(column, boardState.history.size * doThing.value)
+            boardState = boardState.dropToken(column, boardState.history.size * forSide.value)
             val voittaja = boardState.isLastPlayWinning(4)
             if (voittaja) {
-                isThereWinner = doThing.value
+                isThereWinner = forSide.value
             }
-            doThing.value *= -1
+            forSide.value *= -1
             playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
         }
     }
@@ -55,7 +56,7 @@ fun TheGame(modifier: Modifier = Modifier) {
     val clearBoardAction: () -> Unit = {
         boardState = boardState.clear()
         playerOnTurn = playerA
-        doThing.value = -1
+        forSide.value = -1
         isThereWinner = 0
 
         // This is work around to refresh the screen cuz compose magic...
@@ -65,12 +66,21 @@ fun TheGame(modifier: Modifier = Modifier) {
         boardState = boardState.undoLastMove()
     }
 
+    val heuristicWells = HeuristicThing.allTheWells(boardState, forSide = forSide.value, maxDepth = 5)
+
     Column(modifier = modifier) {
         DropButtons(
             dropTokenAction = dropTokenAction,
             boardWidth = boardState.getWells(),
         )
         DrawTheBoard(board = boardState)
+        Row {
+            for (well in heuristicWells) {
+                Button(onClick = {}) {
+                    Text("H:$well")
+                }
+            }
+        }
 
         Row {
             Button(onClick = undoAction) {
@@ -79,7 +89,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             Button(onClick = clearBoardAction) {
                 Text("Restart")
             }
-            Button(onClick = { dropTokenAction(playerOnTurn.nextMove(board = boardState)) }) {
+            Button(onClick = { dropTokenAction(playerOnTurn.nextMove(board = boardState, forSide = forSide.value)) }) {
                 Text("Play next move")
             }
             Button(onClick = {}) {

@@ -96,6 +96,7 @@ data class Board(
 
     /**
      *  @return the zeroes still in the well
+     *  That -1 is equal to next free spaces index
      */
     fun getWellSpace(column: Int): Int = board[column].count({ it == 0 })
 

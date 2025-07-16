@@ -6,7 +6,7 @@ import io.qmpu842.labs.logic.Board
 class RandomProfile(override val id: Int = MyRandom.random.nextInt()) : OpponentProfile {
     val rand = MyRandom.random
 
-    override fun nextMove(board: Board): Int {
+    override fun nextMove(board: Board, forSide: Int): Int {
        return board.getLegalMoves().random(rand)
     }
 }

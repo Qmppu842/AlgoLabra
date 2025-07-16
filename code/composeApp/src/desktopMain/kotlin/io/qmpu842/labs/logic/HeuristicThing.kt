@@ -6,98 +6,108 @@ import java.awt.Point
 import kotlin.math.abs
 
 object HeuristicThing {
+    fun allTheWells(
+        board: Board,
+        neededForWin: Int = 4,
+        forSide: Int = -1,
+        maxDepth: Int = 2,
+    ): MutableList<Int> {
+        val results = mutableListOf<Int>()
+        val targets = List(board.board.size) { it }
+        for (target in targets) {
+            results.add(
+                singleWellHeuristic(
+                    column = target,
+                    board = board,
+                    neededForWin = neededForWin,
+                    forSide = forSide,
+                    maxDepth = maxDepth,
+                ),
+            )
+        }
+        return results
+    }
+
     fun singleWellHeuristic(
         column: Int,
         board: Board,
         neededForWin: Int = 4,
+        forSide: Int = -1,
+        maxDepth: Int = 2,
     ): Int {
-        println("asdas")
+        val target = board.getWellSpace(column) - 1
 
-        return 0
+        return checkAround(
+            startingPoint = Point(column, target),
+            board = board,
+            forSide = forSide,
+            depth = 0,
+            maxDepth = maxDepth,
+        )
     }
 
-    fun checkAround(
+    private fun checkAround(
         startingPoint: Point,
         board: Board,
-        forSide: Int = -1
+        forSide: Int = -1,
+        depth: Int = 0,
+        maxDepth: Int = 0,
     ): Int {
         var result = 0
-        val depth = 0
-        val maxDepth = 0
         val toCheck = mutableListOf<Point>()
-        toCheck.add(startingPoint)
-//        val thing =
-//            board.board.get(startingPoint) ?: error("Targeting null cell @ checkAround?")
-
-//        val signed = thing / abs(thing)
 
         val ways = Way.entries
-        while (toCheck.isNotEmpty()) {
-            val currentPoint: Point = toCheck.removeFirst()
-//            val currPointValue = board.board.get(currentPoint)
-            for (way in ways) {
-                val next = board.board.next(currentPoint, way)
-                if (next == null) {
-                    result -= 10
-                    continue
-                }
-                val value = board.board.get(next)
-                check(value != null){"It would be 'eadache if this ever shows up."}
+        for (way in ways) {
+            val next = board.board.next(startingPoint, way)
+            if (next == null) {
+                result -= 150
+                continue
+            }
+            result -= depth * 10
+
+            val value = board.board.get(next)
+            if (value == null && way == Way.Up) result -= 1000
+            check(value != null) { "It would be 'eadache if this ever shows up." }
+
+            var shouldThink: Boolean
+            if (value == 0) {
+                result + 50
+                shouldThink = true
+            } else {
                 val valueSide = value / abs(value)
-                var shouldThink = false
-                if (value == 0) {
-                    result + 5
+                if (forSide == valueSide) {
+                    result += 101 * (depth+1)
                     shouldThink = true
-                }else if  (forSide == valueSide){
-                    result += 10
-                    shouldThink = true
-                }else{
-                    result -= 10
-                }
-
-                if (way == Way.Up){
+                } else {
+                    result -= 75
                     shouldThink = false
                 }
-                if (depth >= maxDepth){
-                    shouldThink = false
-                }
+            }
 
-                if (shouldThink){
-                    toCheck.add(next)
-                }
+            if (way == Way.Up) {
+                shouldThink = false
+            }
+            if (depth >= maxDepth) {
+                shouldThink = false
+            }
+
+            if (shouldThink) {
+                toCheck.add(next)
             }
         }
 
-        return result
-    }
-
-    private fun checker(
-        currentPoint: Point,
-        way: Way = Way.Up,
-        counter: Int = 1,
-        value: Int = 0,
-        maxCounter: Int = 4,
-        board: Board,
-    ): Boolean {
-        val currentPointValue = board.board.get(currentPoint) ?: return false
-
-        val valueSum = value + currentPointValue
-        if (abs(value) >= abs(valueSum)) return false
-
-        val next = board.board.next(currentPoint, way)
-        if (next == null && counter < maxCounter) return false
-
-        if (counter < maxCounter) {
-            check(next != null) { "Next should not be null at this point of checker" }
-            return checker(
-                currentPoint = next,
-                way = way,
-                counter = counter + 1,
-                value = valueSum,
-                maxCounter = maxCounter,
-                board = board,
-            )
+        var additionalPoints = 0
+        for (checkIt in toCheck) {
+            additionalPoints +=
+                checkAround(
+                    startingPoint = checkIt,
+                    board = board,
+                    forSide = forSide,
+                    depth = depth + 1,
+                    maxDepth = maxDepth,
+                )
         }
-        return true
+
+        return result + additionalPoints
     }
 }
