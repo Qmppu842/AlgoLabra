@@ -26,6 +26,20 @@ object SecondHeuristicThing {
     }
 
     /**
+     * This values places with 3 tokens separated by 1 air
+     *
+     * @return array of ints such that:
+     * index is the well to use,
+     * sign of number is what side would benefit from it
+     * And magnitude how many or how dangerous the position is
+     */
+    fun getMovesWith3TokensWithAirGap(board: Board, forSide: Int): IntArray {
+        TODO("Yet to be implemented")
+    }
+
+
+
+    /**
      * This values places with already 2 tokens and that would have 2 airspaces around after this one
      *
      * @return array of ints such that:
