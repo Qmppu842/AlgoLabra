@@ -6,10 +6,10 @@ import io.kotest.matchers.shouldBe
 
 class SecondHeuristicThingTest : FunSpec({
 
-    beforeTest {
-    }
+//    beforeTest {
+//    }
 
-    test("getMovesWith3StraightAnd2AirSpace") { }
+//    test("getMovesWith3StraightAnd2AirSpace") { }
 
     test("getMovesWith3Straight flat") {
         var board =
@@ -26,14 +26,14 @@ class SecondHeuristicThingTest : FunSpec({
                     ),
             )
         val heur = SecondHeuristicThing.getMovesWith3Straight(board, 1)
-        heur.toList() shouldContainAll listOf(0, Int.MAX_VALUE)
-        heur[1] shouldBe Int.MAX_VALUE
-        heur[5] shouldBe Int.MAX_VALUE
+        heur.toList() shouldContainAll listOf(0, 1)
+        heur[1] shouldBe 1
+        heur[5] shouldBe 1
 
         val heur2 = SecondHeuristicThing.getMovesWith3Straight(board, -1)
-        heur2.toList() shouldContainAll listOf(0, Int.MIN_VALUE)
-        heur2[1] shouldBe Int.MIN_VALUE
-        heur2[5] shouldBe Int.MIN_VALUE
+        heur2.toList() shouldContainAll listOf(0, -1)
+        heur2[1] shouldBe -1
+        heur2[5] shouldBe -1
     }
 
     test("getMovesWith3Straight up") {
@@ -51,14 +51,14 @@ class SecondHeuristicThingTest : FunSpec({
                     ),
             )
         val heur = SecondHeuristicThing.getMovesWith3Straight(board, 1)
-        heur.toList() shouldContainAll listOf(0, Int.MAX_VALUE, Int.MIN_VALUE)
-        heur[3] shouldBe Int.MAX_VALUE
-        heur[4] shouldBe Int.MIN_VALUE
+        heur.toList() shouldContainAll listOf(0, 1, -1)
+        heur[3] shouldBe 1
+        heur[4] shouldBe -1
 
         val heur2 = SecondHeuristicThing.getMovesWith3Straight(board, -1)
-        heur2.toList() shouldContainAll listOf(0, Int.MAX_VALUE, Int.MIN_VALUE)
-        heur2[3] shouldBe Int.MIN_VALUE
-        heur2[4] shouldBe Int.MAX_VALUE
+        heur2.toList() shouldContainAll listOf(0, 1, -1)
+        heur2[3] shouldBe -1
+        heur2[4] shouldBe 1
     }
 
     test("getMovesWith3Straight diagonal down") {

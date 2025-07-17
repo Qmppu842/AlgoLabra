@@ -26,6 +26,7 @@ data class Board(
 
     /**
      * @return list of all the wells with space
+     * Each entry is index of well with space
      */
     fun getLegalMoves(): MutableList<Int> {
         val result = mutableListOf<Int>()
@@ -82,6 +83,9 @@ data class Board(
         )
     }
 
+    /**
+     * @return width of the board
+     */
     fun getWells() = board.size
 
     fun clear(): Board {
