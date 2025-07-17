@@ -67,7 +67,11 @@ fun TheGame(modifier: Modifier = Modifier) {
     }
 
 //    val heuristicWells = HeuristicThing.allTheWells(boardState, forSide = forSide.value, maxDepth = 5)
-    val heuristicWells = SecondHeuristicThing.getMovesWith3Straight(
+//    val heuristicWells = SecondHeuristicThing.getMovesWith3Straight(
+//        board = boardState,
+//        forSide = forSide.value
+//    )
+    val heuristicWells = SecondHeuristicThing.getMovesWith3TokensWithAirGap(
         board = boardState,
         forSide = forSide.value
     )

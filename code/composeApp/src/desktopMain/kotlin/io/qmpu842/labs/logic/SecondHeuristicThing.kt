@@ -125,6 +125,52 @@ object SecondHeuristicThing {
         return result
     }
 
+    /**
+     * This values places with 3 tokens
+     *
+     * @return array of ints such that:
+     * index is the well to use,
+     * sign of number is what side would benefit from it
+     * And magnitude how many or how dangerous the position is
+     */
+    fun checkcheckchek(
+        board: Board,
+        forSide: Int,
+        maxLength: Int,
+        skips: Int,
+    ): IntArray {
+        val result = IntArray(board.board.size) { 0 }
+
+        val legalSpaces = board.getLegalMoves()
+
+        val startingPoints = mutableListOf<Point>()
+        for (aa in legalSpaces) {
+            val thing = board.getWellSpace(aa)
+            startingPoints.add(Point(aa, thing - 1))
+        }
+
+        for (asd in startingPoints) {
+            var counter = 0
+            for (way in Way.entries) {
+                val hold =
+                    checkLine(
+                        board = board,
+                        current = asd,
+                        sign = forSide,
+                        way = way,
+                        length = 0,
+                        skips = skips,
+                    )
+                if (hold >= maxLength) {
+                    counter++
+                }
+            }
+            result[asd.x] = counter
+        }
+
+        return result
+    }
+
     fun checkLine(
         board: Board,
         current: Point,
@@ -178,8 +224,63 @@ object SecondHeuristicThing {
      * sign of number is what side would benefit from it
      * And magnitude how many or how dangerous the position is
      */
+    fun getMovesWith3TokensWithAirGap1(board: Board, forSide: Int): IntArray {
+      return checkcheckchek(
+           board = board,
+           forSide = forSide,
+           maxLength = 4,
+           skips = 2
+       )
+    }
+
+    /**
+     * This values places with 3 tokens separated by 1 air
+     *
+     * @return array of ints such that:
+     * index is the well to use,
+     * sign of number is what side would benefit from it
+     * And magnitude how many or how dangerous the position is
+     */
     fun getMovesWith3TokensWithAirGap(board: Board, forSide: Int): IntArray {
-        TODO("Yet to be implemented")
+        val result = IntArray(board.board.size) { 0 }
+
+        val legalSpaces = board.getLegalMoves()
+
+        val startingPoints = mutableListOf<Point>()
+        for (aa in legalSpaces) {
+            val thing = board.getWellSpace(aa)
+            startingPoints.add(Point(aa, thing - 1))
+        }
+
+        for (asd in startingPoints) {
+            var counter = 0
+            for (way in Way.entries) {
+                val hold =
+                    checkLine(
+                        board = board,
+                        current = asd,
+                        sign = forSide,
+                        way = way,
+                        length = 0,
+                        skips = 1,
+                    )
+                val hold2 =
+                    checkLine(
+                        board = board,
+                        current = asd,
+                        sign = forSide,
+                        way = way.getOpposite(),
+                        length = 0,
+                        skips = 1,
+                    )
+                if (hold+ hold2 >= 3){
+                    counter++
+                }
+            }
+            result[asd.x] = counter
+        }
+
+        return result
     }
 
 
@@ -205,7 +306,38 @@ object SecondHeuristicThing {
      * And magnitude how many or how dangerous the position is
      */
     fun getMovesWith2TokensAndAirSpace(board: Board, forSide: Int): IntArray {
-        TODO("Yet to be implemented")
+        val result = IntArray(board.board.size) { 0 }
+
+        val legalSpaces = board.getLegalMoves()
+
+        val startingPoints = mutableListOf<Point>()
+        for (aa in legalSpaces) {
+            val thing = board.getWellSpace(aa)
+            startingPoints.add(Point(aa, thing - 1))
+        }
+
+        for (asd in startingPoints) {
+            var counter = 0
+            for (way in Way.entries) {
+                val hold =
+                    checkLine(
+                        board = board,
+                        current = asd,
+                        sign = forSide,
+                        way = way,
+                        length = 0,
+                        skips = 1,
+                    )
+                println("hold: $hold")
+//                counter++
+                if (hold >= 4){
+                    counter++
+                }
+            }
+            result[asd.x] = counter
+        }
+
+        return result
     }
 
     /**

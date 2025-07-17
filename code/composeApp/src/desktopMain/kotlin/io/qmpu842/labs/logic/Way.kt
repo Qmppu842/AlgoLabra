@@ -18,4 +18,7 @@ enum class Way(
     DownLeft(-1, 1),
     Left(-1, 0),
     LeftUp(-1, -1),
+    ;
+
+    fun getOpposite(): Way = entries[(this.ordinal + 4) % entries.size]
 }
