@@ -10,7 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import io.qmpu842.labs.logic.Board
-import io.qmpu842.labs.logic.HeuristicThing
+import io.qmpu842.labs.logic.SecondHeuristicThing
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import io.qmpu842.labs.logic.profiles.SimpleHeuristicGuyProfile
 import onlydesktop.composeapp.generated.resources.Res
@@ -66,7 +66,11 @@ fun TheGame(modifier: Modifier = Modifier) {
         isThereWinner = 0
     }
 
-    val heuristicWells = HeuristicThing.allTheWells(boardState, forSide = forSide.value, maxDepth = 5)
+//    val heuristicWells = HeuristicThing.allTheWells(boardState, forSide = forSide.value, maxDepth = 5)
+    val heuristicWells = SecondHeuristicThing.getMovesWith3Straight(
+        board = boardState,
+        forSide = forSide.value
+    )
 
     Column(modifier = modifier) {
         DropButtons(

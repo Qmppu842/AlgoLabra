@@ -27,7 +27,10 @@ object SecondHeuristicThing {
      * sign of number is what side would benefit from it
      * And magnitude how many or how dangerous the position is
      */
-    fun getMovesWith3Straight(board: Board, forSide: Int): IntArray {
+    fun getMovesWith3Straight1(
+        board: Board,
+        forSide: Int,
+    ): IntArray {
         val result = IntArray(board.board.size) { 0 }
 
         val legalSpaces = board.getLegalMoves()
@@ -76,7 +79,95 @@ object SecondHeuristicThing {
         return result
     }
 
-    fun checkLine() {
+    /**
+     * This values places with 3 tokens
+     *
+     * @return array of ints such that:
+     * index is the well to use,
+     * sign of number is what side would benefit from it
+     * And magnitude how many or how dangerous the position is
+     */
+    fun getMovesWith3Straight(
+        board: Board,
+        forSide: Int,
+    ): IntArray {
+        val result = IntArray(board.board.size) { 0 }
+
+        val legalSpaces = board.getLegalMoves()
+
+        val startingPoints = mutableListOf<Point>()
+        for (aa in legalSpaces) {
+            val thing = board.getWellSpace(aa)
+            startingPoints.add(Point(aa, thing - 1))
+        }
+
+        for (asd in startingPoints) {
+            var counter = 0
+            for (way in Way.entries) {
+                val hold =
+                    checkLine(
+                        board = board,
+                        current = asd,
+                        sign = forSide,
+                        way = way,
+                        length = 0,
+                        skips = 1,
+                    )
+                println("hold: $hold")
+//                counter++
+                if (hold >= 4){
+                    counter++
+                }
+            }
+            result[asd.x] = counter
+        }
+
+        return result
+    }
+
+    fun checkLine(
+        board: Board,
+        current: Point,
+        sign: Int,
+        way: Way,
+        length: Int,
+        skips: Int,
+    ): Int {
+        val currentValue = board.board.get(current)
+        println("CurrentValue: $currentValue")
+//        if (currentValue == null || (currentValue != sign || skips <= 0)) {
+//            println("skipping")
+//            return length
+//        }
+
+        if (currentValue == null) {
+            println("Null one")
+            return length
+        }
+        if (currentValue.sign != sign && skips <= 0) {
+            println("not the sign, sign: $sign, thing: $currentValue")
+            return length
+        }
+
+//        if (currentValue == null || (currentValue != sign || skips <= 0)) {
+//            println("skipping")
+//            return length
+//        }
+
+
+
+        val next = board.board.next(current, way)
+        println("next: $next")
+        if (next == null) return length
+        println("deeper")
+        return checkLine(
+            board = board,
+            current = next,
+            sign = sign,
+            way = way,
+            length = length + 1,
+            skips = skips - 1
+        )
     }
 
     /**
