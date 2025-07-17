@@ -5,6 +5,7 @@ import io.qmpu842.labs.helpers.next
 import java.awt.Point
 import kotlin.math.abs
 import kotlin.math.min
+import kotlin.math.sign
 
 data class Board(
     val board: Array<IntArray>,
@@ -104,8 +105,7 @@ data class Board(
      */
     fun getWellSpace(column: Int): Int = board[column].count({ it == 0 })
 
-
-    fun isLastPlayWinning(neededForWin : Int = 4): Boolean {
+    fun isLastPlayWinning1(neededForWin: Int = 4): Boolean {
         val lastOne = history.last()
         val wellSpace = min(getWellSpace(lastOne), board[lastOne].size-1)
         val startingPoint = Point(lastOne, wellSpace)
@@ -134,6 +134,7 @@ data class Board(
      * @param counter is how many steps we have followed this path or how many point we have researched.
      * @param maxCounter is how many consecutive steps are needed for win.
      */
+    @Deprecated("I think the checkLine is better, but i shall look and think about it")
     fun checker(
         currentPoint: Point,
         way: Way = Way.Up,
@@ -160,5 +161,55 @@ data class Board(
             )
         }
         return true
+    }
+
+    fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
+        val lastOne = history.last()
+        val wellSpace = min(getWellSpace(lastOne), board[lastOne].size - 1)
+        val startingPoint = Point(lastOne, wellSpace)
+        val spSign = (board.get(startingPoint) ?: return false).sign
+        for (way in Way.entries) {
+            var result =
+                checkLine(
+                    current = startingPoint,
+                    sign = spSign,
+                    way = way,
+                )
+            val antiSp = board.next(startingPoint, way.getOpposite())
+            val result2 =
+                if (antiSp != null) {
+                    checkLine(
+                        current = antiSp,
+                        sign = spSign,
+                        way = way.getOpposite(),
+                    )
+                } else {
+                    0
+                }
+            if (result + result2 >= neededForWin) return true
+        }
+        return false
+    }
+
+    fun checkLine(
+        current: Point,
+        sign: Int,
+        way: Way,
+        length: Int = 0,
+    ): Int {
+        val currentValue = board.get(current)
+        if (currentValue == null) return length
+
+        if (currentValue.sign != sign) return length
+
+        val next = board.next(current, way)
+        if (next == null) return length
+
+        return checkLine(
+            current = next,
+            sign = sign,
+            way = way,
+            length = length + 1,
+        )
     }
 }

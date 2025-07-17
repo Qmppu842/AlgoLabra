@@ -104,10 +104,11 @@ object SecondHeuristicThing {
         for (asd in startingPoints) {
             var counter = 0
             for (way in Way.entries) {
+                val next = board.board.next(asd, way) ?: asd
                 val hold =
                     checkLine(
                         board = board,
-                        current = asd,
+                        current = next,
                         sign = forSide,
                         way = way,
                         length = 0,
@@ -255,23 +256,25 @@ object SecondHeuristicThing {
         for (asd in startingPoints) {
             var counter = 0
             for (way in Way.entries) {
+                val next = board.board.next(asd, way) ?: asd
                 val hold =
                     checkLine(
                         board = board,
-                        current = asd,
+                        current = next,
                         sign = forSide,
                         way = way,
                         length = 0,
                         skips = 1,
                     )
+                val antiNext = board.board.next(asd, way.getOpposite()) ?: asd
                 val hold2 =
                     checkLine(
                         board = board,
-                        current = asd,
+                        current = antiNext,
                         sign = forSide,
                         way = way.getOpposite(),
                         length = 0,
-                        skips = 1,
+                        skips = 0,
                     )
                 if (hold+ hold2 >= 3){
                     counter++
