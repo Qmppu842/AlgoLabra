@@ -169,7 +169,7 @@ object SecondHeuristicThing {
                         way = way,
                         length = 0,
                     )
-                if (way == Way.Down) hold += 1
+//                if (way == Way.Down) hold += 1
                 if (hold >= 3){
                     counter++
                 }
