@@ -38,4 +38,19 @@ class RegressionBoardTest :
 
             board.isLastPlayWinning(4) shouldBe false
         }
+
+        test("Check no win on these moves #3") {
+            var board = Board()
+
+            board = board.dropToken(3, 1)
+            board = board.dropToken(2, -2)
+            board = board.dropToken(3, 3)
+            board = board.dropToken(2, -4)
+
+            board = board.dropToken(3, 5)
+            board.isLastPlayWinning(4) shouldBe false
+
+            board = board.dropToken(2, -6)
+            board.isLastPlayWinning(4) shouldBe false
+        }
     })

@@ -127,7 +127,7 @@ object SecondHeuristicThing {
             var counter = 0
             for (way in Way.entries) {
                 val next = board.board.next(asd, way) ?: asd
-                val hold =
+                var hold =
                     checkLine2(
                         board = board,
                         current = next,
@@ -135,6 +135,7 @@ object SecondHeuristicThing {
                         way = way,
                         length = 0,
                     )
+                if (way == Way.Down) hold += 1
                 if (hold >= 3){
                     counter++
                 }

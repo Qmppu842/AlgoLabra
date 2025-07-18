@@ -127,7 +127,8 @@ data class Board(
                     )
             }
 
-            if (way.y == 1) result2 += 1
+//            if (way.y == 1) result2 += 1
+            if (way == Way.Down) result2 += 1
             if (result + result2 >= neededForWin) return true
         }
         return false

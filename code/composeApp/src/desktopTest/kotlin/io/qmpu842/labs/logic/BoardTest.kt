@@ -234,7 +234,6 @@ class BoardTest :
                     boardHeight = height,
                 )
             repeat(4) {
-
                 board = board.dropToken(1, it + 1)
             }
 
