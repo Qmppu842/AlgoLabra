@@ -134,6 +134,7 @@ object SecondHeuristicThing {
      * sign of number is what side would benefit from it
      * And magnitude how many or how dangerous the position is
      */
+    @Deprecated("nah, not feeling this one")
     fun checkcheckchek(
         board: Board,
         forSide: Int,
@@ -172,6 +173,8 @@ object SecondHeuristicThing {
         return result
     }
 
+
+    @Deprecated("nah, not feeling this one, skips are never needed")
     fun checkLine(
         board: Board,
         current: Point,
@@ -188,11 +191,11 @@ object SecondHeuristicThing {
 //        }
 
         if (currentValue == null) {
-            println("Null one")
+//            println("Null one")
             return length
         }
         if (currentValue.sign != sign && skips <= 0) {
-            println("not the sign, sign: $sign, thing: $currentValue")
+//            println("not the sign, sign: $sign, thing: $currentValue")
             return length
         }
 
@@ -204,9 +207,9 @@ object SecondHeuristicThing {
 
 
         val next = board.board.next(current, way)
-        println("next: $next")
+//        println("next: $next")
         if (next == null) return length
-        println("deeper")
+//        println("deeper")
         return checkLine(
             board = board,
             current = next,
@@ -351,8 +354,45 @@ object SecondHeuristicThing {
      * sign of number is what side would benefit from it
      * And magnitude how many or how dangerous the position is
      */
-    fun getOpenness(board: Board, forSide: Int,): IntArray {
-        TODO("Yet to be implemented")
+    fun getOpenness(board: Board): IntArray {
+        val result = IntArray(board.board.size) { 0 }
+
+        val legalSpaces = board.getLegalMoves()
+
+        val startingPoints = mutableListOf<Point>()
+        for (aa in legalSpaces) {
+            val thing = board.getWellSpace(aa)
+            startingPoints.add(Point(aa, thing - 1))
+        }
+
+        for (asd in startingPoints) {
+            var counter = 0
+            for (way in Way.entries) {
+                val next = board.board.next(asd, way) ?: asd
+                val hold =
+                    checkLine2(
+                        board = board,
+                        current = next,
+                        sign = 0,
+                        way = way,
+                        length = 0,
+                    )
+                val antiNext = board.board.next(asd, way.getOpposite()) ?: asd
+                val hold2 =
+                    checkLine2(
+                        board = board,
+                        current = antiNext,
+                        sign = 0,
+                        way = way.getOpposite(),
+                        length = 0,
+                    )
+                if (hold == hold2) counter += (hold + hold2)
+                counter += (hold + hold2)
+            }
+            result[asd.x] = counter
+        }
+
+        return result
     }
 
 
@@ -377,4 +417,29 @@ object SecondHeuristicThing {
     ): Pair<Int, Int> {
         TODO("Yet to be implemented")
     }
+
+    fun checkLine2(
+        board: Board,
+        current: Point,
+        sign: Int,
+        way: Way,
+        length: Int = 0,
+    ): Int {
+        val currentValue = board.board.get(current)
+        if (currentValue == null) return length
+
+        if (currentValue.sign != sign) return length
+
+        val next = board.board.next(current, way)
+        if (next == null) return length
+
+        return checkLine2(
+            board = board,
+            current = next,
+            sign = sign,
+            way = way,
+            length = length + 1,
+        )
+    }
+
 }

@@ -71,9 +71,13 @@ fun TheGame(modifier: Modifier = Modifier) {
 //        board = boardState,
 //        forSide = forSide.value
 //    )
-    val heuristicWells = SecondHeuristicThing.getMovesWith3TokensWithAirGap(
-        board = boardState,
-        forSide = forSide.value
+//    val heuristicWells = SecondHeuristicThing.getMovesWith3TokensWithAirGap(
+//        board = boardState,
+//        forSide = forSide.value
+//    )
+    val heuristicWells =
+        SecondHeuristicThing.getOpenness(
+            board = boardState
     )
 
     Column(modifier = modifier) {
