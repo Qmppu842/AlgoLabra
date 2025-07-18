@@ -386,7 +386,11 @@ object SecondHeuristicThing {
                         way = way.getOpposite(),
                         length = 0,
                     )
+                // lol this is some fine-tuning, i am half-half with this
                 if (hold == hold2) counter += (hold + hold2)
+//                if (min(hold, hold2) * 1.2 < max(hold, hold2)) counter -= ((hold + hold2) / 1.25).toInt()
+//                if (way in listOf(Way.Up, Way.UpRight, Way.LeftUp)) counter -= ((hold + hold2) / 3).toInt()
+
                 counter += (hold + hold2)
             }
             result[asd.x] = counter
@@ -394,7 +398,6 @@ object SecondHeuristicThing {
 
         return result
     }
-
 
     /**
      * This is the actual checker
@@ -441,5 +444,4 @@ object SecondHeuristicThing {
             length = length + 1,
         )
     }
-
 }
