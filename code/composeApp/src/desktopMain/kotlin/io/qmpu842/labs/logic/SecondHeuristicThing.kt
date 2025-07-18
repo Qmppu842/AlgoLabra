@@ -4,6 +4,8 @@ import io.qmpu842.labs.helpers.get
 import io.qmpu842.labs.helpers.next
 import java.awt.Point
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sign
 
 object SecondHeuristicThing {
@@ -120,14 +122,14 @@ object SecondHeuristicThing {
         val openness = getOpenness(board)
 
         res.forEachIndexed { index, t ->
-            val positive = threeStraightPos[index]
-            val negative = threeStraightNeg[index]
+            val positive = max(threeStraightPos[index], gappedPos[index])
+            val negative = min(threeStraightNeg[index], gappedNeg[index])
             if (positive.sign == 1) {
                 res[index] = Int.MAX_VALUE
             } else if (negative.sign == 1) {
                 res[index] = Int.MIN_VALUE
             } else {
-                0
+                res[index] = openness[index]
             }
         }
         return res

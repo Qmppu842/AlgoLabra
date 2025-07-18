@@ -91,17 +91,17 @@ fun TheGame(modifier: Modifier = Modifier) {
 //            forSide = forSide.value,
 //        )
 
-//    val heuristicWells =
-//        SecondHeuristicThing.combinedWells(
-//            board = boardState,
-//            forSide = forSide.value,
-//        )
-
     val heuristicWells =
-        SecondHeuristicThing.getMovesWithTwoTokens(
+        SecondHeuristicThing.combinedWells(
             board = boardState,
             forSide = forSide.value,
         )
+
+//    val heuristicWells =
+//        SecondHeuristicThing.getMovesWithTwoTokens(
+//            board = boardState,
+//            forSide = forSide.value,
+//        )
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
             dropTokenAction = dropTokenAction,
