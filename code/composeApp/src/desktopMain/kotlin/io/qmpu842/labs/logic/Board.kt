@@ -3,7 +3,6 @@ package io.qmpu842.labs.logic
 import io.qmpu842.labs.helpers.get
 import io.qmpu842.labs.helpers.next
 import java.awt.Point
-import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sign
 
@@ -105,87 +104,30 @@ data class Board(
      */
     fun getWellSpace(column: Int): Int = board[column].count({ it == 0 })
 
-    fun isLastPlayWinning1(neededForWin: Int = 4): Boolean {
-        val lastOne = history.last()
-        val wellSpace = min(getWellSpace(lastOne), board[lastOne].size-1)
-        val startingPoint = Point(lastOne, wellSpace)
-        val ways = Way.entries
-        var result: Boolean
-        for (way in ways) {
-            result =
-                checker(
-                    currentPoint = startingPoint,
-                    way = way,
-                    counter = 1,
-                    value = 0,
-                    maxCounter = neededForWin,
-                )
-            if (result) return true
-        }
-        return false
-    }
-
-    /**
-     * This is the actual win checker that follows
-     * @param way until there is no reason or conclusion has been reached.
-     *
-     * @param currentPoint is the starting point for the investigation
-     * @param way is the direction to go.
-     * @param counter is how many steps we have followed this path or how many point we have researched.
-     * @param maxCounter is how many consecutive steps are needed for win.
-     */
-    @Deprecated("I think the checkLine is better, but i shall look and think about it")
-    fun checker(
-        currentPoint: Point,
-        way: Way = Way.Up,
-        counter: Int = 1,
-        value: Int = 0,
-        maxCounter: Int = 4,
-    ): Boolean {
-        val currentPointValue = board.get(currentPoint) ?: return false
-
-        val valueSum = value + currentPointValue
-        if (abs(value) >= abs(valueSum)) return false
-
-        val next = board.next(currentPoint, way)
-        if (next == null && counter < maxCounter) return false
-
-        if (counter < maxCounter) {
-            check(next != null) { "Next should not be null at this point of checker" }
-            return checker(
-                currentPoint = next,
-                way = way,
-                counter = counter + 1,
-                value = valueSum,
-                maxCounter = maxCounter,
-            )
-        }
-        return true
-    }
-
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         val lastOne = history.last()
         val wellSpace = min(getWellSpace(lastOne), board[lastOne].size - 1)
         val startingPoint = Point(lastOne, wellSpace)
         val spSign = (board.get(startingPoint) ?: return false).sign
         for (way in Way.entries) {
-            var result =
+            val result =
                 checkLine(
                     current = startingPoint,
                     sign = spSign,
                     way = way,
                 )
             val antiSp = board.next(startingPoint, way.getOpposite())
-            val result2 =
-                if (antiSp != null) {
+            var result2 = 0
+            if (antiSp != null) {
+                result2 =
                     checkLine(
                         current = antiSp,
                         sign = spSign,
                         way = way.getOpposite(),
                     )
-                } else {
-                    0
-                }
+            }
+
+            if (way.y == 1) result2 += 1
             if (result + result2 >= neededForWin) return true
         }
         return false

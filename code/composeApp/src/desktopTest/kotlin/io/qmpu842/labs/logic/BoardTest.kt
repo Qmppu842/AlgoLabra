@@ -189,7 +189,7 @@ class BoardTest :
             thing shouldBe 2
         }
 
-        test("checker on straight line down") {
+        test("checkLine on straight line down") {
             val height = 6
             val width = 7
             var board =
@@ -200,17 +200,17 @@ class BoardTest :
             repeat(5) {
                 board = board.dropToken(1, it + 1)
             }
-           val arvo =  board.checker(
-                currentPoint = Point(1, 2),
-                way = Way.Down,
-                counter = 1,
-                value = 0,
-                maxCounter = 4
-            )
-            arvo shouldBe true
+            val thing =
+                board.checkLine(
+                    current = Point(1, 2),
+                    sign = 1,
+                    way = Way.Down,
+                    length = 1,
+                )
+            thing shouldBe 4
         }
 
-        test("isLastPlayWinning on straight line down") {
+        test("isLastPlayWinning on straight line down not winning") {
             val height = 6
             val width = 7
             var board =
@@ -219,12 +219,25 @@ class BoardTest :
                     boardHeight = height,
                 )
             repeat(3) {
-
                 board = board.dropToken(1, it+1)
                 val winning = board.isLastPlayWinning(4)
                 winning shouldBe false
             }
-            board = board.dropToken(1, 4)
+        }
+
+        test("isLastPlayWinning on straight line down with win") {
+            val height = 6
+            val width = 7
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            repeat(4) {
+
+                board = board.dropToken(1, it + 1)
+            }
+
             val winning = board.isLastPlayWinning(4)
             winning shouldBe true
         }
