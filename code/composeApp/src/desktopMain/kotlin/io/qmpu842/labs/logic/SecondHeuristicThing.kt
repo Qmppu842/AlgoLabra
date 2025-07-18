@@ -31,6 +31,7 @@ object SecondHeuristicThing {
         board: Board,
         forSide: Int,
     ): IntArray {
+        TODO("Yet to be implemented")
         val result = IntArray(board.board.size) { 0 }
 
         val legalSpaces = board.getLegalMoves()
@@ -79,6 +80,27 @@ object SecondHeuristicThing {
         return result
     }
 
+    fun both3straights(
+        board: Board,
+        forSide: Int,
+    ): IntArray{
+        val eka = getMovesWith3Straight(board,forSide)
+        val toka = getMovesWith3Straight(board,-forSide)
+        val res = eka.clone()
+        toka.forEachIndexed { index, t ->
+//            res[index] -= t
+            val thing = res[index]
+            if (thing.sign == 1){
+                res[index] = Int.MAX_VALUE
+            }else if(t.sign == 1){
+                res[index] = Int.MIN_VALUE
+            }else{
+                0
+            }
+        }
+        return res
+    }
+
     /**
      * This values places with 3 tokens
      *
@@ -106,17 +128,14 @@ object SecondHeuristicThing {
             for (way in Way.entries) {
                 val next = board.board.next(asd, way) ?: asd
                 val hold =
-                    checkLine(
+                    checkLine2(
                         board = board,
                         current = next,
                         sign = forSide,
                         way = way,
                         length = 0,
-                        skips = 1,
                     )
-                println("hold: $hold")
-//                counter++
-                if (hold >= 4){
+                if (hold >= 3){
                     counter++
                 }
             }
@@ -229,6 +248,7 @@ object SecondHeuristicThing {
      * And magnitude how many or how dangerous the position is
      */
     fun getMovesWith3TokensWithAirGap1(board: Board, forSide: Int): IntArray {
+        TODO("Yet to be implemented")
       return checkcheckchek(
            board = board,
            forSide = forSide,
@@ -261,23 +281,21 @@ object SecondHeuristicThing {
             for (way in Way.entries) {
                 val next = board.board.next(asd, way) ?: asd
                 val hold =
-                    checkLine(
+                    checkLine2(
                         board = board,
                         current = next,
                         sign = forSide,
                         way = way,
                         length = 0,
-                        skips = 1,
                     )
                 val antiNext = board.board.next(asd, way.getOpposite()) ?: asd
                 val hold2 =
-                    checkLine(
+                    checkLine2(
                         board = board,
                         current = antiNext,
                         sign = forSide,
                         way = way.getOpposite(),
                         length = 0,
-                        skips = 0,
                     )
                 if (hold+ hold2 >= 3){
                     counter++
@@ -312,6 +330,7 @@ object SecondHeuristicThing {
      * And magnitude how many or how dangerous the position is
      */
     fun getMovesWith2TokensAndAirSpace(board: Board, forSide: Int): IntArray {
+//        TODO("Yet to be implemented")
         val result = IntArray(board.board.size) { 0 }
 
         val legalSpaces = board.getLegalMoves()

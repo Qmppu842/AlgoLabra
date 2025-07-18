@@ -12,7 +12,7 @@ import androidx.compose.ui.layout.ContentScale
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.SecondHeuristicThing
 import io.qmpu842.labs.logic.profiles.OpponentProfile
-import io.qmpu842.labs.logic.profiles.SimpleHeuristicGuyProfile
+import io.qmpu842.labs.logic.profiles.SimpleOpportunisticProfile
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
 import onlydesktop.composeapp.generated.resources.red_cell
@@ -29,8 +29,8 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-    val playerA: OpponentProfile = SimpleHeuristicGuyProfile()
-    val playerB: OpponentProfile = SimpleHeuristicGuyProfile()
+    val playerA: OpponentProfile = SimpleOpportunisticProfile()
+    val playerB: OpponentProfile = SimpleOpportunisticProfile()
     var playerOnTurn = playerA
 
     val forSide = remember { mutableIntStateOf(-1) }
@@ -75,11 +75,21 @@ fun TheGame(modifier: Modifier = Modifier) {
 //        board = boardState,
 //        forSide = forSide.value
 //    )
-    val heuristicWells =
-        SecondHeuristicThing.getOpenness(
-            board = boardState
-    )
+//    val heuristicWells =
+//        SecondHeuristicThing.getOpenness(
+//            board = boardState
+//    )
 
+//    val heuristicWells = SecondHeuristicThing.getMovesWith3Straight(
+//        board = boardState,
+//        forSide = forSide.value
+//    )
+
+    val heuristicWells =
+        SecondHeuristicThing.both3straights(
+            board = boardState,
+            forSide = forSide.value,
+        )
     Column(modifier = modifier) {
         DropButtons(
             dropTokenAction = dropTokenAction,
@@ -89,7 +99,18 @@ fun TheGame(modifier: Modifier = Modifier) {
         Row {
             for (well in heuristicWells) {
                 Button(onClick = {}) {
-                    Text("H:$well")
+                    var texti = "H:$well"
+                    if (well == Int.MAX_VALUE) {
+                        texti = "H:WIN!!"
+                    } else if (well == Int.MIN_VALUE) {
+                        texti = "H:Must block"
+
+//                        println("wells: ${heuristicWells.toList()}")
+                        if (heuristicWells.count { it == Int.MIN_VALUE } >= 2) {
+                            texti = "H:☹\uFE0F"
+                        }
+                    }
+                    Text(text = texti)
                 }
             }
         }

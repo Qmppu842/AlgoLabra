@@ -204,7 +204,28 @@ class SecondHeuristicThingTest : FunSpec({
 // -------------------------------------
     test("getMovesWith2TokensAndAirSpaceAround") { }
 
-    test("getMovesWith2TokensAndAirSpace") { }
+    test("getMovesWith2TokensAndAirSpace") {
+        var board =
+            Board(
+                board =
+                    arrayOf(
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 3),
+                        intArrayOf(0, 0, 0, 0, 7, -2),
+                        intArrayOf(0, 0, 0, 0, -4, 1),
+                        intArrayOf(0, 0, 9, -8, -6, 5),
+                        intArrayOf(0, 0, 0, 0, 0, -10),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                    ),
+            )
+        val heur = SecondHeuristicThing.getMovesWith3Straight(board, 1)
+        heur.toList() shouldContainAll listOf(0, Int.MAX_VALUE)
+        heur[3] shouldBe Int.MAX_VALUE
+
+        val heur2 = SecondHeuristicThing.getMovesWith3Straight(board, -1)
+        heur2.toList() shouldContainAll listOf(0, Int.MIN_VALUE)
+        heur2[3] shouldBe Int.MIN_VALUE
+    }
 
     test("getOpenness") {
         var board =
