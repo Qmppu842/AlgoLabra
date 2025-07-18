@@ -1,14 +1,14 @@
 package io.qmpu842.labs
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.SecondHeuristicThing
 import io.qmpu842.labs.logic.profiles.OpponentProfile
@@ -85,27 +85,40 @@ fun TheGame(modifier: Modifier = Modifier) {
 //        forSide = forSide.value
 //    )
 
+//    val heuristicWells =
+//        SecondHeuristicThing.both3straights(
+//            board = boardState,
+//            forSide = forSide.value,
+//        )
+
+//    val heuristicWells =
+//        SecondHeuristicThing.combinedWells(
+//            board = boardState,
+//            forSide = forSide.value,
+//        )
+
     val heuristicWells =
-        SecondHeuristicThing.both3straights(
+        SecondHeuristicThing.getMovesWithTwoTokens(
             board = boardState,
             forSide = forSide.value,
         )
-    Column(modifier = modifier) {
+    Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
             dropTokenAction = dropTokenAction,
             boardWidth = boardState.getWells(),
         )
         DrawTheBoard(board = boardState)
-        Row {
+        Row(modifier = Modifier.fillMaxWidth()) {
             for (well in heuristicWells) {
-                Button(onClick = {}) {
+                Button(
+                    onClick = {},
+                    Modifier.width(102.dp),
+                ) {
                     var texti = "H:$well"
                     if (well == Int.MAX_VALUE) {
                         texti = "H:WIN!!"
                     } else if (well == Int.MIN_VALUE) {
                         texti = "H:Must block"
-
-//                        println("wells: ${heuristicWells.toList()}")
                         if (heuristicWells.count { it == Int.MIN_VALUE } >= 2) {
                             texti = "H:☹\uFE0F"
                         }
@@ -196,7 +209,7 @@ fun DropButtons(
         repeat(boardWidth) { num ->
             Button(onClick = {
                 dropTokenAction(num)
-            }) {
+            }, modifier = Modifier.width(102.dp)) {
                 Text("Drop@${num + 1}")
             }
         }

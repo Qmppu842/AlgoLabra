@@ -101,6 +101,38 @@ object SecondHeuristicThing {
         return res
     }
 
+    fun combinedWells(
+        board: Board,
+        forSide: Int,
+    ): IntArray {
+        val res = IntArray(board.getWells()) { 0 }
+
+        //Tier 0: Insta wins
+        val threeStraightPos = getMovesWith3Straight(board, forSide)
+        val threeStraightNeg = getMovesWith3Straight(board, -forSide)
+        val gappedPos = getMovesWith3TokensWithAirGap(board, forSide)
+        val gappedNeg = getMovesWith3TokensWithAirGap(board, -forSide)
+
+        //Tier 1: 2 tokens
+
+
+        //Tier 99: Just empty boards
+        val openness = getOpenness(board)
+
+        res.forEachIndexed { index, t ->
+            val positive = threeStraightPos[index]
+            val negative = threeStraightNeg[index]
+            if (positive.sign == 1) {
+                res[index] = Int.MAX_VALUE
+            } else if (negative.sign == 1) {
+                res[index] = Int.MIN_VALUE
+            } else {
+                0
+            }
+        }
+        return res
+    }
+
     /**
      * This values places with 3 tokens
      *
@@ -142,7 +174,6 @@ object SecondHeuristicThing {
             }
             result[asd.x] = counter
         }
-
         return result
     }
 
@@ -463,5 +494,42 @@ object SecondHeuristicThing {
             way = way,
             length = length + 1,
         )
+    }
+
+
+    fun getMovesWithTwoTokens(
+        board: Board,
+        forSide: Int,
+    ): IntArray {
+        val result = IntArray(board.board.size) { 0 }
+
+        val legalSpaces = board.getLegalMoves()
+
+        val startingPoints = mutableListOf<Point>()
+        for (aa in legalSpaces) {
+            val thing = board.getWellSpace(aa)
+            startingPoints.add(Point(aa, thing - 1))
+        }
+
+        for (asd in startingPoints) {
+            var counter = 0
+            for (way in Way.entries) {
+                val next = board.board.next(asd, way) ?: asd
+                var hold =
+                    checkLine2(
+                        board = board,
+                        current = next,
+                        sign = forSide,
+                        way = way,
+                        length = 1,
+                    )
+//                if (way == Way.Down) hold += 1
+                if (hold == 1){
+                    counter++
+                }
+            }
+            result[asd.x] = counter
+        }
+        return result
     }
 }
