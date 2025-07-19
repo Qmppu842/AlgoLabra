@@ -35,7 +35,7 @@ object HeuristicThing {
         forSide: Int = -1,
         maxDepth: Int = 2,
     ): Int {
-        val target = board.getWellSpace(column) - 1
+        val target = board.getHighestSpaceIndex(column)
 
         return checkAround(
             startingPoint = Point(column, target),

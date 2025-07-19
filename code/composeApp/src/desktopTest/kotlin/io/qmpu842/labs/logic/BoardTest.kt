@@ -219,10 +219,32 @@ class BoardTest :
                     boardHeight = height,
                 )
             repeat(3) {
-                board = board.dropToken(1, it+1)
-                val winning = board.isLastPlayWinning(4)
-                winning shouldBe false
+                board = board.dropToken(1, (it + 1) * 2 - 1)
+                board.isLastPlayWinning(4) shouldBe false
+
+                board = board.dropToken(2, -((it + 1) * 2))
+                board.isLastPlayWinning(4) shouldBe false
             }
+        }
+
+        test("isLastPlayWinning on straight line down winning") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, -6, -4, -2),
+                            intArrayOf(0, 0, 0, 5, 3, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            board = board.dropToken(3, 7)
+            var winning = board.isLastPlayWinning(4)
+            winning shouldBe true
         }
 
         test("isLastPlayWinning on straight line down with win") {

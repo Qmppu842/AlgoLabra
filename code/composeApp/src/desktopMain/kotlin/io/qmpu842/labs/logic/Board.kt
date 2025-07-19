@@ -104,6 +104,8 @@ data class Board(
      */
     fun getWellSpace(column: Int): Int = board[column].count({ it == 0 })
 
+    fun getHighestSpaceIndex(column: Int) = getWellSpace(column) - 1
+
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         val lastOne = history.last()
         val wellSpace = min(getWellSpace(lastOne), board[lastOne].size - 1)
@@ -154,5 +156,16 @@ data class Board(
             way = way,
             length = length + 1,
         )
+    }
+
+    fun startingPoints(): MutableList<Point> {
+        val legalSpaces = getLegalMoves()
+
+        val startingPoints = mutableListOf<Point>()
+        for (aa in legalSpaces) {
+            val thing = getHighestSpaceIndex(aa)
+            startingPoints.add(Point(aa, thing))
+        }
+        return startingPoints
     }
 }
