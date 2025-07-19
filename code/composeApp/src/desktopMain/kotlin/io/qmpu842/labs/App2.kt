@@ -9,10 +9,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import io.qmpu842.labs.helpers.ProfileCreator
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.SecondHeuristicThing
-import io.qmpu842.labs.logic.profiles.DFSProfile
-import io.qmpu842.labs.logic.profiles.HumanProfile
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlinx.coroutines.delay
 import onlydesktop.composeapp.generated.resources.Res
@@ -31,12 +30,12 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-    val human = HumanProfile()
+//    val human = HumanProfile()
 //    val playerA: OpponentProfile =  DFSProfile(-1)
 //    val playerB: OpponentProfile = DFSProfile(1)
-    val playerA: OpponentProfile = human
-    val playerB: OpponentProfile = DFSProfile(1)
-    var playerOnTurn = playerA
+    val playerA: OpponentProfile = ProfileCreator.dfsProfileA
+    val playerB: OpponentProfile = ProfileCreator.dfsProfileB
+    var playerOnTurn by remember { mutableStateOf(playerA) }
 
     val forSide = remember { mutableIntStateOf(-1) }
     var isThereWinner by remember { mutableIntStateOf(0) }
@@ -65,26 +64,29 @@ fun TheGame(modifier: Modifier = Modifier) {
         isThereWinner = 0
     }
     val playNextFromProfile = {
-        println("Next turn from profile?")
-        dropTokenAction(playerOnTurn.nextMove(board = boardState, forSide = forSide.value))
+//        println("Next turn from profile?")
+        dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
     }
 
     var isAutoPlayActive by remember { mutableStateOf(true) }
 
-    println("player on turn: ${playerOnTurn.id}")
+    println("player on turn: ${playerOnTurn::class.simpleName}")
 
     LaunchedEffect(isAutoPlayActive){
 //        while (isAutoPlayActive && (playerOnTurn !is HumanProfile || playerOnTurn.id != human.id)){
-        println("aaaaaa")
+//        println("aaaaaa")
 
-        if ( playerOnTurn.id != human.id){
-            println("Thing2?")
-            playNextFromProfile()
-        }
-        while (isAutoPlayActive && playerOnTurn.id != human.id) {
-            delay(80)
-            println("Thing?")
-            playNextFromProfile()
+//        if ( playerOnTurn.id != human.id){
+//            println("Thing2?")
+//            playNextFromProfile()
+//        }
+        while (isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
+//            if (playerOnTurn.id != ProfileCreator.human.id) {
+                delay(80)
+//                println("Thing?")
+                playNextFromProfile()
+//                isAutoPlayActive = false
+//            }
         }
     }
 

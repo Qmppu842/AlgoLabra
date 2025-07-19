@@ -246,4 +246,22 @@ data class Board(
         }
         return startingPoints
     }
+
+    fun deepCopy(): Board {
+        val board2 =
+            Array(board.size) {
+                IntArray(board[it].size) { 0 }
+            }
+        for (x in board.indices) {
+            for (y in board[x].indices) {
+                board2[x][y] = board[x][y]
+            }
+        }
+        val hist = mutableListOf<Int>()
+        for (histe in history) {
+            hist.add(histe)
+        }
+
+        return Board(board2, hist)
+    }
 }
