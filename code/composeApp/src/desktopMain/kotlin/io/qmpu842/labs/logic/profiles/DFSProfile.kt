@@ -16,14 +16,14 @@ class DFSProfile(
         forSide: Int,
     ): Int {
         val eka = System.currentTimeMillis()
-        println("Time on starting: $eka")
+//        println("Time on starting: $eka")
         val joku =
             resulting(
                 board = board.deepCopy(),
                 forSide = forSide,
                 timeMax = System.currentTimeMillis() + timeLimit
         )
-        println("joku: ${joku.toList()}")
+//        println("joku: ${joku.toList()}")
 
         var indexe = 0
         var max = joku[indexe]
@@ -36,9 +36,8 @@ class DFSProfile(
         }
         val toka = System.currentTimeMillis()
         val diff = toka - eka
-        println("Done")
-//        println("Time spend: ${round(diff/1000f)}s")
-        println("Time spend2: ${diff} ms")
+//        println("Done")
+//        println("Time spend2: ${diff} ms")
 
         return indexe
     }
@@ -51,7 +50,6 @@ class DFSProfile(
     ): IntArray {
         val timeNow = System.currentTimeMillis()
         if (timeNow >= timeMax) {
-            println("times up")
             return winnersAndLoser
         }
 
@@ -67,13 +65,6 @@ class DFSProfile(
         }
 
         val moves = board.getLegalMoves()
-//        if(moves.isEmpty()){
-//            return winnersAndLoser
-//        }
-
-//        val results = IntArray(board.getWells()) { 0 }
-//        println("winnersAndLoser: ${winnersAndLoser.toList()}")
-//        println("moves: $moves")
 
         val res = IntArray(board.getWells()) { 0 }
         for (move in moves) {
@@ -90,26 +81,5 @@ class DFSProfile(
             }
         }
         return res
-
-//        while (moves.isNotEmpty() && !board.isLastPlayWinning() && timeNow < timeMax) {
-//            val asd = moves.removeAt(rand.nextInt(moves.size))
-//            val boarde = board.dropToken(asd, forSide)
-//            val voitto = boarde.isLastPlayWinning()
-//            if (voitto) {
-//                winnersAndLoser[asd] += if (forSide == side) 1 else -1
-//            } else {
-//                val ccc =
-//                    resulting(
-//                        board = boarde.copy(),
-//                        forSide = -forSide,
-//                        timeMax = timeMax,
-//                        winnersAndLoser
-//                    )
-//                ccc.forEachIndexed { index, t ->
-//                    winnersAndLoser[index] += t
-//                }
-//            }
-//        }
-//        return winnersAndLoser
     }
 }

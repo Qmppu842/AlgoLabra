@@ -30,9 +30,6 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-//    val human = HumanProfile()
-//    val playerA: OpponentProfile =  DFSProfile(-1)
-//    val playerB: OpponentProfile = DFSProfile(1)
     val playerA: OpponentProfile = ProfileCreator.dfsProfileA
     val playerB: OpponentProfile = ProfileCreator.dfsProfileB
     var playerOnTurn by remember { mutableStateOf(playerA) }
@@ -64,29 +61,17 @@ fun TheGame(modifier: Modifier = Modifier) {
         isThereWinner = 0
     }
     val playNextFromProfile = {
-//        println("Next turn from profile?")
         dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
     }
 
     var isAutoPlayActive by remember { mutableStateOf(true) }
 
-    println("player on turn: ${playerOnTurn::class.simpleName}")
+//    println("player on turn: ${playerOnTurn::class.simpleName}")
 
     LaunchedEffect(isAutoPlayActive){
-//        while (isAutoPlayActive && (playerOnTurn !is HumanProfile || playerOnTurn.id != human.id)){
-//        println("aaaaaa")
-
-//        if ( playerOnTurn.id != human.id){
-//            println("Thing2?")
-//            playNextFromProfile()
-//        }
         while (isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
-//            if (playerOnTurn.id != ProfileCreator.human.id) {
                 delay(80)
-//                println("Thing?")
                 playNextFromProfile()
-//                isAutoPlayActive = false
-//            }
         }
     }
 
