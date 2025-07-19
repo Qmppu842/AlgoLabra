@@ -186,4 +186,32 @@ object SecondHeuristicThing {
         }
         return result
     }
+
+    fun getMovesWithTwoTokens1(
+        board: Board,
+        forSide: Int,
+    ): IntArray {
+        val result = IntArray(board.board.size) { 0 }
+
+        val startingPoints = board.startingPoints()
+
+        for (asd in startingPoints) {
+            var counter = 0
+            for (way in Way.entries) {
+                val next = board.board.next(asd, way)
+                if (next == null) continue
+                val hold =
+                    board.checkLine(
+                        current = next,
+                        sign = forSide,
+                        way = way,
+                    )
+                if (hold == 1){
+                    counter++
+                }
+            }
+            result[asd.x] = counter
+        }
+        return result
+    }
 }

@@ -210,6 +210,32 @@ data class Board(
         )
     }
 
+    fun countInLineForWin(
+        current: Point,
+        sign: Int,
+        way: Way,
+        length: Int = 0,
+        aaa: Triple<Int, Int, Int>
+    ): Int {
+        var realLength = length
+        val currentValue = board.get(current)
+        if (currentValue == null) return realLength
+
+        if (currentValue.sign != sign) return realLength
+
+        realLength += 1
+
+        val next = board.next(current, way)
+        if (next == null) return realLength
+
+        return checkLine(
+            current = next,
+            sign = sign,
+            way = way,
+            length = realLength,
+        )
+    }
+
     fun startingPoints(): MutableList<Point> {
         val startingPoints = mutableListOf<Point>()
 
