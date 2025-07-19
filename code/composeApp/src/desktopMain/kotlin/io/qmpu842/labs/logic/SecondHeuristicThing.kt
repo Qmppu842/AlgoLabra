@@ -1,6 +1,7 @@
 package io.qmpu842.labs.logic
 
 import io.qmpu842.labs.helpers.next
+import io.qmpu842.labs.helpers.summa
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
@@ -58,7 +59,8 @@ object SecondHeuristicThing {
         for (point in startingPoints) {
             var counter = 0
             for (way in Way.entries) {
-                val next = board.board.next(point, way) ?: point
+                val next = board.board.next(point, way)
+                if (next == null) continue
                 val hold =
                     board.checkLine(
                         current = next,
@@ -87,33 +89,23 @@ object SecondHeuristicThing {
 
         val startingPoints = board.startingPoints()
 
-        for (asd in startingPoints) {
+        for (point in startingPoints) {
             var counter = 0
             for (way in Way.entries) {
-                val next = board.board.next(asd, way) ?: asd
-                val hold =
-                    board.checkLine(
-                        current = next,
-                        sign = forSide,
-                        way = way,
-                    )
+                val next = board.board.next(point, way)
+                if (next == null) continue
+                val doubleLine = board.doubleLine(
+                    current = next,
+                    sign = forSide,
+                    way = way,
+                    jump = true
+                )
 
-                val antiNext = board.board.next(asd, way.getOpposite())
-                var hold2 = 0
-                if (antiNext != null) {
-                    hold2 =
-                        board.checkLine(
-                            current = antiNext,
-                            sign = forSide,
-                            way = way.getOpposite(),
-                        )
-                }
-
-                if (hold + hold2 >= 3) {
+                if (doubleLine.summa() >= 3) {
                     counter++
                 }
             }
-            result[asd.x] = counter
+            result[point.x] = counter
         }
 
         return result
@@ -135,7 +127,8 @@ object SecondHeuristicThing {
         for (asd in startingPoints) {
             var counter = 0
             for (way in Way.entries) {
-                val next = board.board.next(asd, way) ?: asd
+                val next = board.board.next(asd, way)
+                if (next == null) continue
                 val hold =
                     board.checkLine(
                         current = next,
@@ -178,7 +171,8 @@ object SecondHeuristicThing {
         for (asd in startingPoints) {
             var counter = 0
             for (way in Way.entries) {
-                val next = board.board.next(asd, way) ?: asd
+                val next = board.board.next(asd, way)
+                if (next == null) continue
                 val hold =
                     board.checkLine(
                         current = next,

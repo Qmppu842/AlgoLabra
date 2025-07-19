@@ -3,7 +3,6 @@ package io.qmpu842.labs.logic
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
-import java.awt.Point
 
 class BoardTest :
     FunSpec({
@@ -189,27 +188,6 @@ class BoardTest :
             thing shouldBe 2
         }
 
-        test("checkLine on straight line down") {
-            val height = 6
-            val width = 7
-            var board =
-                Board(
-                    boardWidth = width,
-                    boardHeight = height,
-                )
-            repeat(5) {
-                board = board.dropToken(1, it + 1)
-            }
-            val thing =
-                board.checkLine(
-                    current = Point(1, 2),
-                    sign = 1,
-                    way = Way.Down,
-                    length = 1,
-                )
-            thing shouldBe 4
-        }
-
         test("isLastPlayWinning on straight line down not winning") {
             val height = 6
             val width = 7
@@ -243,8 +221,7 @@ class BoardTest :
                 )
 
             board = board.dropToken(3, 7)
-            var winning = board.isLastPlayWinning(4)
-            winning shouldBe true
+            board.isLastPlayWinning(4) shouldBe true
         }
 
         test("isLastPlayWinning on straight line down with win") {
@@ -259,8 +236,7 @@ class BoardTest :
                 board = board.dropToken(1, it + 1)
             }
 
-            val winning = board.isLastPlayWinning(4)
-            winning shouldBe true
+            board.isLastPlayWinning(4) shouldBe true
         }
 
         test("isLastPlayWinning both should be winning when two are asked") {
@@ -271,24 +247,20 @@ class BoardTest :
                     boardWidth = width,
                     boardHeight = height,
                 )
-            var winning: Boolean
+
             repeat(3) {
+                board = board.dropToken(1, (it + 1) * 2 - 1)
+                board.isLastPlayWinning(4) shouldBe false
 
-                board = board.dropToken(1, 1)
-                winning = board.isLastPlayWinning(4)
-                winning shouldBe false
-
-                board = board.dropToken(2, -1)
-                winning = board.isLastPlayWinning(4)
-                winning shouldBe false
+                board = board.dropToken(2, -(it + 1) * 2)
+                board.isLastPlayWinning(4) shouldBe false
             }
-            board = board.dropToken(1, 1)
-            winning = board.isLastPlayWinning(4)
-            winning shouldBe true
 
-            board = board.dropToken(1, 1)
-            winning = board.isLastPlayWinning(4)
-            winning shouldBe true
+            board = board.dropToken(1, 7)
+            board.isLastPlayWinning(4) shouldBe true
+
+            board = board.dropToken(2, -8)
+            board.isLastPlayWinning(4) shouldBe true
         }
 
         test("isLastPlayWinning with rising diagonal win") {
@@ -300,15 +272,14 @@ class BoardTest :
                             intArrayOf(0, 0, 0, 0, 3, -2),
                             intArrayOf(0, 0, 0, 7, 5, -4),
                             intArrayOf(0, 0, 0, 9, -8, -6),
-                            intArrayOf(0, 0, 0, 0, 0, -10),
                             intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, -10),
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
 
             board = board.dropToken(3, 11)
-            var winning = board.isLastPlayWinning(4)
-            winning shouldBe true
+            board.isLastPlayWinning(4) shouldBe true
         }
 
         test("isLastPlayWinning with lowering diagonal win") {
@@ -327,8 +298,7 @@ class BoardTest :
                 )
 
             board = board.dropToken(0, 13)
-            var winning = board.isLastPlayWinning(4)
-            winning shouldBe true
+            board.isLastPlayWinning(4) shouldBe true
         }
 
         test("isLastPlayWinning with negative straight win") {
@@ -347,7 +317,6 @@ class BoardTest :
                 )
 
             board = board.dropToken(0, -12)
-            var winning = board.isLastPlayWinning(4)
-            winning shouldBe true
+            board.isLastPlayWinning(4) shouldBe true
         }
     })

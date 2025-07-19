@@ -2,8 +2,8 @@ package io.qmpu842.labs.logic
 
 import io.qmpu842.labs.helpers.get
 import io.qmpu842.labs.helpers.next
+import io.qmpu842.labs.helpers.summa
 import java.awt.Point
-import kotlin.math.min
 import kotlin.math.sign
 
 data class Board(
@@ -108,32 +108,61 @@ data class Board(
 
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         val lastOne = history.last()
-        val wellSpace = min(getWellSpace(lastOne), board[lastOne].size - 1)
+//        val wellSpace = min(getWellSpace(lastOne), board[lastOne].size - 1)
+        val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
-        val spSign = (board.get(startingPoint) ?: return false).sign
-        for (way in Way.entries) {
-            val result =
-                checkLine(
-                    current = startingPoint,
-                    sign = spSign,
-                    way = way,
-                )
-            val antiSp = board.next(startingPoint, way.getOpposite())
-            var result2 = 0
-            if (antiSp != null) {
-                result2 =
-                    checkLine(
-                        current = antiSp,
-                        sign = spSign,
-                        way = way.getOpposite(),
-                    )
-            }
+        val sp = board.get(startingPoint) ?: return false
 
-//            if (way.y == 1) result2 += 1
-//            if (way == Way.Down) result2 += 1
-            if (result + result2 >= neededForWin) return true
+        for (way in Way.entries) {
+            val doubleLine =
+                doubleLine(
+                    current = startingPoint,
+                    sign = sp.sign,
+                    way = way,
+//                    length = if (way == Way.Down) 1 else 0,
+                    length = if (way.y == 1) 1 else 0,
+                )
+            if (doubleLine.summa() >= neededForWin) return true
+
+            // This tuning... For some reason down checks need this but then they don't like the getHighestSpaceIndex...
+//            if (doubleLine.summa() >= neededForWin -1 && way.y == 1) return true
+//            if (doubleLine.summa() >= neededForWin -1 && way == Way.Down) return true
         }
         return false
+    }
+
+    fun doubleLine(
+        current: Point,
+        sign: Int,
+        way: Way,
+        length: Int = 0,
+        // There is argument for this to be integer, but it is not for this time
+        jump: Boolean = false,
+    ): Pair<Int, Int> {
+        val result =
+            checkLine(
+                current = current,
+                sign = sign,
+                way = way,
+                length = length,
+            )
+        var antiSp = board.next(current, way.getOpposite())
+
+        // ..
+        if (jump && antiSp != null) {
+            antiSp = board.next(antiSp, way.getOpposite())
+        }
+
+        var result2 = 0
+        if (antiSp != null) {
+            result2 =
+                checkLine(
+                    current = antiSp,
+                    sign = sign,
+                    way = way.getOpposite(),
+                )
+        }
+        return Pair(result, result2)
     }
 
     fun checkLine(
@@ -159,12 +188,11 @@ data class Board(
     }
 
     fun startingPoints(): MutableList<Point> {
-        val legalSpaces = getLegalMoves()
-
         val startingPoints = mutableListOf<Point>()
-        for (aa in legalSpaces) {
-            val thing = getHighestSpaceIndex(aa)
-            startingPoints.add(Point(aa, thing))
+
+        for (move in getLegalMoves()) {
+            val startIndex = getHighestSpaceIndex(move)
+            startingPoints.add(Point(move, startIndex))
         }
         return startingPoints
     }
