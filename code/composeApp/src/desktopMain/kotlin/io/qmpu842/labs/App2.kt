@@ -56,12 +56,6 @@ fun TheGame(modifier: Modifier = Modifier) {
     }
 
     val clearBoardAction: () -> Unit = {
-        // This is work around to refresh the screen cuz compose magic...
-        dropTokenAction(0)
-        dropTokenAction(0)
-        boardState = boardState.undoLastMove()
-        boardState = boardState.undoLastMove()
-
         boardState = boardState.clear()
         playerOnTurn = playerA
         forSide.value = -1
@@ -73,47 +67,16 @@ fun TheGame(modifier: Modifier = Modifier) {
 
     LaunchedEffect(isAutoPlayActive){
         while (isAutoPlayActive && playerOnTurn !is HumanProfile){
-            delay(100)
+            delay(80)
             playNextFromProfile()
         }
     }
-
-//    val heuristicWells = HeuristicThing.allTheWells(boardState, forSide = forSide.value, maxDepth = 5)
-//    val heuristicWells = SecondHeuristicThing.getMovesWith3Straight(
-//        board = boardState,
-//        forSide = forSide.value
-//    )
-//    val heuristicWells = SecondHeuristicThing.getMovesWith3TokensWithAirGap(
-//        board = boardState,
-//        forSide = forSide.value
-//    )
-//    val heuristicWells =
-//        SecondHeuristicThing.getOpenness(
-//            board = boardState
-//    )
-
-//    val heuristicWells = SecondHeuristicThing.getMovesWith3Straight(
-//        board = boardState,
-//        forSide = forSide.value
-//    )
-
-//    val heuristicWells =
-//        SecondHeuristicThing.both3straights(
-//            board = boardState,
-//            forSide = forSide.value,
-//        )
 
     val heuristicWells =
         SecondHeuristicThing.combinedWells(
             board = boardState,
             forSide = forSide.value,
         )
-
-//    val heuristicWells =
-//        SecondHeuristicThing.getMovesWithTwoTokens(
-//            board = boardState,
-//            forSide = forSide.value,
-//        )
 
 
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
@@ -152,21 +115,20 @@ fun TheGame(modifier: Modifier = Modifier) {
             Button(onClick = playNextFromProfile) {
                 Text("Play next move")
             }
-            Button(onClick = {}) {
-                Text(
-                    text =
-                        if (isThereWinner != 0) {
-                            val voittaja =
-                                if (isThereWinner == 1) "Player B, The Yellow One!" else "Player A, The Red One!"
-                            "Winner is $voittaja"
-                        } else {
-                            "no winner, yet..."
-                        },
-                )
-            }
             Button(onClick = {isAutoPlayActive = !isAutoPlayActive}){
                 Text("Activate autoplay from profiles")
             }
+        }
+
+        Button(onClick = {}) {
+            Text(
+                text =
+                    if (isThereWinner != 0) {
+                        "Winner is " +  if (isThereWinner == 1) "Player B, The Yellow One!" else "Player A, The Red One!"
+                    } else {
+                        "No winner, yet..."
+                    },
+            )
         }
     }
 }

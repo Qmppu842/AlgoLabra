@@ -76,6 +76,7 @@ data class Board(
                 toRemove = index
             }
         }
+        if (toRemove == -1) return this
         board[lastWell][toRemove] = 0
         return this.copy(
             board,
@@ -95,7 +96,7 @@ data class Board(
                 board2[x][y] = 0
             }
         }
-        return this.copy(board = board2)
+        return Board(board2, listOf(-1))
     }
 
     /**
@@ -108,7 +109,6 @@ data class Board(
 
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         val lastOne = history.last()
-//        val wellSpace = min(getWellSpace(lastOne), board[lastOne].size - 1)
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
         val sp = board.get(startingPoint) ?: return false
@@ -119,14 +119,8 @@ data class Board(
                     current = startingPoint,
                     sign = sp.sign,
                     way = way,
-//                    length = if (way == Way.Down) 1 else 0,
-//                    length = if (way.y == 1) 1 else 0,
                 )
             if (doubleLine.summa() >= neededForWin) return true
-
-            // This tuning... For some reason down checks need this but then they don't like the getHighestSpaceIndex...
-//            if (doubleLine.summa() >= neededForWin -1 && way.y == 1) return true
-//            if (doubleLine.summa() >= neededForWin -1 && way == Way.Down) return true
         }
         return false
     }
