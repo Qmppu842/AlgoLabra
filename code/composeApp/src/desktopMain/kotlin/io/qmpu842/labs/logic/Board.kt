@@ -171,19 +171,22 @@ data class Board(
         way: Way,
         length: Int = 0,
     ): Int {
+        var realLength = length
         val currentValue = board.get(current)
-        if (currentValue == null) return length
+        if (currentValue == null) return realLength
 
-        if (currentValue.sign != sign) return length
+        if (currentValue.sign != sign) return realLength
+
+        realLength += 1
 
         val next = board.next(current, way)
-        if (next == null) return length
+        if (next == null) return realLength
 
         return checkLine(
             current = next,
             sign = sign,
             way = way,
-            length = length + 1,
+            length = realLength,
         )
     }
 
