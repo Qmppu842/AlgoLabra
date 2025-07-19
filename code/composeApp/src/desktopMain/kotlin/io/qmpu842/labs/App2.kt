@@ -11,8 +11,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.SecondHeuristicThing
+import io.qmpu842.labs.logic.profiles.HumanProfile
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import io.qmpu842.labs.logic.profiles.SimpleOpportunisticProfile
+import kotlinx.coroutines.delay
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
 import onlydesktop.composeapp.generated.resources.red_cell
@@ -65,6 +67,16 @@ fun TheGame(modifier: Modifier = Modifier) {
         forSide.value = -1
         isThereWinner = 0
     }
+    val playNextFromProfile = { dropTokenAction(playerOnTurn.nextMove(board = boardState, forSide = forSide.value)) }
+
+    var isAutoPlayActive by remember { mutableStateOf(true) }
+
+    LaunchedEffect(isAutoPlayActive){
+        while (isAutoPlayActive && playerOnTurn !is HumanProfile){
+            delay(100)
+            playNextFromProfile()
+        }
+    }
 
 //    val heuristicWells = HeuristicThing.allTheWells(boardState, forSide = forSide.value, maxDepth = 5)
 //    val heuristicWells = SecondHeuristicThing.getMovesWith3Straight(
@@ -102,6 +114,8 @@ fun TheGame(modifier: Modifier = Modifier) {
 //            board = boardState,
 //            forSide = forSide.value,
 //        )
+
+
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
             dropTokenAction = dropTokenAction,
@@ -135,7 +149,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             Button(onClick = clearBoardAction) {
                 Text("Restart")
             }
-            Button(onClick = { dropTokenAction(playerOnTurn.nextMove(board = boardState, forSide = forSide.value)) }) {
+            Button(onClick = playNextFromProfile) {
                 Text("Play next move")
             }
             Button(onClick = {}) {
@@ -149,6 +163,9 @@ fun TheGame(modifier: Modifier = Modifier) {
                             "no winner, yet..."
                         },
                 )
+            }
+            Button(onClick = {isAutoPlayActive = !isAutoPlayActive}){
+                Text("Activate autoplay from profiles")
             }
         }
     }
