@@ -94,11 +94,10 @@ object SecondHeuristicThing {
             for (way in Way.entries) {
                 val next = board.board.next(point, way)
                 if (next == null) continue
-                val doubleLine = board.doubleLine(
+                val doubleLine = board.doubleLineWithJumpStart(
                     current = next,
                     sign = forSide,
-                    way = way,
-                    jump = true
+                    way = way
                 )
 
                 if (doubleLine.summa() >= 3) {

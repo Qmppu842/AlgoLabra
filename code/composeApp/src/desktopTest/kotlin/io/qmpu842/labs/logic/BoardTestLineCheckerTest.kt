@@ -8,6 +8,76 @@ import java.awt.Point
 class BoardTestLineCheckerTest :
     FunSpec({
 
+        test("doubleLineWithJumpStart flat line") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 1),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(0, 0, 0, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, -10),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            val lineLength =
+                board.doubleLineWithJumpStart(
+                    current = Point(4, 5),
+                    sign = -1,
+                    way = Way.Right,
+                )
+            lineLength.summa() shouldBe 4
+        }
+
+        test("doubleLineWithJumpStart down diagonal line") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 1),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(0, 0, 0, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, -14, -12, 11, -10),
+                            intArrayOf(0, 0, 0, 0, 0, 13),
+                        ),
+                )
+            val lineLength =
+                board.doubleLineWithJumpStart(
+                    current = Point(4, 3),
+                    sign = -1,
+                    way = Way.RightDown,
+                )
+            lineLength.summa() shouldBe 3
+        }
+
+        test("doubleLineWithJumpStart up diagonal line") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 1),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(0, 0, 0, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, -14, -12, 11, -10),
+                            intArrayOf(0, 0, 0, 0, 0, 13),
+                        ),
+                )
+            val lineLength =
+                board.doubleLineWithJumpStart(
+                    current = Point(4, 3),
+                    sign = -1,
+                    way = Way.LeftUp,
+                )
+            lineLength.summa() shouldBe 3
+        }
+
+//        -----------------------
         test("doubleLine flat line") {
             var board =
                 Board(
@@ -23,11 +93,10 @@ class BoardTestLineCheckerTest :
                         ),
                 )
             val lineLength =
-                board.doubleLine(
-                    current = Point(3, 5),
+                board.doubleLineWithJumpStart(
+                    current = Point(4, 5),
                     sign = -1,
-                    way = Way.Right,
-                    jump = true
+                    way = Way.Right
                 )
             lineLength.summa() shouldBe 4
         }
@@ -47,11 +116,10 @@ class BoardTestLineCheckerTest :
                         ),
                 )
             val lineLength =
-                board.doubleLine(
-                    current = Point(3, 4),
+                board.doubleLineWithJumpStart(
+                    current = Point(4, 3),
                     sign = -1,
-                    way = Way.RightDown,
-                    jump = true
+                    way = Way.RightDown
                 )
             lineLength.summa() shouldBe 3
         }
@@ -71,11 +139,10 @@ class BoardTestLineCheckerTest :
                         ),
                 )
             val lineLength =
-                board.doubleLine(
-                    current = Point(5, 2),
+                board.doubleLineWithJumpStart(
+                    current = Point(4, 3),
                     sign = -1,
-                    way = Way.LeftUp,
-                    jump = true
+                    way = Way.LeftUp
                 )
             lineLength.summa() shouldBe 3
         }

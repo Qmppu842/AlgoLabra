@@ -115,12 +115,12 @@ data class Board(
 
         for (way in Way.entries) {
             val doubleLine =
-                doubleLine(
+                doubleLineNoJumpStart(
                     current = startingPoint,
                     sign = sp.sign,
                     way = way,
 //                    length = if (way == Way.Down) 1 else 0,
-                    length = if (way.y == 1) 1 else 0,
+//                    length = if (way.y == 1) 1 else 0,
                 )
             if (doubleLine.summa() >= neededForWin) return true
 
@@ -131,28 +131,21 @@ data class Board(
         return false
     }
 
-    fun doubleLine(
+    fun doubleLineNoJumpStart(
         current: Point,
         sign: Int,
         way: Way,
         length: Int = 0,
-        // There is argument for this to be integer, but it is not for this time
-        jump: Boolean = false,
     ): Pair<Int, Int> {
         val result =
-            checkLine(
-                current = current,
-                sign = sign,
-                way = way,
-                length = length,
-            )
-        var antiSp = board.next(current, way.getOpposite())
+                checkLine(
+                    current = current,
+                    sign = sign,
+                    way = way,
+                    length = length,
+                )
 
-        // ..
-        if (jump && antiSp != null) {
-            antiSp = board.next(antiSp, way.getOpposite())
-        }
-
+        val antiSp = board.next(current, way.getOpposite())
         var result2 = 0
         if (antiSp != null) {
             result2 =
@@ -164,6 +157,39 @@ data class Board(
         }
         return Pair(result, result2)
     }
+
+    fun doubleLineWithJumpStart(
+        current: Point,
+        sign: Int,
+        way: Way,
+        length: Int = 0,
+    ): Pair<Int, Int> {
+        var result = 0
+        val spJumped =
+            board.next(current, way)
+        if (spJumped != null) {
+            result =
+                checkLine(
+                    current = spJumped,
+                    sign = sign,
+                    way = way,
+                    length = length,
+                )
+        }
+
+        val antiSp = board.next(current, way.getOpposite())
+        var result2 = 0
+        if (antiSp != null) {
+            result2 =
+                checkLine(
+                    current = antiSp,
+                    sign = sign,
+                    way = way.getOpposite(),
+                )
+        }
+        return Pair(result, result2)
+    }
+
 
     fun checkLine(
         current: Point,
