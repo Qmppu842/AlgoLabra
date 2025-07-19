@@ -1,16 +1,11 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.MyRandom
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.SecondHeuristicThing
 import kotlin.math.max
 import kotlin.math.min
 
-class SimpleOpportunisticProfile(
-    override val id: Int= MyRandom.random.nextInt(),
-) : OpponentProfile {
-    val rand = MyRandom.random
-
+class SimpleOpportunisticProfile : OpponentProfile() {
     override fun nextMove(
         board: Board,
         forSide: Int,

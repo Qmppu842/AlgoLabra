@@ -1,12 +1,9 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.MyRandom
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.HeuristicThing
 
-class SimpleHeuristicGuyProfile(
-    override val id: Int = MyRandom.random.nextInt(),
-) : OpponentProfile {
+class SimpleHeuristicGuyProfile : OpponentProfile() {
     override fun nextMove(
         board: Board,
         forSide: Int,
