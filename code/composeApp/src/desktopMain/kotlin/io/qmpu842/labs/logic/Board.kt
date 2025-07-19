@@ -109,6 +109,7 @@ data class Board(
 
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         val lastOne = history.last()
+        if (lastOne == -1) return false
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
         val sp = board.get(startingPoint) ?: return false

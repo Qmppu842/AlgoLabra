@@ -11,9 +11,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.SecondHeuristicThing
+import io.qmpu842.labs.logic.profiles.DFSProfile
 import io.qmpu842.labs.logic.profiles.HumanProfile
 import io.qmpu842.labs.logic.profiles.OpponentProfile
-import io.qmpu842.labs.logic.profiles.SimpleOpportunisticProfile
 import kotlinx.coroutines.delay
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
@@ -31,8 +31,11 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-    val playerA: OpponentProfile = SimpleOpportunisticProfile()
-    val playerB: OpponentProfile = SimpleOpportunisticProfile()
+    val human = HumanProfile()
+//    val playerA: OpponentProfile =  DFSProfile(-1)
+//    val playerB: OpponentProfile = DFSProfile(1)
+    val playerA: OpponentProfile = human
+    val playerB: OpponentProfile = DFSProfile(1)
     var playerOnTurn = playerA
 
     val forSide = remember { mutableIntStateOf(-1) }
@@ -61,13 +64,26 @@ fun TheGame(modifier: Modifier = Modifier) {
         forSide.value = -1
         isThereWinner = 0
     }
-    val playNextFromProfile = { dropTokenAction(playerOnTurn.nextMove(board = boardState, forSide = forSide.value)) }
+    val playNextFromProfile = {
+        println("Next turn from profile?")
+        dropTokenAction(playerOnTurn.nextMove(board = boardState, forSide = forSide.value))
+    }
 
     var isAutoPlayActive by remember { mutableStateOf(true) }
 
+    println("player on turn: ${playerOnTurn.id}")
+
     LaunchedEffect(isAutoPlayActive){
-        while (isAutoPlayActive && playerOnTurn !is HumanProfile){
+//        while (isAutoPlayActive && (playerOnTurn !is HumanProfile || playerOnTurn.id != human.id)){
+        println("aaaaaa")
+
+        if ( playerOnTurn.id != human.id){
+            println("Thing2?")
+            playNextFromProfile()
+        }
+        while (isAutoPlayActive && playerOnTurn.id != human.id) {
             delay(80)
+            println("Thing?")
             playNextFromProfile()
         }
     }
