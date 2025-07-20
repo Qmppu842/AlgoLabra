@@ -9,4 +9,5 @@ object ProfileCreator {
     val dfsProfileB = DFSProfile(1)
     val simpleHeuristicGuyProfile = SimpleHeuristicGuyProfile()
     val simpleOpportunisticProfile = SimpleOpportunisticProfile()
+    val miniMaxV1Profile = MiniMaxV1Profile()
 }

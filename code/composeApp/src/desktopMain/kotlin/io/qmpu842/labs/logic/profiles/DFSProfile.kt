@@ -1,7 +1,6 @@
 package io.qmpu842.labs.logic.profiles
 
 import io.qmpu842.labs.logic.Board
-import kotlin.math.sign
 
 class DFSProfile(
     val side: Int,
@@ -56,7 +55,13 @@ class DFSProfile(
         val voittaja = board.isLastPlayWinning()
         if (voittaja) {
             val laste = board.history.last()
-            if (laste.sign == forSide) {
+            /* Weird...
+             * This (forSide == side) should be the correct one
+             * But initial feeling is that this (laste.sign == forSide) performed better.
+             * It is nonsensical as the history should be always positive.
+             * Yet I remember seeing positives and negatives in the end result, weird..
+             */
+            if (forSide == side) {
                 winnersAndLoser[laste] -= 1
             } else {
                 winnersAndLoser[laste] += 1
