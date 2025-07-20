@@ -50,6 +50,13 @@ Se alkaa aina hyvin mutta sitten tulee joku kohta missä ajatukseni menevät eri
 sitten TDD lipsuu.  
 Joskus hyvässä ja joskus pahassa mutta en oikein tiedä miten sitä tasapainottaa tai oppia kunnolla.
 
+
+Sekä en vielä ole keksinyt parasta tapaa aika rajoittaa noita profiileja.  
+DFSProfile yritin rajoittaa mutta se vaan juoksee super nopeasti eikä käytä koko sallittua aikaa miettimiseen.  
+Samanlainen meno varmaankin jatkuu Minimaxilla.  
+Toki nyt minulla on muutamia ideoita DFSProfile oppien pohjalta mitkä voisivat toimia.
+
+
 ## Mitä teen seuraavaksi?
 Vaikka tällä viikolla piti jo alotaa Minimax niin harhauduin vähän hutiin.  
 En koe että aika oli hukkaan heitettyä kuitenkaan sillä sain käyttiksen mukavaan kuntoon, sekä hahmotin omaa tilannettani lisää.  
