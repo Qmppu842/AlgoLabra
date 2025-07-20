@@ -1,4 +1,4 @@
-# Viikko 2
+# Viikko X
 
 
 ## Mitä olen tehnyt tällä viikolla?
@@ -30,4 +30,4 @@
 | ??       | ??   | ??          |
 | ??       | ??   | ??          |
 | ??-??/07 | ??   | ??          |
-| 10-??/07 | 15h  | Total Total |
+| 10-??/07 | 77h  | Total Total |
