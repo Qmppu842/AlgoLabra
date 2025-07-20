@@ -8,11 +8,8 @@ import kotlin.math.min
 class MiniMaxV1Profile : OpponentProfile() {
     var depth = 10
 
-    var timeLimit = 200
+    var timeLimit = 100
     var currentMaxTime = System.currentTimeMillis() + timeLimit
-
-
-    var parasSyvyys = 0
 
     override fun nextMove(
         board: Board,
@@ -34,7 +31,6 @@ class MiniMaxV1Profile : OpponentProfile() {
         }
 //        val endtime = System.currentTimeMillis() -(currentMaxTime - timeLimit)
 //        println("Stopping minimax, spend time $endtime ms")
-//        println("saavutettu syvyys: $parasSyvyys")
 //        println("Winners and losers: ${winnersAndLoser.toList()}")
 
         return winnersAndLoser.getIndexOfMax()
@@ -65,7 +61,6 @@ class MiniMaxV1Profile : OpponentProfile() {
         depth: Int,
         maximizingPlayer: Boolean,
     ): Int {
-//        parasSyvyys = max(parasSyvyys, depth)
         val terminal = board.isLastPlayWinning()
 
         if (terminal && maximizingPlayer) return Int.MAX_VALUE

@@ -36,7 +36,7 @@ data class Board(
         return result
     }
 
-    fun dropLockedToken(column: Int): Board = dropToken(column, history.size * if (history.size % 2 == 0) -1 else 1)
+    fun dropLockedToken(column: Int): Board = dropToken(column, history.size * if (history.size % 2 == 0) 1 else -1)
 
     /**
      * Drops the token to the well

@@ -31,7 +31,7 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-    val playerA: OpponentProfile = ProfileCreator.rand
+    val playerA: OpponentProfile = ProfileCreator.simpleOpportunisticProfile
     val playerB: OpponentProfile = ProfileCreator.miniMaxV1Profile
     var playerOnTurn by remember { mutableStateOf(playerA) }
 
@@ -42,9 +42,15 @@ fun TheGame(modifier: Modifier = Modifier) {
     val aStats = remember { mutableIntStateOf(playerA.wins) }
     val bStats = remember { mutableIntStateOf(playerB.wins) }
 
+
+    var isAutoPlayActive by remember { mutableStateOf(true) }
+
+    var isAutoAutoPlayActive by remember { mutableStateOf(true) }
+
     val dropTokenAction: (Int) -> Unit = { column ->
         if (isThereWinner == 0) {
             boardState = boardState.dropToken(column, boardState.history.size * forSide.value)
+//            boardState = boardState.dropLockedToken(column)
             val voittaja = boardState.isLastPlayWinning(4)
             if (voittaja) {
                 isThereWinner = forSide.value
@@ -56,6 +62,11 @@ fun TheGame(modifier: Modifier = Modifier) {
             }
             forSide.value *= -1
             playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
+
+            if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
+                isAutoPlayActive = !isAutoPlayActive
+                isAutoPlayActive = !isAutoPlayActive
+            }
         }
     }
 
@@ -73,9 +84,6 @@ fun TheGame(modifier: Modifier = Modifier) {
         dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
     }
 
-    var isAutoPlayActive by remember { mutableStateOf(true) }
-
-    var isAutoAutoPlayActive by remember { mutableStateOf(true) }
 
 //    println("player on turn: ${playerOnTurn::class.simpleName}")
 
@@ -87,7 +95,11 @@ fun TheGame(modifier: Modifier = Modifier) {
             }
 
             if (isAutoAutoPlayActive && isThereWinner != 0) {
-                delay(200)
+                var delay = 200L
+                if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
+                    delay = 5000
+                }
+                delay(delay)
                 clearBoardAction()
             }
         }
