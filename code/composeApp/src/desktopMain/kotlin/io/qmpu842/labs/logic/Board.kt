@@ -283,22 +283,26 @@ data class Board(
                     sign = sp.sign,
                     way = way,
                 )
+//            println("doubleLineOma: ${doubleLineOma.summa()}")
             val doubleLineAir =
                 doubleLineWithJumpStart(
                     current = startingPoint,
                     sign = 0,
                     way = way,
                 )
+//            println("doubleLineAir: ${doubleLineAir.summa()}")
             val doubleLineVihu =
                 doubleLineWithJumpStart(
                     current = startingPoint,
                     sign = -sp.sign,
                     way = way,
                 )
+
+//            println("doubleLineVihu: ${doubleLineVihu.summa()}")
             val valivaihe = 0
             +doubleLineOma.summa()
-//            +doubleLineAir.summa() / 2
-//            -doubleLineVihu.summa()
+            +doubleLineAir.summa() / 2
+            -doubleLineVihu.summa()
             counter = valivaihe
         }
 

@@ -6,29 +6,58 @@ import kotlin.math.max
 import kotlin.math.min
 
 class MiniMaxV1Profile : OpponentProfile() {
+    var depth = 10
 
-    var depth = 15
+    var timeLimit = 200
+    var currentMaxTime = System.currentTimeMillis() + timeLimit
+
+
+    var parasSyvyys = 0
 
     override fun nextMove(
         board: Board,
         forSide: Int,
     ): Int {
+//        println("Starting minimax")
+        currentMaxTime = System.currentTimeMillis() + timeLimit
         val secondBoard = board.deepCopy()
         val winnersAndLoser = IntArray(board.getWells()) { 0 }
         val moves = secondBoard.getLegalMoves()
         for (move in moves) {
             val valuee =
                 minimax(
-                    board = board.dropLockedToken(move),
+                    board = board.dropLockedToken(move).deepCopy(),
+                    depth = depth,
+                    maximizingPlayer = true,
+                )
+            winnersAndLoser[move] = valuee
+        }
+//        val endtime = System.currentTimeMillis() -(currentMaxTime - timeLimit)
+//        println("Stopping minimax, spend time $endtime ms")
+//        println("saavutettu syvyys: $parasSyvyys")
+//        println("Winners and losers: ${winnersAndLoser.toList()}")
+
+        return winnersAndLoser.getIndexOfMax()
+    }
+
+    fun minimaxAsHearisticWells(
+        board: Board,
+        forSide: Int,
+    ): IntArray {
+        val secondBoard = board.deepCopy()
+        val winnersAndLoser = IntArray(board.getWells()) { 0 }
+        val moves = secondBoard.getLegalMoves()
+        for (move in moves) {
+            val valuee =
+                minimax(
+                    board = board.dropLockedToken(move).deepCopy(),
                     depth = depth,
                     maximizingPlayer = false,
                 )
             winnersAndLoser[move] = valuee
         }
 
-        println("Winners and losers: ${winnersAndLoser.toList()}")
-
-        return winnersAndLoser.getIndexOfMax()
+        return winnersAndLoser
     }
 
     fun minimax(
@@ -36,12 +65,16 @@ class MiniMaxV1Profile : OpponentProfile() {
         depth: Int,
         maximizingPlayer: Boolean,
     ): Int {
+//        parasSyvyys = max(parasSyvyys, depth)
         val terminal = board.isLastPlayWinning()
+
         if (terminal && maximizingPlayer) return Int.MAX_VALUE
 
-        if (terminal && !maximizingPlayer) return Int.MIN_VALUE
+        if (terminal) return Int.MIN_VALUE
 
-        if (depth == 0) return board.lastMovesValue()
+        val time = System.currentTimeMillis()
+
+        if (depth == 0 || time >= currentMaxTime) return board.lastMovesValue()
 
         val moves = board.getLegalMoves()
 
@@ -53,7 +86,7 @@ class MiniMaxV1Profile : OpponentProfile() {
                     max(
                         value,
                         minimax(
-                            board = doTheMove,
+                            board = doTheMove.deepCopy(),
                             depth = depth - 1,
                             maximizingPlayer = false,
                         ),
@@ -68,7 +101,7 @@ class MiniMaxV1Profile : OpponentProfile() {
                     min(
                         value,
                         minimax(
-                            board = doTheMove,
+                            board = doTheMove.deepCopy(),
                             depth = depth - 1,
                             maximizingPlayer = true,
                         ),

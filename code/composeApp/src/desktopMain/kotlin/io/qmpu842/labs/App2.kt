@@ -14,6 +14,7 @@ import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.SecondHeuristicThing
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
 import onlydesktop.composeapp.generated.resources.red_cell
@@ -80,11 +81,13 @@ fun TheGame(modifier: Modifier = Modifier) {
 
     LaunchedEffect(isAutoPlayActive){
         while (isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
-            delay(100)
+            delay(10)
+            runBlocking {
             playNextFromProfile()
+            }
 
             if (isAutoAutoPlayActive && isThereWinner != 0) {
-                delay(1000)
+                delay(200)
                 clearBoardAction()
             }
         }
@@ -95,6 +98,12 @@ fun TheGame(modifier: Modifier = Modifier) {
             board = boardState,
             forSide = forSide.value,
         )
+//    val heuristicWells2  =   heuristicWells
+//    val heuristicWells2 =
+//        ProfileCreator.miniMaxV1Profile.minimaxAsHearisticWells(
+//            board = boardState.deepCopy(),
+//            forSide = forSide.value,
+//        )
 
 
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
@@ -122,6 +131,26 @@ fun TheGame(modifier: Modifier = Modifier) {
                 }
             }
         }
+
+//        Row(modifier = Modifier.fillMaxWidth()) {
+//            for (well in heuristicWells2) {
+//                Button(
+//                    onClick = {},
+//                    Modifier.width(102.dp),
+//                ) {
+//                    var texti = "H:$well"
+//                    if (well == Int.MAX_VALUE) {
+//                        texti = "H:WIN!!"
+//                    } else if (well == Int.MIN_VALUE) {
+//                        texti = "H:Must block"
+//                        if (heuristicWells2.count { it == Int.MIN_VALUE } >= 2) {
+//                            texti = "H:☹\uFE0F"
+//                        }
+//                    }
+//                    Text(text = texti)
+//                }
+//            }
+//        }
 
         Row {
             Button(onClick = undoAction) {
