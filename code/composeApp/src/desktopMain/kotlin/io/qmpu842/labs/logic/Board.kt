@@ -36,6 +36,8 @@ data class Board(
         return result
     }
 
+    fun dropLockedToken(column: Int): Board = dropToken(column, history.size * if (history.size % 2 == 0) -1 else 1)
+
     /**
      * Drops the token to the well
      * @param column the well to drop in
@@ -263,5 +265,43 @@ data class Board(
         }
 
         return Board(board2, hist)
+    }
+
+    fun lastMovesValue(neededForWin: Int = 4): Int {
+        val lastOne = history.last()
+        if (lastOne == -1) return 0
+        val wellSpace = getWellSpace(lastOne)
+        val startingPoint = Point(lastOne, wellSpace)
+        val sp = board.get(startingPoint) ?: return 0
+
+        var counter = 0
+
+        for (way in Way.entries) {
+            val doubleLineOma =
+                doubleLineNoJumpStart(
+                    current = startingPoint,
+                    sign = sp.sign,
+                    way = way,
+                )
+            val doubleLineAir =
+                doubleLineWithJumpStart(
+                    current = startingPoint,
+                    sign = 0,
+                    way = way,
+                )
+            val doubleLineVihu =
+                doubleLineWithJumpStart(
+                    current = startingPoint,
+                    sign = -sp.sign,
+                    way = way,
+                )
+            val valivaihe = 0
+            +doubleLineOma.summa()
+//            +doubleLineAir.summa() / 2
+//            -doubleLineVihu.summa()
+            counter = valivaihe
+        }
+
+        return counter
     }
 }

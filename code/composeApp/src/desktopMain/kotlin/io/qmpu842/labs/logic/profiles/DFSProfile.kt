@@ -1,5 +1,6 @@
 package io.qmpu842.labs.logic.profiles
 
+import io.qmpu842.labs.helpers.getIndexOfMax
 import io.qmpu842.labs.logic.Board
 
 class DFSProfile(
@@ -22,23 +23,13 @@ class DFSProfile(
                 forSide = forSide,
                 timeMax = System.currentTimeMillis() + timeLimit
         )
-//        println("joku: ${joku.toList()}")
 
-        var indexe = 0
-        var max = joku[indexe]
-        
-        joku.forEachIndexed { index, t -> 
-            if (t > max){
-                indexe = index
-                max = t
-            }
-        }
         val toka = System.currentTimeMillis()
         val diff = toka - eka
 //        println("Done")
 //        println("Time spend2: ${diff} ms")
 
-        return indexe
+        return joku.getIndexOfMax()
     }
 
     fun resulting(
@@ -55,12 +46,8 @@ class DFSProfile(
         val voittaja = board.isLastPlayWinning()
         if (voittaja) {
             val laste = board.history.last()
-            /* Weird...
-             * This (forSide == side) should be the correct one
-             * But initial feeling is that this (laste.sign == forSide) performed better.
-             * It is nonsensical as the history should be always positive.
-             * Yet I remember seeing positives and negatives in the end result, weird..
-             */
+            // Nvm the performance is about the same, still weird, not as weird as the other. I was using the wrong profile
+            // Maybe tiny bit better
             if (forSide == side) {
                 winnersAndLoser[laste] -= 1
             } else {
