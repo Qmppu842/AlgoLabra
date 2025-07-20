@@ -28,12 +28,12 @@ fun App2() {
         TheGame()
     }
 }
-
+var lastTime = System.currentTimeMillis()
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
 //    val playerA: OpponentProfile = ProfileCreator.miniMaxV3Profile // 3000
 //    val playerB: OpponentProfile = ProfileCreator.miniMaxV2Profile // 80
-    val playerA: OpponentProfile = ProfileCreator.human
+    val playerA: OpponentProfile = ProfileCreator.miniMaxV3Profile3
     val playerB: OpponentProfile = ProfileCreator.miniMaxV2Profile2
 
     var playerOnTurn by remember { mutableStateOf(playerA) }
@@ -92,17 +92,26 @@ fun TheGame(modifier: Modifier = Modifier) {
 
     LaunchedEffect(isAutoPlayActive){
         while (isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
-            delay(10)
+            delay(1)
             runBlocking {
-            playNextFromProfile()
+//                val alku = System.currentTimeMillis()
+                playNextFromProfile()
+//                val loppu = System.currentTimeMillis()
+//                if (loppu-alku < 5){
+//                    delay(5)
+//                }
             }
 
             if (isAutoAutoPlayActive && isThereWinner != 0) {
-                var delay = 200L
+                val thing = System.currentTimeMillis()
+                val timeTook  = thing - lastTime
+                lastTime = thing
+                println("Round took ~$timeTook ms")
+                var delay = 2L
                 if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
-                    delay = 5000
+                    delay = 5000L
                 }
-                delay(delay)
+//                delay(delay)
                 clearBoardAction()
             }
         }

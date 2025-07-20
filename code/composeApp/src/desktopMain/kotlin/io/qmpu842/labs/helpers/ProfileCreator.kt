@@ -20,9 +20,21 @@ object ProfileCreator {
             depth = 20,
         timeLimit = 300
     )
+
+    val miniMaxV3Profile2 =
+        MiniMaxV1Profile(
+            depth = 5,
+            timeLimit = 500
+        )
+    val miniMaxV3Profile3 =
+        MiniMaxV1Profile(
+            depth = 20,
+            timeLimit = 150
+        )
+
     val miniMaxV2Profile2 =
         MiniMaxV101Profile(
-            depth = 20,
-            timeLimit = 1000,
+            depth = 6,
+            timeLimit = 600,
         )
 }
