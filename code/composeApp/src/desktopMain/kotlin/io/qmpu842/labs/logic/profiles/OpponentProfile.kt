@@ -7,6 +7,10 @@ abstract class OpponentProfile {
     val rand = MyRandom.random
     val id: Int = rand.nextInt()
 
+    var wins = 0
+    var lose = 0
+    var tie = 0
+
     abstract fun nextMove(
         board: Board,
         forSide: Int): Int

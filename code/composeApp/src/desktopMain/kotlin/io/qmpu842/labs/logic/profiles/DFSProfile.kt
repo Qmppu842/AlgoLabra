@@ -65,6 +65,7 @@ class DFSProfile(
         }
 
         val moves = board.getLegalMoves()
+        moves.shuffle(rand)
 
         val res = IntArray(board.getWells()) { 0 }
         for (move in moves) {

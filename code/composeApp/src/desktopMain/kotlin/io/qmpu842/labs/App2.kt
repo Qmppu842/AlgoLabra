@@ -30,7 +30,7 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-    val playerA: OpponentProfile = ProfileCreator.dfsProfileA
+    val playerA: OpponentProfile = ProfileCreator.rand
     val playerB: OpponentProfile = ProfileCreator.dfsProfileB
     var playerOnTurn by remember { mutableStateOf(playerA) }
 
@@ -38,12 +38,20 @@ fun TheGame(modifier: Modifier = Modifier) {
     var isThereWinner by remember { mutableIntStateOf(0) }
     var boardState by remember { mutableStateOf(Board()) }
 
+    val aStats = remember { mutableIntStateOf(playerA.wins) }
+    val bStats = remember { mutableIntStateOf(playerB.wins) }
+
     val dropTokenAction: (Int) -> Unit = { column ->
         if (isThereWinner == 0) {
             boardState = boardState.dropToken(column, boardState.history.size * forSide.value)
             val voittaja = boardState.isLastPlayWinning(4)
             if (voittaja) {
                 isThereWinner = forSide.value
+                if (forSide.value == -1) {
+                    aStats.value += 1
+                } else {
+                    bStats.value += 1
+                }
             }
             forSide.value *= -1
             playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
@@ -66,12 +74,18 @@ fun TheGame(modifier: Modifier = Modifier) {
 
     var isAutoPlayActive by remember { mutableStateOf(true) }
 
+    var isAutoAutoPlayActive by remember { mutableStateOf(true) }
+
 //    println("player on turn: ${playerOnTurn::class.simpleName}")
 
     LaunchedEffect(isAutoPlayActive){
         while (isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
-                delay(80)
-                playNextFromProfile()
+            delay(10)
+            playNextFromProfile()
+
+            if (isAutoAutoPlayActive && isThereWinner != 0) {
+                clearBoardAction()
+            }
         }
     }
 
@@ -120,6 +134,14 @@ fun TheGame(modifier: Modifier = Modifier) {
             }
             Button(onClick = {isAutoPlayActive = !isAutoPlayActive}){
                 Text("Activate autoplay from profiles")
+            }
+        }
+        Row {
+            Button(onClick = {}, modifier = Modifier.width(308.dp)) {
+                Text("Red player wins: ${aStats.value}")
+            }
+            Button(onClick = {}, modifier = Modifier.width(308.dp)) {
+                Text("Yellow player wins: ${bStats.value}")
             }
         }
 
