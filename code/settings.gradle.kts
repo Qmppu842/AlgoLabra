@@ -10,6 +10,10 @@ pluginManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+
+        maven {
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+        }
         mavenCentral()
         gradlePluginPortal()
     }
@@ -23,6 +27,9 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.android")
                 includeGroupAndSubgroups("com.google")
             }
+        }
+        maven {
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots")
         }
         mavenCentral()
     }

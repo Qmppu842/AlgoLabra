@@ -1,7 +1,7 @@
 # Viikko 1
 
 Hyvä päiväkirjani, nyt olen ollut tällä autiolla saarella viikon.  
-Aloin miettimään kahden kilpikonnan lauttana käyttämistä mutta sitten muistin tämän olevan eri päivä kirja.
+Aloin miettimään kahden kilpikonnan lauttana käyttämistä mutta sitten muistin tämän olevan eri päiväkirja.
 
 ## Mitä olen tehnyt tällä viikolla?
 

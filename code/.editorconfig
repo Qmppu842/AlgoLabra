@@ -2,3 +2,12 @@
 composeKtLint = enabled
 ktlint_experimental = true
 compose_preview_public_check = enabled
+
+
+[*.kt]
+ktlint_standard_function-naming = disabled
+ktlint_standard_no-wildcard-imports = disabled
+
+[*.kt]
+compose = enabled
+ktlint_compose_composable-naming = enabled

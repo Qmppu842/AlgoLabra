@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:filename")
+
 package io.qmpu842.labs
 
 import androidx.compose.ui.window.Window
@@ -7,8 +9,8 @@ fun main() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
-            title = "onlydesktop",
+            title = "Connect 4,  Bots",
         ) {
-            App()
+            App2()
         }
     }
