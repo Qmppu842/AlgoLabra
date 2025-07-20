@@ -1,11 +1,13 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.getIndexOfMax
+import io.qmpu842.labs.helpers.MyRandom
+import io.qmpu842.labs.helpers.getListOfIndexesOfMax
 import io.qmpu842.labs.logic.Board
 import kotlin.math.max
 import kotlin.math.min
 
-class MiniMaxV1Profile(var depth: Int = 10, var timeLimit: Int = 100) : OpponentProfile() {
+class MiniMaxV101Profile(var depth: Int = 10, var timeLimit: Int = 100) : OpponentProfile() {
+
     var currentMaxTime = System.currentTimeMillis() + timeLimit
 
     override fun nextMove(
@@ -30,27 +32,7 @@ class MiniMaxV1Profile(var depth: Int = 10, var timeLimit: Int = 100) : Opponent
 //        println("Stopping minimax, spend time $endtime ms")
 //        println("Winners and losers: ${winnersAndLoser.toList()}")
 
-        return winnersAndLoser.getIndexOfMax()
-    }
-
-    fun minimaxAsHearisticWells(
-        board: Board,
-        forSide: Int,
-    ): IntArray {
-        val secondBoard = board.deepCopy()
-        val winnersAndLoser = IntArray(board.getWells()) { 0 }
-        val moves = secondBoard.getLegalMoves()
-        for (move in moves) {
-            val valuee =
-                minimax(
-                    board = board.dropLockedToken(move).deepCopy(),
-                    depth = depth,
-                    maximizingPlayer = false,
-                )
-            winnersAndLoser[move] = valuee
-        }
-
-        return winnersAndLoser
+        return winnersAndLoser.getListOfIndexesOfMax().random(MyRandom.random)
     }
 
     fun minimax(
@@ -66,7 +48,7 @@ class MiniMaxV1Profile(var depth: Int = 10, var timeLimit: Int = 100) : Opponent
 
         val time = System.currentTimeMillis()
 
-        if (depth == 0 || time >= currentMaxTime) return board.lastMovesValue()
+        if (depth == 0 || time >= currentMaxTime) return board.lastMovesValue2()
 
         val moves = board.getLegalMoves()
 

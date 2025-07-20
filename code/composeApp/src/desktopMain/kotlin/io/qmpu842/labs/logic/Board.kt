@@ -308,4 +308,13 @@ data class Board(
 
         return counter
     }
+
+    fun lastMovesValue2(neededForWin: Int = 4): Int {
+        val lastOne = history.last()
+        if (lastOne == -1) return 0
+        val wellSpace = getWellSpace(lastOne)
+        val startingPoint = Point(lastOne, wellSpace)
+        val listaa = SecondHeuristicThing.combinedWells(this, 1)
+        return listaa[startingPoint.x]
+    }
 }

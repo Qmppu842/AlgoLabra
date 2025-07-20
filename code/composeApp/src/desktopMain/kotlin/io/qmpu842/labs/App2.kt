@@ -31,8 +31,11 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-    val playerA: OpponentProfile = ProfileCreator.simpleOpportunisticProfile
-    val playerB: OpponentProfile = ProfileCreator.miniMaxV1Profile
+//    val playerA: OpponentProfile = ProfileCreator.miniMaxV3Profile // 3000
+//    val playerB: OpponentProfile = ProfileCreator.miniMaxV2Profile // 80
+    val playerA: OpponentProfile = ProfileCreator.human
+    val playerB: OpponentProfile = ProfileCreator.miniMaxV2Profile2
+
     var playerOnTurn by remember { mutableStateOf(playerA) }
 
     val forSide = remember { mutableIntStateOf(-1) }

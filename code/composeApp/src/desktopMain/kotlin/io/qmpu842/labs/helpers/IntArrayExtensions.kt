@@ -11,3 +11,18 @@ fun IntArray.getIndexOfMax(): Int {
     }
     return indexe
 }
+
+fun IntArray.getListOfIndexesOfMax(): MutableList<Int> {
+    val indexList = mutableListOf<Int>()
+    var max = Int.MIN_VALUE
+    this.forEachIndexed { index, value ->
+        if (value > max) {
+            indexList.clear()
+            max = value
+        }
+        if (value == max) {
+            indexList.add(index)
+        }
+    }
+    return indexList
+}
