@@ -24,3 +24,14 @@ fun Array<IntArray>.next(
     if (y !in 0..<this[x].size) return null
     return Point(x, y)
 }
+
+
+fun Array<IntArray>.collectedSize(): Int {
+    var collectSize = 0
+    this.forEach {
+        collectSize += it.size
+    }
+    return collectSize
+}
+
+fun Array<IntArray>.collectedSize2(): Int = this.fold(0) { acc, next -> acc + next.size }

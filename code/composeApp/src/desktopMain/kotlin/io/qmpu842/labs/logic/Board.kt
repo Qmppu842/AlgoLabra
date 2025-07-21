@@ -1,5 +1,6 @@
 package io.qmpu842.labs.logic
 
+import io.qmpu842.labs.helpers.BoardConfig
 import io.qmpu842.labs.helpers.get
 import io.qmpu842.labs.helpers.next
 import io.qmpu842.labs.helpers.summa
@@ -19,6 +20,8 @@ data class Board(
         boardHeight: Int = 6,
     ) : this(Array(boardWidth) { IntArray(boardHeight) { 0 } })
 
+    constructor(boardConfig: BoardConfig) : this(boardHeight = boardConfig.height, boardWidth = boardConfig.width)
+
     /**
      * @return the last token put in to the board
      */
@@ -36,7 +39,9 @@ data class Board(
         return result
     }
 
-    fun dropLockedToken(column: Int): Board = dropToken(column, history.size * if (history.size % 2 == 0) 1 else -1)
+    fun dropLockedToken(column: Int): Board = dropToken(column, getOnTurnToken())
+
+    fun getOnTurnToken(): Int = history.size * if (history.size % 2 == 0) 1 else -1
 
     /**
      * Drops the token to the well
@@ -364,5 +369,9 @@ data class Board(
         }
 
         return counter / 2
+    }
+
+    fun isAtMaxSize(): Boolean {
+        return history.size - 1 == board.fold(0) { acc, ints -> acc + ints.size }
     }
 }

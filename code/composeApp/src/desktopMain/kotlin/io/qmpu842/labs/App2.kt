@@ -10,7 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.helpers.ProfileCreator
+import io.qmpu842.labs.helpers.Settings
 import io.qmpu842.labs.logic.Board
+import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.SecondHeuristicThing
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlinx.coroutines.delay
@@ -24,11 +26,6 @@ import org.jetbrains.compose.resources.painterResource
 @Suppress("ktlint:compose:modifier-missing-check")
 @Composable
 fun App2() {
-//    var isAutoPlayActive by remember { mutableStateOf(true) }
-//    LaunchedEffect(isAutoPlayActive){
-//        delay(3000L)
-//        isAutoPlayActive = false
-//    }
     MaterialTheme {
         TheGame(Modifier.padding(top = 20.dp, bottom = 50.dp, start =  50.dp, end = 50.dp))
     }
@@ -43,6 +40,12 @@ fun TheGame(modifier: Modifier = Modifier) {
 //    val playerA: OpponentProfile = ProfileCreator.miniMaxV3Profile4
 //    val playerB: OpponentProfile = ProfileCreator.miniMaxV3Profile4
 
+    var boardState by remember { mutableStateOf(Board()) }
+
+    var settings by remember { mutableStateOf(Settings()) }
+
+    var gameHolder by remember { mutableStateOf(GameHolder(Board(), ProfileCreator.rand, ProfileCreator.rand)) }
+
     val playerA: OpponentProfile = ProfileCreator.rand
     val playerB: OpponentProfile = ProfileCreator.rand
 
@@ -50,19 +53,15 @@ fun TheGame(modifier: Modifier = Modifier) {
 
     val forSide = remember { mutableIntStateOf(-1) }
     var isThereWinner by remember { mutableIntStateOf(0) }
-    var boardState by remember { mutableStateOf(Board()) }
 
     val aStats = remember { mutableIntStateOf(playerA.wins) }
     val bStats = remember { mutableIntStateOf(playerB.wins) }
 
-    var isAutoPlayActive by remember { mutableStateOf(false) }
-
-    var isAutoAutoPlayActive by remember { mutableStateOf(true) }
 
     val dropTokenAction: (Int) -> Unit = { column ->
         if (isThereWinner == 0) {
-            boardState = boardState.dropToken(column, boardState.history.size * forSide.value)
-//            boardState = boardState.dropLockedToken(column)
+//            boardState = boardState.dropToken(column, boardState.history.size * forSide.value)
+            boardState = boardState.dropLockedToken(column)
             val voittaja = boardState.isLastPlayWinning(4)
             if (voittaja) {
                 isThereWinner = forSide.value
@@ -75,15 +74,15 @@ fun TheGame(modifier: Modifier = Modifier) {
             forSide.value *= -1
             playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
 
-            if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
-                isAutoPlayActive = !isAutoPlayActive
-                isAutoPlayActive = !isAutoPlayActive
-            }
+//            if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
+//                isAutoPlayActive = !isAutoPlayActive
+//                isAutoPlayActive = !isAutoPlayActive
+//            }
         }
     }
 
     val undoAction: () -> Unit = {
-        boardState = boardState.undoLastMove()
+        gameHolder = gameHolder.undo()
     }
 
     val clearBoardAction: () -> Unit = {
@@ -96,10 +95,8 @@ fun TheGame(modifier: Modifier = Modifier) {
         dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
     }
 
-//    println("player on turn: ${playerOnTurn::class.simpleName}")
-
-    LaunchedEffect(isAutoPlayActive) {
-        while (isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
+    LaunchedEffect(settings.isAutoPlayActive) {
+        while (settings.isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
 //            delay(100)
 //            runBlocking {
             val alku = System.currentTimeMillis()
@@ -111,7 +108,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             }
 //            }
 
-            if (isAutoAutoPlayActive && isThereWinner != 0) {
+            if (settings.isAutoAutoPlayActive && isThereWinner != 0) {
                 val thing = System.currentTimeMillis()
                 val timeTook = thing - lastTime
                 lastTime = thing
@@ -151,15 +148,20 @@ fun TheGame(modifier: Modifier = Modifier) {
             Button(onClick = playNextFromProfile) {
                 Text("Play next move")
             }
-            Button(onClick = { isAutoPlayActive = !isAutoPlayActive }) {
+            Button(onClick = {
+                settings = settings.toggleAutoPlay()
+            }) {
                 Text("Activate autoplay from profiles")
             }
         }
         Row {
-            Button(onClick = {}, modifier = Modifier.width(308.dp)) {
+            Button(onClick = {}, modifier = Modifier.width(205.dp)) {
                 Text("Red player wins: ${aStats.value}")
             }
-            Button(onClick = {}, modifier = Modifier.width(308.dp)) {
+            Button(onClick = {}, modifier = Modifier.width(205.dp)) {
+                Text("Draws: ${bStats.value}")
+            }
+            Button(onClick = {}, modifier = Modifier.width(205.dp)) {
                 Text("Yellow player wins: ${bStats.value}")
             }
         }
@@ -267,3 +269,12 @@ fun HeuristicWells(
         }
     }
 }
+
+// @Composable
+// fun SettingsThings() {
+//    Button(onClick = {
+//        settings = settings.toggleAutoPlay()
+//    }) {
+//        Text("Activate autoplay from profiles")
+//    }
+// }
