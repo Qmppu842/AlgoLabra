@@ -9,7 +9,8 @@ import kotlin.math.sign
 
 data class Board(
     val board: Array<IntArray>,
-    val history: List<Int> = listOf(-1),
+    val boardConfig: BoardConfig,
+    val history: List<Int> = listOf(),
 ) {
     /**
      * @param boardWidth kuinka monta kuilua, same as x
@@ -18,14 +19,30 @@ data class Board(
     constructor(
         boardWidth: Int = 7,
         boardHeight: Int = 6,
-    ) : this(Array(boardWidth) { IntArray(boardHeight) { 0 } })
+        neededForWin: Int = 4,
+    ) : this(
+        board = Array(boardWidth) { IntArray(boardHeight) { 0 } },
+        boardConfig =
+            BoardConfig(
+                width = boardWidth,
+                height = boardHeight,
+                neededForWin = neededForWin,
+            ),
+    )
 
-    constructor(boardConfig: BoardConfig) : this(boardHeight = boardConfig.height, boardWidth = boardConfig.width)
+    /**
+     * This is dumb...
+     */
+    constructor(boardConfig: BoardConfig) : this(
+        boardHeight = boardConfig.height,
+        boardWidth = boardConfig.width,
+        neededForWin = boardConfig.neededForWin,
+    )
 
     /**
      * @return the last token put in to the board
      */
-    fun getLastMove(): Int = history.last()
+    fun getLastMove(): Int? = history.lastOrNull()
 
     /**
      * @return list of all the wells with space
@@ -41,7 +58,7 @@ data class Board(
 
     fun dropLockedToken(column: Int): Board = dropToken(column, getOnTurnToken())
 
-    fun getOnTurnToken(): Int = history.size * if (history.size % 2 == 0) 1 else -1
+    fun getOnTurnToken(): Int = history.size * if (history.size % 2 == 1) 1 else -1
 
     /**
      * Drops the token to the well
@@ -66,13 +83,15 @@ data class Board(
         }
         return this.copy(
             board,
+            boardConfig,
             history + column,
         )
     }
 
     fun undoLastMove(): Board {
+        if (history.isEmpty()) return this
         val lastWell = history.last()
-        if (lastWell == -1) return this
+//        if (lastWell == -1) return this
 
         val thing = board[lastWell]
         var toRemove = -1
@@ -87,6 +106,7 @@ data class Board(
         board[lastWell][toRemove] = 0
         return this.copy(
             board,
+            boardConfig,
             history.take(history.size - 1),
         )
     }
@@ -94,17 +114,9 @@ data class Board(
     /**
      * @return width of the board
      */
-    fun getWells() = board.size
+    fun getWells() = boardConfig.width
 
-    fun clear(): Board {
-        val board2 = board
-        for (x in board.indices) {
-            for (y in board[x].indices) {
-                board2[x][y] = 0
-            }
-        }
-        return Board(board2, listOf(-1))
-    }
+    fun clear(): Board = Board(boardConfig)
 
     /**
      *  @return the zeroes still in the well
@@ -264,17 +276,18 @@ data class Board(
                 board2[x][y] = board[x][y]
             }
         }
-        val hist = mutableListOf<Int>()
-        for (histe in history) {
-            hist.add(histe)
+        val copiedHistory = mutableListOf<Int>()
+        for (move in history) {
+            copiedHistory.add(move)
         }
 
-        return Board(board2, hist)
+        return Board(board2, boardConfig, copiedHistory)
     }
 
-    fun lastMovesValue(neededForWin: Int = 4): Int {
+    fun lastMovesValue(neededForWin: Int = boardConfig.neededForWin): Int {
+        if (history.isEmpty()) return 0
         val lastOne = history.last()
-        if (lastOne == -1) return 0
+//        if (lastOne == -1) return 0
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
         val sp = board.get(startingPoint) ?: return 0
@@ -315,8 +328,9 @@ data class Board(
     }
 
     fun lastMovesValue2(neededForWin: Int = 4): Int {
+        if (history.isEmpty()) return 0
         val lastOne = history.last()
-        if (lastOne == -1) return 0
+//        if (lastOne == -1) return 0
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
         val listaa = SecondHeuristicThing.combinedWells(this, 1)
@@ -324,8 +338,9 @@ data class Board(
     }
 
     fun lastMovesValue3(neededForWin: Int = 4): Int {
+        if (history.isEmpty()) return 0
         val lastOne = history.last()
-        if (lastOne == -1) return 0
+//        if (lastOne == -1) return 0
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
         val sp = board.get(startingPoint) ?: return 0
@@ -372,6 +387,6 @@ data class Board(
     }
 
     fun isAtMaxSize(): Boolean {
-        return history.size - 1 == board.fold(0) { acc, ints -> acc + ints.size }
+        return history.size == board.fold(0) { acc, ints -> acc + ints.size }
     }
 }

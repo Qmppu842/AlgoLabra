@@ -9,12 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import io.qmpu842.labs.helpers.BoardConfig
 import io.qmpu842.labs.helpers.ProfileCreator
 import io.qmpu842.labs.helpers.Settings
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.SecondHeuristicThing
-import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlinx.coroutines.delay
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
@@ -31,7 +31,6 @@ fun App2() {
     }
 }
 
-var lastTime = System.currentTimeMillis()
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
@@ -40,45 +39,34 @@ fun TheGame(modifier: Modifier = Modifier) {
 //    val playerA: OpponentProfile = ProfileCreator.miniMaxV3Profile4
 //    val playerB: OpponentProfile = ProfileCreator.miniMaxV3Profile4
 
-    var boardState by remember { mutableStateOf(Board()) }
+//    var boardState by remember { mutableStateOf(Board()) }
 
     var settings by remember { mutableStateOf(Settings()) }
 
-    var gameHolder by remember { mutableStateOf(GameHolder(Board(), ProfileCreator.rand, ProfileCreator.rand)) }
+    var gameHolder by remember {
+        mutableStateOf(
+            GameHolder(
+                Board(),
+                ProfileCreator.rand,
+                ProfileCreator.rand,
+                bc = BoardConfig(),
+            ),
+        )
+    }
 
-    val playerA: OpponentProfile = ProfileCreator.rand
-    val playerB: OpponentProfile = ProfileCreator.rand
+//    val playerA: OpponentProfile = ProfileCreator.rand
+//    val playerB: OpponentProfile = ProfileCreator.rand
 
-    var playerOnTurn by remember { mutableStateOf(playerA) }
+//    var playerOnTurn by remember { mutableStateOf(playerA) }
 
     val forSide = remember { mutableIntStateOf(-1) }
     var isThereWinner by remember { mutableIntStateOf(0) }
 
-    val aStats = remember { mutableIntStateOf(playerA.wins) }
-    val bStats = remember { mutableIntStateOf(playerB.wins) }
-
+    val aStats = remember { mutableIntStateOf(1) }
+    val bStats = remember { mutableIntStateOf(1) }
 
     val dropTokenAction: (Int) -> Unit = { column ->
-        if (isThereWinner == 0) {
-//            boardState = boardState.dropToken(column, boardState.history.size * forSide.value)
-            boardState = boardState.dropLockedToken(column)
-            val voittaja = boardState.isLastPlayWinning(4)
-            if (voittaja) {
-                isThereWinner = forSide.value
-                if (forSide.value == -1) {
-                    aStats.value += 1
-                } else {
-                    bStats.value += 1
-                }
-            }
-            forSide.value *= -1
-            playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
-
-//            if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
-//                isAutoPlayActive = !isAutoPlayActive
-//                isAutoPlayActive = !isAutoPlayActive
-//            }
-        }
+        gameHolder = gameHolder.dropTokenLimited(column)
     }
 
     val undoAction: () -> Unit = {
@@ -86,54 +74,53 @@ fun TheGame(modifier: Modifier = Modifier) {
     }
 
     val clearBoardAction: () -> Unit = {
-        boardState = boardState.clear()
-        playerOnTurn = playerA
-        forSide.value = -1
-        isThereWinner = 0
+        gameHolder = gameHolder.clearBoard()
     }
+
     val playNextFromProfile = {
-        dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
+//        dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
+        gameHolder = gameHolder.dropTokenLimited()
     }
 
-    LaunchedEffect(settings.isAutoPlayActive) {
-        while (settings.isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
-//            delay(100)
-//            runBlocking {
-            val alku = System.currentTimeMillis()
-            playNextFromProfile()
-            val loppu = System.currentTimeMillis()
-            if (loppu - alku < playerOnTurn.timeLimit) {
-                val amount = playerOnTurn.timeLimit - (loppu - alku)
-                delay(amount)
-            }
+//    LaunchedEffect(settings.isAutoPlayActive) {
+//        while (settings.isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
+// //            delay(100)
+// //            runBlocking {
+//            val alku = System.currentTimeMillis()
+//            playNextFromProfile()
+//            val loppu = System.currentTimeMillis()
+//            if (loppu - alku < playerOnTurn.timeLimit) {
+//                val amount = playerOnTurn.timeLimit - (loppu - alku)
+//                delay(amount)
 //            }
-
-            if (settings.isAutoAutoPlayActive && isThereWinner != 0) {
-                val thing = System.currentTimeMillis()
-                val timeTook = thing - lastTime
-                lastTime = thing
-                println("Round took ~$timeTook ms")
-                var delay = 10L
-                if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
-                    delay = 5000L
-                }
-//                runBlocking {
-                delay(delay)
+// //            }
+//
+//            if (settings.isAutoAutoPlayActive && isThereWinner != 0) {
+//                val thing = System.currentTimeMillis()
+//                val timeTook = thing - lastTime
+//                lastTime = thing
+//                println("Round took ~$timeTook ms")
+//                var delay = 10L
+//                if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
+//                    delay = 5000L
 //                }
-                clearBoardAction()
-            }
-        }
-    }
+// //                runBlocking {
+//                delay(delay)
+// //                }
+//                clearBoardAction()
+//            }
+//        }
+//    }
 
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
             dropTokenAction = dropTokenAction,
-            boardWidth = boardState.getWells(),
+            boardWidth = gameHolder.bc.width,
         )
-        DrawTheBoard(board = boardState)
+        DrawTheBoard(board = gameHolder.board)
 
         HeuristicWells(
-            board = boardState,
+            board = gameHolder.board,
             forSide = forSide.value,
             wellFunction = SecondHeuristicThing::combinedWells,
         )
@@ -148,11 +135,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             Button(onClick = playNextFromProfile) {
                 Text("Play next move")
             }
-            Button(onClick = {
-                settings = settings.toggleAutoPlay()
-            }) {
-                Text("Activate autoplay from profiles")
-            }
+            SettingsThings(gameHolder, settings)
         }
         Row {
             Button(onClick = {}, modifier = Modifier.width(205.dp)) {
@@ -270,11 +253,47 @@ fun HeuristicWells(
     }
 }
 
-// @Composable
-// fun SettingsThings() {
-//    Button(onClick = {
-//        settings = settings.toggleAutoPlay()
-//    }) {
-//        Text("Activate autoplay from profiles")
-//    }
-// }
+var lastTime = System.currentTimeMillis()
+
+@Composable
+fun SettingsThings(
+    gameHolder: MutableState<GameHolder>,
+    settings: Settings,
+) {
+    LaunchedEffect(settings.isAutoPlayActive) {
+        while (settings.isAutoPlayActive && gameHolder.value.playerOnTurn().id != ProfileCreator.human.id) {
+//            delay(100)
+//            runBlocking {
+            val alku = System.currentTimeMillis()
+//             playNextFromProfile()
+            gameHolder.value = gameHolder.value.dropTokenLimited()
+            val loppu = System.currentTimeMillis()
+            if (loppu - alku < gameHolder.value.playerOnTurn().timeLimit) {
+                val amount = gameHolder.value.playerOnTurn().timeLimit - (loppu - alku)
+                delay(amount)
+            }
+//            }
+
+            if (settings.isAutoAutoPlayActive && gameHolder.value.hasGameStopped()) {
+                val thing = System.currentTimeMillis()
+                val timeTook = thing - lastTime
+                lastTime = thing
+                println("Round took ~$timeTook ms")
+                var delay = 10L
+                if (gameHolder.value.playerB.id == ProfileCreator.human.id || gameHolder.playerA.id == ProfileCreator.human.id) {
+                    delay = 5000L
+                }
+//                runBlocking {
+                delay(delay)
+//                }
+                gameHolder = gameHolder.clearBoard()
+            }
+        }
+    }
+
+    Button(onClick = {
+        settings = settings.toggleAutoPlay()
+    }) {
+        Text("Activate autoplay from profiles")
+    }
+}
