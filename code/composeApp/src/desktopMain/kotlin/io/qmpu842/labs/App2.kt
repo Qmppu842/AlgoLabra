@@ -116,7 +116,7 @@ fun TheGame(modifier: Modifier = Modifier) {
                 val timeTook = thing - lastTime
                 lastTime = thing
                 println("Round took ~$timeTook ms")
-                var delay = 500L
+                var delay = 10L
                 if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
                     delay = 5000L
                 }
@@ -128,63 +128,18 @@ fun TheGame(modifier: Modifier = Modifier) {
         }
     }
 
-    val heuristicWells =
-        SecondHeuristicThing.combinedWells(
-            board = boardState,
-            forSide = forSide.value,
-        )
-//    val heuristicWells2  =   heuristicWells
-//    val heuristicWells2 =
-//        ProfileCreator.miniMaxV1Profile.minimaxAsHearisticWells(
-//            board = boardState.deepCopy(),
-//            forSide = forSide.value,
-//        )
-
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
             dropTokenAction = dropTokenAction,
             boardWidth = boardState.getWells(),
         )
         DrawTheBoard(board = boardState)
-        Row(modifier = Modifier.fillMaxWidth()) {
-            for (well in heuristicWells) {
-                Button(
-                    onClick = {},
-                    Modifier.width(102.dp),
-                ) {
-                    var texti = "H:$well"
-                    if (well == Int.MAX_VALUE) {
-                        texti = "H:WIN!!"
-                    } else if (well == Int.MIN_VALUE) {
-                        texti = "H:Must block"
-                        if (heuristicWells.count { it == Int.MIN_VALUE } >= 2) {
-                            texti = "H:☹\uFE0F"
-                        }
-                    }
-                    Text(text = texti)
-                }
-            }
-        }
 
-//        Row(modifier = Modifier.fillMaxWidth()) {
-//            for (well in heuristicWells2) {
-//                Button(
-//                    onClick = {},
-//                    Modifier.width(102.dp),
-//                ) {
-//                    var texti = "H:$well"
-//                    if (well == Int.MAX_VALUE) {
-//                        texti = "H:WIN!!"
-//                    } else if (well == Int.MIN_VALUE) {
-//                        texti = "H:Must block"
-//                        if (heuristicWells2.count { it == Int.MIN_VALUE } >= 2) {
-//                            texti = "H:☹\uFE0F"
-//                        }
-//                    }
-//                    Text(text = texti)
-//                }
-//            }
-//        }
+        HeuristicWells(
+            board = boardState,
+            forSide = forSide.value,
+            wellFunction = SecondHeuristicThing::combinedWells,
+        )
 
         Row {
             Button(onClick = undoAction) {
@@ -279,6 +234,35 @@ fun DropButtons(
                 dropTokenAction(num)
             }, modifier = Modifier.width(102.dp)) {
                 Text("Drop@${num + 1}")
+            }
+        }
+    }
+}
+
+@Composable
+fun HeuristicWells(
+    board: Board,
+    forSide: Int,
+    wellFunction: (Board, Int) -> IntArray,
+    modifier: Modifier = Modifier,
+) {
+    val heuristicWells = wellFunction(board, forSide)
+    Row(modifier = modifier.fillMaxWidth()) {
+        for (well in heuristicWells) {
+            Button(
+                onClick = {},
+                Modifier.width(102.dp),
+            ) {
+                var texti = "H:$well"
+                if (well == Int.MAX_VALUE) {
+                    texti = "H:WIN!!"
+                } else if (well == Int.MIN_VALUE) {
+                    texti = "H:Must block"
+                    if (heuristicWells.count { it == Int.MIN_VALUE } >= 2) {
+                        texti = "H:☹\uFE0F"
+                    }
+                }
+                Text(text = texti)
             }
         }
     }
