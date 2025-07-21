@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.helpers.BoardConfig
-import io.qmpu842.labs.helpers.ProfileCreator
+import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.helpers.Settings
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.GameHolder
@@ -40,8 +40,8 @@ fun TheGame(modifier: Modifier = Modifier) {
         mutableStateOf(
             GameHolder(
                 Board(),
-                ProfileCreator.rand,
-                ProfileCreator.rand,
+                ProfileHolder.rand,
+                ProfileHolder.miniMaxV3Profile4,
                 bc = BoardConfig(),
             ),
         )
@@ -266,10 +266,10 @@ fun (() -> Unit).SettingAutoAutoPlay(
 ) {
     LaunchedEffect(settings.isAutoAutoPlayActive && gameHolder.hasGameStopped()) {
         var delay = 10L
-        if (gameHolder.playerB.id == ProfileCreator.human.id || gameHolder.playerA.id == ProfileCreator.human.id) {
+        if (gameHolder.playerB.id == ProfileHolder.human.id || gameHolder.playerA.id == ProfileHolder.human.id) {
             delay = 5000L
         }
-        delay(delay)
+//        delay(delay)
         this@SettingAutoAutoPlay()
     }
 }
@@ -279,8 +279,8 @@ fun (() -> Unit).SettingNormalAutoPlay(
     gameHolder: GameHolder,
     settings: Settings,
 ) {
-    LaunchedEffect(settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileCreator.human.id) {
-        while (settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileCreator.human.id) {
+    LaunchedEffect(settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileHolder.human.id) {
+        while (settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileHolder.human.id) {
             val start = System.currentTimeMillis()
             this@SettingNormalAutoPlay()
             val end = System.currentTimeMillis()

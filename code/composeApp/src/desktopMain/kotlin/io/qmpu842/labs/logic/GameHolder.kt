@@ -1,6 +1,7 @@
 package io.qmpu842.labs.logic
 
 import io.qmpu842.labs.helpers.BoardConfig
+import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.helpers.lapTime
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.sign
@@ -16,6 +17,32 @@ data class GameHolder(
         playerB: OpponentProfile,
         bc: BoardConfig,
     ) : this(board = Board(bc), playerA = playerA, playerB = playerB, bc)
+
+    companion object {
+        fun runWithOutUi(amount: Int) {
+            var gameHolder =
+                GameHolder(
+                    playerA = ProfileHolder.rand,
+                    playerB = ProfileHolder.miniMaxV3Profile5,
+                    bc = BoardConfig(),
+                )
+            var gameCounter = 0
+            val alku = System.currentTimeMillis()
+            while (gameCounter < amount) {
+                if (gameHolder.hasGameStopped()) {
+                    lapTime()
+                    gameCounter++
+                    gameHolder = gameHolder.clearBoardAndUpdateWinners()
+                }
+                gameHolder = gameHolder.dropTokenLimited()
+            }
+            val loppu = System.currentTimeMillis()
+            println("Ended, took about ${loppu - alku} ms")
+            println("Stats:")
+            println("Red wins: ${gameHolder.playerA.firstPlayStats.wins}")
+            println("Yellow wins: ${gameHolder.playerB.secondPlayStats.wins}")
+        }
+    }
 
     fun playerOnTurn() = if (board.getOnTurnToken().sign == -1) playerA else playerB
 

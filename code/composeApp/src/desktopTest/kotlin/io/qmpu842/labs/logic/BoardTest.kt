@@ -13,7 +13,7 @@ class BoardTest :
         test("getLastMove on empty") {
             val board = Board()
 
-            board.getLastMove() shouldBe -1
+            board.getLastMove() shouldBe null
         }
 
         test("getLastMove after moves should give the last well") {
@@ -23,7 +23,7 @@ class BoardTest :
                     boardWidth = 3,
                     boardHeight = height,
                 )
-            board.getLastMove() shouldBe -1
+            board.getLastMove() shouldBe null
 
             board = board.dropToken(0, 1)
             board = board.dropToken(0, -2)

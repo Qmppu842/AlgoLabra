@@ -39,6 +39,8 @@ data class Board(
         neededForWin = boardConfig.neededForWin,
     )
 
+    constructor(board: Array<IntArray>) : this(board = board, boardConfig = BoardConfig())
+
     /**
      * @return the last token put in to the board
      */

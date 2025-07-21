@@ -28,7 +28,7 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
         }
 //        val endtime = System.currentTimeMillis() -(currentMaxTime - timeLimit)
 //        println("Stopping minimax, spend time $endtime ms")
-        println("Winners and losers: ${winnersAndLoser.toList()}")
+//        println("Winners and losers: ${winnersAndLoser.toList()}")
 
         return winnersAndLoser.getIndexOfMax()
     }

@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import io.qmpu842.labs.logic.GameHolder
 
 fun main() =
     application {
@@ -18,3 +19,7 @@ fun main() =
             App2()
         }
     }
+
+fun main2() {
+    GameHolder.runWithOutUi(100)
+}

@@ -2,7 +2,7 @@ package io.qmpu842.labs.helpers
 
 import io.qmpu842.labs.logic.profiles.*
 
-object ProfileCreator {
+object ProfileHolder {
     val human = HumanProfile()
     val rand = RandomProfile()
     val dfsProfileA = DFSProfile(-1)
@@ -42,6 +42,12 @@ object ProfileCreator {
         MiniMaxV1Profile(
             depth = 10,
             timeLimit = 500
+        )
+
+    val miniMaxV3Profile5 =
+        MiniMaxV1Profile(
+            depth = 10,
+            timeLimit = 10
         )
 
 }
