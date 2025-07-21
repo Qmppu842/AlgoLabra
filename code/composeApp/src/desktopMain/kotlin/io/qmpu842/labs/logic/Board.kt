@@ -127,8 +127,9 @@ data class Board(
     fun getHighestSpaceIndex(column: Int) = getWellSpace(column) - 1
 
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
+        if (history.isEmpty()) return false
         val lastOne = history.last()
-        if (lastOne == -1) return false
+//        if (lastOne == -1) return false
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
         val sp = board.get(startingPoint) ?: return false

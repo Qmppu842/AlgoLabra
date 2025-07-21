@@ -27,10 +27,9 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun App2() {
     MaterialTheme {
-        TheGame(Modifier.padding(top = 20.dp, bottom = 50.dp, start =  50.dp, end = 50.dp))
+        TheGame(Modifier.padding(top = 20.dp, bottom = 50.dp, start = 50.dp, end = 50.dp))
     }
 }
-
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
@@ -111,7 +110,20 @@ fun TheGame(modifier: Modifier = Modifier) {
 //            }
 //        }
 //    }
+    val thing2 =
+        { gameHolder = gameHolder.clearBoard() }
+            .SettingAutoAutoPlay(
+                gameHolder = gameHolder,
+                settings = settings,
+                modifier = modifier,
+            )
 
+    val thing =
+        { gameHolder = gameHolder.dropTokenLimited() }
+            .SettingNormalAutoPlay(
+                gameHolder = gameHolder,
+                settings = settings,
+        )
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
             dropTokenAction = dropTokenAction,
@@ -135,7 +147,16 @@ fun TheGame(modifier: Modifier = Modifier) {
             Button(onClick = playNextFromProfile) {
                 Text("Play next move")
             }
-            SettingsThings(gameHolder, settings)
+            Button(onClick = { settings = settings.toggleAutoPlay() }) {
+                Text("Activate autoplay from profiles")
+            }
+//            SettingsThings(
+//                gameHolder = gameHolder,
+//                settings = settings,
+//                ghDropToken = { gameHolder = gameHolder.dropTokenLimited() },
+// //                ghClear = { gameHolder = gameHolder.clearBoard() },
+//                settingsToggleAuto = { settings = settings.toggleAutoPlay() },
+//            )
         }
         Row {
             Button(onClick = {}, modifier = Modifier.width(205.dp)) {
@@ -253,47 +274,44 @@ fun HeuristicWells(
     }
 }
 
+
 var lastTime = System.currentTimeMillis()
 
 @Composable
-fun SettingsThings(
-    gameHolder: MutableState<GameHolder>,
+fun (() -> Unit).SettingAutoAutoPlay(
+    gameHolder: GameHolder,
     settings: Settings,
+    modifier: Modifier = Modifier,
 ) {
-    LaunchedEffect(settings.isAutoPlayActive) {
-        while (settings.isAutoPlayActive && gameHolder.value.playerOnTurn().id != ProfileCreator.human.id) {
-//            delay(100)
-//            runBlocking {
+    LaunchedEffect(settings.isAutoAutoPlayActive && gameHolder.hasGameStopped()) {
+        val thing = System.currentTimeMillis()
+        val timeTook = thing - lastTime
+        lastTime = thing
+        println("Round took ~$timeTook ms")
+        var delay = 400L
+        if (gameHolder.playerB.id == ProfileCreator.human.id || gameHolder.playerA.id == ProfileCreator.human.id) {
+            delay = 5000L
+        }
+        delay(delay)
+        this@SettingAutoAutoPlay()
+    }
+}
+
+@Composable
+fun (() -> Unit).SettingNormalAutoPlay(
+    gameHolder: GameHolder,
+    settings: Settings,
+    modifier: Modifier = Modifier,
+) {
+    LaunchedEffect(settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileCreator.human.id) {
+        while (settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileCreator.human.id) {
             val alku = System.currentTimeMillis()
-//             playNextFromProfile()
-            gameHolder.value = gameHolder.value.dropTokenLimited()
+            this@SettingNormalAutoPlay()
             val loppu = System.currentTimeMillis()
-            if (loppu - alku < gameHolder.value.playerOnTurn().timeLimit) {
-                val amount = gameHolder.value.playerOnTurn().timeLimit - (loppu - alku)
+            if (loppu - alku < gameHolder.playerOnTurn().timeLimit) {
+                val amount = gameHolder.playerOnTurn().timeLimit - (loppu - alku)
                 delay(amount)
             }
-//            }
-
-            if (settings.isAutoAutoPlayActive && gameHolder.value.hasGameStopped()) {
-                val thing = System.currentTimeMillis()
-                val timeTook = thing - lastTime
-                lastTime = thing
-                println("Round took ~$timeTook ms")
-                var delay = 10L
-                if (gameHolder.value.playerB.id == ProfileCreator.human.id || gameHolder.playerA.id == ProfileCreator.human.id) {
-                    delay = 5000L
-                }
-//                runBlocking {
-                delay(delay)
-//                }
-                gameHolder = gameHolder.clearBoard()
-            }
         }
-    }
-
-    Button(onClick = {
-        settings = settings.toggleAutoPlay()
-    }) {
-        Text("Activate autoplay from profiles")
     }
 }
