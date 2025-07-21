@@ -58,6 +58,9 @@ data class Board(
 
     fun dropLockedToken(column: Int): Board = dropToken(column, getOnTurnToken())
 
+    /**
+     * @return next turn token so on turn 32 token is -32
+     */
     fun getOnTurnToken(): Int = history.size * if (history.size % 2 == 1) 1 else -1
 
     /**

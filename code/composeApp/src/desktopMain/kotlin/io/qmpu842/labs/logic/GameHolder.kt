@@ -1,6 +1,7 @@
 package io.qmpu842.labs.logic
 
 import io.qmpu842.labs.helpers.BoardConfig
+import io.qmpu842.labs.helpers.lapTime
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.sign
 
@@ -21,10 +22,6 @@ data class GameHolder(
     fun undo() = this.copy(board = board.undoLastMove())
 
     fun clearBoard(): GameHolder = this.copy(board = board.clear())
-//        boardState = boardState.clear()
-//        playerOnTurn = playerA
-//        forSide.value = -1
-//        isThereWinner= 0
 
     fun hasGameStopped() = (board.isLastPlayWinning() || board.isAtMaxSize())
 
@@ -32,6 +29,15 @@ data class GameHolder(
         if ((!board.isLastPlayWinning() && board.isAtMaxSize())) return null
         return if (board.getOnTurnToken().sign == 1) playerA else playerB
     }
+
+    fun whoisWinnerText(): String =
+        if (board.getOnTurnToken().sign ==
+            -1
+        ) {
+            "Player B, The Yellow One! The ${playerB::class.simpleName}"
+        } else {
+            "Player A, The Red One! The ${playerA::class.simpleName}"
+        }
 
     fun dropTokenLimited(column: Int = -99): GameHolder {
         if (hasGameStopped()) return this
@@ -42,18 +48,22 @@ data class GameHolder(
         return this.copy(board.dropLockedToken(columnHolder))
     }
 
-//    fun dropTokenLimited(column: Int) = if (hasGameStopped()) this else this.copy(board.dropLockedToken(column))
-
     fun updateWinners() {
+        val winner = whoisWinner()
+        if (winner != null) {
+            winner.stats = winner.stats.win()
+
+            val loser = if (winner.id == playerA.id) playerA else playerA
+            loser.stats = loser.stats.lose()
+        } else {
+            playerA.stats = playerA.stats.draw()
+            playerB.stats = playerB.stats.draw()
+        }
+    }
+
+    fun clearBoardAndUpdateWinners(): GameHolder {
+        lapTime()
+        updateWinners()
+        return clearBoard()
     }
 }
-
-data class Stats(
-    val wins: Int = 0,
-    val draws: Int = 0,
-    val losses: Int = 0,
-)
-
-// val playNextFromProfile = {
-//    dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
-// }

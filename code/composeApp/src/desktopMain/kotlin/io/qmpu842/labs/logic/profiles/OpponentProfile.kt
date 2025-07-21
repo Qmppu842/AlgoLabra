@@ -1,8 +1,8 @@
 package io.qmpu842.labs.logic.profiles
 
 import io.qmpu842.labs.helpers.MyRandom
+import io.qmpu842.labs.helpers.Stats
 import io.qmpu842.labs.logic.Board
-import io.qmpu842.labs.logic.Stats
 
 abstract class OpponentProfile {
     val rand = MyRandom.random
@@ -10,11 +10,7 @@ abstract class OpponentProfile {
 
     open val timeLimit:Int = 10
 
-    val stats: Stats = Stats()
-
-    var wins = 0
-    var lose = 0
-    var tie = 0
+    var stats: Stats = Stats()
 
     abstract fun nextMove(
         board: Board,
