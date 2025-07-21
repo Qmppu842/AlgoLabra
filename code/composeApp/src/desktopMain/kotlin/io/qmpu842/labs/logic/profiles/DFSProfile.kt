@@ -9,25 +9,21 @@ class DFSProfile(
     /**
      * Allowed time limit for this to think
      */
-    var timeLimit = 1000
+    override var timeLimit = 1000
+
+    var currentMaxTime = System.currentTimeMillis() + timeLimit
 
     override fun nextMove(
         board: Board,
         forSide: Int,
     ): Int {
-        val eka = System.currentTimeMillis()
-//        println("Time on starting: $eka")
+        currentMaxTime = System.currentTimeMillis() + timeLimit
         val joku =
             resulting(
                 board = board.deepCopy(),
                 forSide = forSide,
-                timeMax = System.currentTimeMillis() + timeLimit
         )
 
-        val toka = System.currentTimeMillis()
-        val diff = toka - eka
-//        println("Done")
-//        println("Time spend2: ${diff} ms")
 
         return joku.getIndexOfMax()
     }
@@ -35,11 +31,10 @@ class DFSProfile(
     fun resulting(
         board: Board,
         forSide: Int,
-        timeMax: Long = System.currentTimeMillis() + timeLimit,
         winnersAndLoser: IntArray = IntArray(board.getWells()) { 0 },
     ): IntArray {
         val timeNow = System.currentTimeMillis()
-        if (timeNow >= timeMax) {
+        if (timeNow >= currentMaxTime) {
             return winnersAndLoser
         }
 
@@ -66,7 +61,6 @@ class DFSProfile(
                 resulting(
                     board = ddd,
                     forSide = -forSide,
-                    timeMax = timeMax,
                     winnersAndLoser,
                 )
             ccc.forEachIndexed { index, t ->

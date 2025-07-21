@@ -5,7 +5,7 @@ import io.qmpu842.labs.logic.Board
 import kotlin.math.max
 import kotlin.math.min
 
-class MiniMaxV1Profile(var depth: Int = 10, var timeLimit: Int = 100) : OpponentProfile() {
+class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) : OpponentProfile() {
     var currentMaxTime = System.currentTimeMillis() + timeLimit
 
     override fun nextMove(
@@ -28,7 +28,7 @@ class MiniMaxV1Profile(var depth: Int = 10, var timeLimit: Int = 100) : Opponent
         }
 //        val endtime = System.currentTimeMillis() -(currentMaxTime - timeLimit)
 //        println("Stopping minimax, spend time $endtime ms")
-//        println("Winners and losers: ${winnersAndLoser.toList()}")
+        println("Winners and losers: ${winnersAndLoser.toList()}")
 
         return winnersAndLoser.getIndexOfMax()
     }
@@ -57,16 +57,18 @@ class MiniMaxV1Profile(var depth: Int = 10, var timeLimit: Int = 100) : Opponent
         board: Board,
         depth: Int,
         maximizingPlayer: Boolean,
+        alpha: Int = Int.MIN_VALUE,
+        beta: Int = Int.MAX_VALUE,
     ): Int {
         val terminal = board.isLastPlayWinning()
 
-        if (terminal && maximizingPlayer) return Int.MAX_VALUE
-
-        if (terminal) return Int.MIN_VALUE
+//        if (terminal && maximizingPlayer) return Int.MAX_VALUE
+//
+//        if (terminal) return Int.MIN_VALUE
 
         val time = System.currentTimeMillis()
 
-        if (depth == 0 || time >= currentMaxTime) return board.lastMovesValue()
+        if (depth == 0 || time >= currentMaxTime || terminal) return board.lastMovesValue3()
 
         val moves = board.getLegalMoves()
 
@@ -83,6 +85,9 @@ class MiniMaxV1Profile(var depth: Int = 10, var timeLimit: Int = 100) : Opponent
                             maximizingPlayer = false,
                         ),
                     )
+
+//                val alpha2 = max(alpha, value)
+//                if (beta <= alpha2) break
             }
             return value
         } else {
@@ -98,6 +103,9 @@ class MiniMaxV1Profile(var depth: Int = 10, var timeLimit: Int = 100) : Opponent
                             maximizingPlayer = true,
                         ),
                     )
+
+//                val beta2 = min(beta, value)
+//                if (beta2 <= alpha) break
             }
             return value
         }

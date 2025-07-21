@@ -6,7 +6,7 @@ import io.qmpu842.labs.logic.Board
 import kotlin.math.max
 import kotlin.math.min
 
-class MiniMaxV101Profile(var depth: Int = 10, var timeLimit: Int = 100) : OpponentProfile() {
+class MiniMaxV101Profile(var depth: Int = 10, override var timeLimit: Int = 100) : OpponentProfile() {
 
     var currentMaxTime = System.currentTimeMillis() + timeLimit
 

@@ -317,4 +317,52 @@ data class Board(
         val listaa = SecondHeuristicThing.combinedWells(this, 1)
         return listaa[startingPoint.x]
     }
+
+    fun lastMovesValue3(neededForWin: Int = 4): Int {
+        val lastOne = history.last()
+        if (lastOne == -1) return 0
+        val wellSpace = getWellSpace(lastOne)
+        val startingPoint = Point(lastOne, wellSpace)
+        val sp = board.get(startingPoint) ?: return 0
+
+        var counter = 0
+
+        for (way in Way.entries) {
+            val doubleLineOma =
+                doubleLineNoJumpStart(
+                    current = startingPoint,
+                    sign = sp.sign,
+                    way = way,
+                )
+//            println("doubleLineOma: ${doubleLineOma.summa()}")
+            val doubleLineAir =
+                doubleLineWithJumpStart(
+                    current = startingPoint,
+                    sign = 0,
+                    way = way,
+                )
+//            println("doubleLineAir: ${doubleLineAir.summa()}")
+            val doubleLineVihu =
+                doubleLineWithJumpStart(
+                    current = startingPoint,
+                    sign = -sp.sign,
+                    way = way,
+                )
+
+//            println("doubleLineVihu: ${doubleLineVihu.summa()}")
+//            val valivaihe = 0
+//            +doubleLineOma.summa()
+//            +doubleLineAir.summa() / 2
+//            -doubleLineVihu.summa()
+
+            val summa = doubleLineOma.summa()
+            if (summa >= 4) {
+//                val valivaihe = doubleLineOma.summa() / 2
+//                counter = valivaihe
+                counter++
+            }
+        }
+
+        return counter / 2
+    }
 }

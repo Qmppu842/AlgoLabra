@@ -14,7 +14,6 @@ import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.SecondHeuristicThing
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
 import onlydesktop.composeapp.generated.resources.red_cell
@@ -22,19 +21,30 @@ import onlydesktop.composeapp.generated.resources.yellow_cell
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
+@Suppress("ktlint:compose:modifier-missing-check")
 @Composable
 fun App2() {
+//    var isAutoPlayActive by remember { mutableStateOf(true) }
+//    LaunchedEffect(isAutoPlayActive){
+//        delay(3000L)
+//        isAutoPlayActive = false
+//    }
     MaterialTheme {
-        TheGame()
+        TheGame(Modifier.padding(top = 20.dp, bottom = 50.dp, start =  50.dp, end = 50.dp))
     }
 }
+
 var lastTime = System.currentTimeMillis()
+
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
 //    val playerA: OpponentProfile = ProfileCreator.miniMaxV3Profile // 3000
 //    val playerB: OpponentProfile = ProfileCreator.miniMaxV2Profile // 80
-    val playerA: OpponentProfile = ProfileCreator.miniMaxV3Profile3
-    val playerB: OpponentProfile = ProfileCreator.miniMaxV2Profile2
+//    val playerA: OpponentProfile = ProfileCreator.miniMaxV3Profile4
+//    val playerB: OpponentProfile = ProfileCreator.miniMaxV3Profile4
+
+    val playerA: OpponentProfile = ProfileCreator.rand
+    val playerB: OpponentProfile = ProfileCreator.rand
 
     var playerOnTurn by remember { mutableStateOf(playerA) }
 
@@ -45,8 +55,7 @@ fun TheGame(modifier: Modifier = Modifier) {
     val aStats = remember { mutableIntStateOf(playerA.wins) }
     val bStats = remember { mutableIntStateOf(playerB.wins) }
 
-
-    var isAutoPlayActive by remember { mutableStateOf(true) }
+    var isAutoPlayActive by remember { mutableStateOf(false) }
 
     var isAutoAutoPlayActive by remember { mutableStateOf(true) }
 
@@ -87,31 +96,33 @@ fun TheGame(modifier: Modifier = Modifier) {
         dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
     }
 
-
 //    println("player on turn: ${playerOnTurn::class.simpleName}")
 
-    LaunchedEffect(isAutoPlayActive){
+    LaunchedEffect(isAutoPlayActive) {
         while (isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
-            delay(1)
-            runBlocking {
-//                val alku = System.currentTimeMillis()
-                playNextFromProfile()
-//                val loppu = System.currentTimeMillis()
-//                if (loppu-alku < 5){
-//                    delay(5)
-//                }
+//            delay(100)
+//            runBlocking {
+            val alku = System.currentTimeMillis()
+            playNextFromProfile()
+            val loppu = System.currentTimeMillis()
+            if (loppu - alku < playerOnTurn.timeLimit) {
+                val amount = playerOnTurn.timeLimit - (loppu - alku)
+                delay(amount)
             }
+//            }
 
             if (isAutoAutoPlayActive && isThereWinner != 0) {
                 val thing = System.currentTimeMillis()
-                val timeTook  = thing - lastTime
+                val timeTook = thing - lastTime
                 lastTime = thing
                 println("Round took ~$timeTook ms")
-                var delay = 2L
+                var delay = 500L
                 if (playerB.id == ProfileCreator.human.id || playerA.id == ProfileCreator.human.id) {
                     delay = 5000L
                 }
-//                delay(delay)
+//                runBlocking {
+                delay(delay)
+//                }
                 clearBoardAction()
             }
         }
@@ -128,7 +139,6 @@ fun TheGame(modifier: Modifier = Modifier) {
 //            board = boardState.deepCopy(),
 //            forSide = forSide.value,
 //        )
-
 
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
@@ -186,7 +196,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             Button(onClick = playNextFromProfile) {
                 Text("Play next move")
             }
-            Button(onClick = {isAutoPlayActive = !isAutoPlayActive}){
+            Button(onClick = { isAutoPlayActive = !isAutoPlayActive }) {
                 Text("Activate autoplay from profiles")
             }
         }
@@ -203,7 +213,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             Text(
                 text =
                     if (isThereWinner != 0) {
-                        "Winner is " +  if (isThereWinner == 1) "Player B, The Yellow One!" else "Player A, The Red One!"
+                        "Winner is " + if (isThereWinner == 1) "Player B, The Yellow One!" else "Player A, The Red One!"
                     } else {
                         "No winner, yet..."
                     },
