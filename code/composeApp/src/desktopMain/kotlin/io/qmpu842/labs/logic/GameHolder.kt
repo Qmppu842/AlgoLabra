@@ -31,9 +31,7 @@ data class GameHolder(
     }
 
     fun whoisWinnerText(): String =
-        if (board.getOnTurnToken().sign ==
-            -1
-        ) {
+        if (board.getOnTurnToken().sign == -1) {
             "Player B, The Yellow One! The ${playerB::class.simpleName}"
         } else {
             "Player A, The Red One! The ${playerA::class.simpleName}"
@@ -51,13 +49,16 @@ data class GameHolder(
     fun updateWinners() {
         val winner = whoisWinner()
         if (winner != null) {
-            winner.stats = winner.stats.win()
-
-            val loser = if (winner.id == playerA.id) playerA else playerA
-            loser.stats = loser.stats.lose()
+            if (board.getOnTurnToken().sign == 1) {
+                playerA.firstPlayStats = playerA.firstPlayStats.win()
+                playerB.secondPlayStats = playerB.secondPlayStats.lose()
+            } else {
+                playerA.firstPlayStats = playerA.firstPlayStats.lose()
+                playerB.secondPlayStats = playerB.secondPlayStats.win()
+            }
         } else {
-            playerA.stats = playerA.stats.draw()
-            playerB.stats = playerB.stats.draw()
+            playerA.firstPlayStats = playerA.firstPlayStats.draw()
+            playerB.secondPlayStats = playerB.secondPlayStats.draw()
         }
     }
 

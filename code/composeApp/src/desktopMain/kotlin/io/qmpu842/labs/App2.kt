@@ -34,8 +34,6 @@ fun App2() {
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-
-
     var settings by remember { mutableStateOf(Settings()) }
 
     var gameHolder by remember {
@@ -67,10 +65,13 @@ fun TheGame(modifier: Modifier = Modifier) {
 
     // These two are really evil
     val thing2 =
-        { gameHolder = gameHolder.clearBoardAndUpdateWinners() }.SettingAutoAutoPlay(
+        {
+            if (gameHolder.hasGameStopped()) {
+                gameHolder = gameHolder.clearBoardAndUpdateWinners()
+            }
+        }.SettingAutoAutoPlay(
             gameHolder = gameHolder,
             settings = settings,
-            modifier = modifier,
         )
 
     // ... probably
@@ -94,20 +95,33 @@ fun TheGame(modifier: Modifier = Modifier) {
             wellFunction = SecondHeuristicThing::combinedWells,
         )
 
-        ControlPanel(undoAction, clearBoardAction, playNextFromProfile, { settings = settings.toggleAutoPlay() })
-        Row {
-            Button(onClick = {}, modifier = Modifier.width(205.dp)) {
-                Text("Red player wins: ${gameHolder.playerA.stats.wins}")
-            }
-            Button(onClick = {}, modifier = Modifier.width(205.dp)) {
-                Text("Draws: ${gameHolder.playerA.stats.draws}")
-            }
-            Button(onClick = {}, modifier = Modifier.width(205.dp)) {
-                Text("Yellow player wins: ${gameHolder.playerB.stats.wins}")
-            }
-        }
+        ControlPanel(
+            undoAction,
+            clearBoardAction,
+            playNextFromProfile,
+            { settings = settings.toggleAutoPlay().toggleAutoAutoPlay() },
+        )
+        PlayStatsDisplay(gameHolder)
 
         WinnerDisplay(gameHolder)
+    }
+}
+
+@Composable
+fun PlayStatsDisplay(
+    gameHolder: GameHolder,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier) {
+        Button(onClick = {}, modifier = Modifier.width(205.dp)) {
+            Text("Red player wins: ${gameHolder.playerA.firstPlayStats.wins}")
+        }
+        Button(onClick = {}, modifier = Modifier.width(205.dp)) {
+            Text("Draws: ${gameHolder.playerA.firstPlayStats.draws}")
+        }
+        Button(onClick = {}, modifier = Modifier.width(205.dp)) {
+            Text("Yellow player wins: ${gameHolder.playerB.secondPlayStats.wins}")
+        }
     }
 }
 
@@ -119,7 +133,7 @@ fun ControlPanel(
     settings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row {
+    Row(modifier) {
         Button(onClick = undoAction) {
             Text("Undo last move")
         }
@@ -204,7 +218,7 @@ fun DropButtons(
     modifier: Modifier = Modifier,
     boardWidth: Int = 7,
 ) {
-    Row {
+    Row(modifier) {
         repeat(boardWidth) { num ->
             Button(onClick = {
                 dropTokenAction(num)
@@ -249,10 +263,9 @@ fun HeuristicWells(
 fun (() -> Unit).SettingAutoAutoPlay(
     gameHolder: GameHolder,
     settings: Settings,
-    modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(settings.isAutoAutoPlayActive && gameHolder.hasGameStopped()) {
-        var delay = 100L
+        var delay = 10L
         if (gameHolder.playerB.id == ProfileCreator.human.id || gameHolder.playerA.id == ProfileCreator.human.id) {
             delay = 5000L
         }
@@ -265,7 +278,6 @@ fun (() -> Unit).SettingAutoAutoPlay(
 fun (() -> Unit).SettingNormalAutoPlay(
     gameHolder: GameHolder,
     settings: Settings,
-    modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileCreator.human.id) {
         while (settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileCreator.human.id) {

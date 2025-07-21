@@ -10,7 +10,8 @@ abstract class OpponentProfile {
 
     open val timeLimit:Int = 10
 
-    var stats: Stats = Stats()
+    var firstPlayStats: Stats = Stats()
+    var secondPlayStats: Stats = Stats()
 
     abstract fun nextMove(
         board: Board,
