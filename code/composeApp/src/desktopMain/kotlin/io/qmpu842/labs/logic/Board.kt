@@ -85,8 +85,9 @@ data class Board(
 
     /**
      * @return next turn token so on turn 32 token is -32
+     * first is 0...
      */
-    fun getOnTurnToken(): Int = history.size * if (history.size % 2 == 0) 1 else -1
+    fun getOnTurnToken(): Int = (history.size+ 1) * if (history.size % 2 == 0) 1 else -1
 
     /**
      * Drops the token to the well

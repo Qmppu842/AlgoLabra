@@ -13,6 +13,12 @@ abstract class OpponentProfile {
     var firstPlayStats: Stats = Stats()
     var secondPlayStats: Stats = Stats()
 
+
+    val name: String
+        get(){
+            return "${this::class.simpleName}"
+        }
+
     abstract fun nextMove(
         board: Board,
         forSide: Int): Int

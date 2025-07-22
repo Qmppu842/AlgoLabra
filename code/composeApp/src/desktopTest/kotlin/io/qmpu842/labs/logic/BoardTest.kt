@@ -331,7 +331,6 @@ class BoardTest :
                 )
 
             val list = board.getLegalMovesFromMiddleOut()
-//            list shouldContainInOrder listOf(3,2,4,1,5,0,6)
             list shouldContainInOrder listOf(3,4,2,5,1,6,0)
             list shouldContainExactly listOf(3,4,2,5,1,6,0)
         }
@@ -346,5 +345,43 @@ class BoardTest :
             val list = board.getLegalMovesFromMiddleOut()
             list shouldContainInOrder listOf(3,2,4,1,5,0)
             list shouldContainExactly listOf(3,2,4,1,5,0)
+        }
+
+        test("getOnTurnToken on empty board") {
+            val height = 6
+            val width = 7
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            board.getOnTurnToken() shouldBe 1
+        }
+
+        test("getOnTurnToken on board with one turn") {
+            val height = 6
+            val width = 7
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            board = board.dropLockedToken(1)
+            board.getOnTurnToken() shouldBe -2
+        }
+
+        test("getOnTurnToken on board with 32 turns") {
+            val height = 100
+            val width = 1
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            repeat(32) {
+                board = board.dropLockedToken(0)
+                board = board.dropLockedToken(0)
+            }
+            board.getOnTurnToken() shouldBe 65
         }
     })

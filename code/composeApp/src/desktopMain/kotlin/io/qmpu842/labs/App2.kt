@@ -28,6 +28,7 @@ import kotlin.math.sign
 @Suppress("ktlint:compose:modifier-missing-check")
 @Composable
 fun App2() {
+    println("Game on!")
     MaterialTheme {
         TheGame(Modifier.padding(top = 20.dp, bottom = 50.dp, start = 50.dp, end = 50.dp))
     }
@@ -41,8 +42,8 @@ fun TheGame(modifier: Modifier = Modifier) {
         mutableStateOf(
             GameHolder(
                 Board(),
-                ProfileHolder.rand,
-                ProfileHolder.miniMaxV3Profile4,
+                ProfileHolder.human,
+                ProfileHolder.miniMaxV3Profile6,
                 bc = BoardConfig(),
             ),
         )
@@ -78,7 +79,9 @@ fun TheGame(modifier: Modifier = Modifier) {
     // ... probably
     val thing =
         {
+            println("The turn is :${gameHolder.playerOnTurn().name}")
             if (gameHolder.playerOnTurn().id != ProfileHolder.human.id) {
+                println("And now activating the profile drop")
                 gameHolder = gameHolder.dropTokenLimited()
             }
         }.SettingNormalAutoPlay(
@@ -118,13 +121,13 @@ fun PlayStatsDisplay(
 ) {
     Row(modifier) {
         Button(onClick = {}, modifier = Modifier.width(205.dp)) {
-            Text("Red player wins: ${gameHolder.playerA.firstPlayStats.wins}")
+            Text("Red ${gameHolder.playerA.name} player wins: ${gameHolder.playerA.firstPlayStats.wins}")
         }
         Button(onClick = {}, modifier = Modifier.width(205.dp)) {
             Text("Draws: ${gameHolder.playerA.firstPlayStats.draws}")
         }
         Button(onClick = {}, modifier = Modifier.width(205.dp)) {
-            Text("Yellow player wins: ${gameHolder.playerB.secondPlayStats.wins}")
+            Text("Yellow ${gameHolder.playerB.name} player wins: ${gameHolder.playerB.secondPlayStats.wins}")
         }
     }
 }

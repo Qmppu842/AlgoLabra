@@ -29,7 +29,7 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
                     depth = depth,
                     maximizingPlayer = true,
                 )
-            winnersAndLoser[move] = valuee
+            winnersAndLoser[winnersAndLoser.size-move -1] = valuee
         }
 //        val endtime = System.currentTimeMillis() -(currentMaxTime - timeLimit)
 //        println("Stopping minimax, spend time $endtime ms")
@@ -63,7 +63,7 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
 
         val time = System.currentTimeMillis()
 
-        if (depth == 0 || time >= currentMaxTime || terminal) return lastMovesValue3(board)
+        if (depth == 0 || time >= currentMaxTime || terminal) return lastMovesValue4(board)
 
         val moves = board.getLegalMovesFromMiddleOut()
 
@@ -107,14 +107,14 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
     }
 
     fun lastMovesValue3(
-        board: Board,
-        neededForWin: Int = 4,
+        board: Board
     ): Int {
         if (board.history.isEmpty()) return 0
         val lastOne = board.history.last()
         val wellSpace = board.getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
 //        val sp = board.board.get(startingPoint) ?: return 0
+        val neededForWin = board.boardConfig.neededForWin
 
         var counter = 0
 
@@ -149,5 +149,58 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
         }
 
         return counter /2
+    }
+
+
+    fun lastMovesValue4(
+        board: Board
+    ): Int {
+        if (board.history.isEmpty()) return 0
+        val lastOne = board.history.last()
+        val wellSpace = board.getWellSpace(lastOne)
+        val startingPoint = Point(lastOne, wellSpace)
+        val neededForWin = board.boardConfig.neededForWin
+
+//        println("board: ${board.board.contentDeepToString()}")
+//
+//        println("needed for win: $neededForWin")
+
+        var counter = 0
+
+        for (way in Way.entries) {
+//            println("Looking at way $way")
+            val doubleLineOma =
+                board.doubleLineNoJumpStart(
+                    current = startingPoint,
+                    sign = 1,
+                    way = way,
+                )
+//            println("doubleLineOma: ${doubleLineOma.summa()}")
+            val doubleLineAir =
+                board.doubleLineWithJumpStart(
+                    current = startingPoint,
+                    sign = 0,
+                    way = way,
+                )
+//            println("doubleLineAir: ${doubleLineAir.summa()}")
+            val doubleLineVihu =
+                board.doubleLineNoJumpStart(
+                    current = startingPoint,
+                    sign = -1,
+                    way = way,
+                )
+//            println("doubleLineVihu: ${doubleLineVihu.summa()}")
+            if (doubleLineOma.summa() >= neededForWin) {
+//                counter += 1000
+                counter = Int.MAX_VALUE
+            }
+//            else
+                if (doubleLineVihu.summa() >= neededForWin) {
+//                    counter -= 1000
+                counter = Int.MIN_VALUE
+                }
+        }
+
+        return counter
     }
 }

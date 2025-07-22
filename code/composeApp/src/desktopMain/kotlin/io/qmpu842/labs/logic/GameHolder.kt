@@ -44,7 +44,7 @@ data class GameHolder(
         }
     }
 
-    fun playerOnTurn() = if (board.getOnTurnToken().sign == -1) playerA else playerB
+    fun playerOnTurn() = if (board.getOnTurnToken().sign == 1) playerA else playerB
 
     fun undo() = this.copy(board = board.undoLastMove())
 
@@ -59,9 +59,9 @@ data class GameHolder(
 
     fun whoisWinnerText(): String =
         if (board.getOnTurnToken().sign == -1) {
-            "Player B, The Yellow One! The ${playerB::class.simpleName}"
+            "Player B, The Yellow One! The ${playerB.name}"
         } else {
-            "Player A, The Red One! The ${playerA::class.simpleName}"
+            "Player A, The Red One! The ${playerA.name}"
         }
 
     fun dropTokenLimited(column: Int = -99): GameHolder {
