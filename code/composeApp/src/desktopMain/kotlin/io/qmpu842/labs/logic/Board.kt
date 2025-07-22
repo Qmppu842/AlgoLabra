@@ -63,13 +63,20 @@ data class Board(
      * Each entry is index of well with space
      */
     fun getLegalMovesFromMiddleOut(): MutableList<Int> {
-        val result = getLegalMoves()
+        val moves = getLegalMoves()
         val result2 = mutableListOf<Int>()
-        for (i in 0..<result.size) {
-            result2.add(result[i])
-            result2.add(result[result.size - i - 1])
+        for (i in 0..<moves.size) {
+            val nouse = i
+            val laskeva = moves.size - i - 1
+            if (nouse >= laskeva) {
+                if (moves.size % 2 == 1) {
+                    result2.add(moves[nouse])
+                }
+                break
+            }
+            result2.add(moves[nouse])
+            result2.add(moves[laskeva])
         }
-
         result2.reverse()
         return result2
     }

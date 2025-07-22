@@ -2,6 +2,8 @@ package io.qmpu842.labs.logic
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
 
 class BoardTest :
@@ -318,5 +320,31 @@ class BoardTest :
 
             board = board.dropToken(0, -12)
             board.isLastPlayWinning(4) shouldBe true
+        }
+
+        test("getLegalMovesFromMiddleOut on empty odd board") {
+            var board =
+                Board(
+                    boardWidth = 7,
+                    boardHeight = 6,
+                    neededForWin = 4,
+                )
+
+            val list = board.getLegalMovesFromMiddleOut()
+//            list shouldContainInOrder listOf(3,2,4,1,5,0,6)
+            list shouldContainInOrder listOf(3,4,2,5,1,6,0)
+            list shouldContainExactly listOf(3,4,2,5,1,6,0)
+        }
+        test("getLegalMovesFromMiddleOut on empty even board") {
+            var board =
+                Board(
+                    boardWidth = 6,
+                    boardHeight = 6,
+                    neededForWin = 4,
+                )
+
+            val list = board.getLegalMovesFromMiddleOut()
+            list shouldContainInOrder listOf(3,2,4,1,5,0)
+            list shouldContainExactly listOf(3,2,4,1,5,0)
         }
     })

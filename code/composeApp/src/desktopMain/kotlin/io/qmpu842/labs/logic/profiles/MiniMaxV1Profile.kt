@@ -148,6 +148,6 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             }
         }
 
-        return counter / 2
+        return counter /2
     }
 }
