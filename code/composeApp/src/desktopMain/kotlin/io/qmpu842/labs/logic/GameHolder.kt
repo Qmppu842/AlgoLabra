@@ -57,11 +57,14 @@ data class GameHolder(
         return if (board.getOnTurnToken().sign == 1) playerA else playerB
     }
 
-    fun whoisWinnerText(): String =
+    fun whoisWinnerText(
+        positiveSideColorName: String = "Red",
+        negativeSideColorName: String = "Yellow",
+    ): String =
         if (board.getOnTurnToken().sign == -1) {
-            "Player B, The Yellow One! The ${playerB.name}"
+            "Player A, The $positiveSideColorName One! The ${playerA.name}"
         } else {
-            "Player A, The Red One! The ${playerA.name}"
+            "Player B, The $negativeSideColorName One! The ${playerB.name}"
         }
 
     fun dropTokenLimited(column: Int = -99): GameHolder {
@@ -76,7 +79,7 @@ data class GameHolder(
     fun updateWinners() {
         val winner = whoisWinner()
         if (winner != null) {
-            if (board.getOnTurnToken().sign == 1) {
+            if (board.getOnTurnToken().sign == -1) {
                 playerA.firstPlayStats = playerA.firstPlayStats.win()
                 playerB.secondPlayStats = playerB.secondPlayStats.lose()
             } else {

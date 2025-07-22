@@ -1,6 +1,7 @@
 package io.qmpu842.labs
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -79,9 +80,7 @@ fun TheGame(modifier: Modifier = Modifier) {
     // ... probably
     val thing =
         {
-            println("The turn is :${gameHolder.playerOnTurn().name}")
-            if (gameHolder.playerOnTurn().id != ProfileHolder.human.id) {
-                println("And now activating the profile drop")
+            if (gameHolder.playerOnTurn().id != ProfileHolder.human.id && !gameHolder.hasGameStopped()) {
                 gameHolder = gameHolder.dropTokenLimited()
             }
         }.SettingNormalAutoPlay(
@@ -94,12 +93,18 @@ fun TheGame(modifier: Modifier = Modifier) {
             dropTokenAction = dropTokenAction,
             boardWidth = gameHolder.bc.width,
         )
-        DrawTheBoard(board = gameHolder.board)
+        DrawTheBoard(
+            board = gameHolder.board,
+            dropTokenAction = dropTokenAction,
+            settings = settings,
+        )
 
         HeuristicWells(
             board = gameHolder.board,
             forSide = gameHolder.board.getOnTurnToken().sign,
             wellFunction = SecondHeuristicThing::combinedWells,
+            dropTokenAction = dropTokenAction,
+            settings = settings
         )
 
         ControlPanel(
@@ -137,7 +142,7 @@ fun ControlPanel(
     undoAction: () -> Unit,
     clearBoardAction: () -> Unit,
     playNextFromProfile: () -> Unit,
-    settings: () -> Unit,
+    toggleAutoPlay: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(modifier) {
@@ -150,7 +155,7 @@ fun ControlPanel(
         Button(onClick = playNextFromProfile) {
             Text("Play next move")
         }
-        Button(onClick = settings) {
+        Button(onClick = toggleAutoPlay) {
             Text("Activate autoplay from profiles")
         }
     }
@@ -177,12 +182,19 @@ private fun WinnerDisplay(gameHolder: GameHolder) {
 @Composable
 fun DrawTheBoard(
     board: Board,
+    settings: Settings,
     modifier: Modifier = Modifier,
+    dropTokenAction: (Int) -> Unit,
 ) {
     Row(modifier = modifier) {
         repeat(board.board.size) { rowNum ->
             Column(
-                modifier = Modifier,
+                modifier =
+                    Modifier.clickable(
+                        enabled = settings.isColumnClickingEnabled,
+                        onClickLabel = "Drop it like it's hot",
+                        onClick = { dropTokenAction(rowNum) },
+                    ),
             ) {
                 repeat(board.board[rowNum].size) { columnNum ->
                     val move = board.board[rowNum][columnNum]
@@ -200,10 +212,10 @@ fun ChoosePic(
 ) {
     var contentDescription: String
     val resource: DrawableResource
-    if (move > 0) {
+    if (move < 0) {
         resource = Res.drawable.yellow_cell
         contentDescription = "Yellow Cell"
-    } else if (move < 0) {
+    } else if (move > 0) {
         resource = Res.drawable.red_cell
         contentDescription = "Red Cell"
     } else {
@@ -240,15 +252,18 @@ fun DropButtons(
 fun HeuristicWells(
     board: Board,
     forSide: Int,
+    settings: Settings,
     wellFunction: (Board, Int) -> IntArray,
+    dropTokenAction: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val heuristicWells = wellFunction(board, forSide)
     Row(modifier = modifier.fillMaxWidth()) {
-        for (well in heuristicWells) {
+        for ((index, well) in heuristicWells.withIndex()) {
             Button(
-                onClick = {},
-                Modifier.width(102.dp),
+                onClick = { dropTokenAction(index) },
+                enabled = settings.isWellClickingEnabled,
+                modifier = Modifier.width(102.dp),
             ) {
                 var texti = "H:$well"
                 if (well == Int.MAX_VALUE) {
@@ -286,8 +301,8 @@ fun (() -> Unit).SettingNormalAutoPlay(
     gameHolder: GameHolder,
     settings: Settings,
 ) {
-    LaunchedEffect(settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileHolder.human.id) {
-        while (settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileHolder.human.id) {
+    LaunchedEffect(settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileHolder.human.id && !gameHolder.hasGameStopped()) {
+        while (settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileHolder.human.id && !gameHolder.hasGameStopped()) {
             val start = System.currentTimeMillis()
             this@SettingNormalAutoPlay()
             val end = System.currentTimeMillis()

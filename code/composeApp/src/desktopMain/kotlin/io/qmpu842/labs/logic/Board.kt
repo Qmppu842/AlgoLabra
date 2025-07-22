@@ -153,6 +153,15 @@ data class Board(
      */
     fun getWellSpace(column: Int): Int = board[column].count({ it == 0 })
 
+    /**
+     * @return returns the index of zero closest to the fill line.
+     * This is equal to first available position if you were to count from top 0-indexed on real board.
+     *
+     * Meaning putting something to this index will overwrite only 0.
+     *
+     * Example:
+     * Board with height of 6 will give 5 on first turn.
+     */
     fun getHighestSpaceIndex(column: Int) = getWellSpace(column) - 1
 
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
