@@ -22,6 +22,7 @@ import onlydesktop.composeapp.generated.resources.red_cell
 import onlydesktop.composeapp.generated.resources.yellow_cell
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import kotlin.math.min
 import kotlin.math.sign
 
 @Suppress("ktlint:compose:modifier-missing-check")
@@ -76,9 +77,12 @@ fun TheGame(modifier: Modifier = Modifier) {
 
     // ... probably
     val thing =
-        { gameHolder = gameHolder.dropTokenLimited() }
-            .SettingNormalAutoPlay(
-                gameHolder = gameHolder,
+        {
+            if (gameHolder.playerOnTurn().id != ProfileHolder.human.id) {
+                gameHolder = gameHolder.dropTokenLimited()
+            }
+        }.SettingNormalAutoPlay(
+            gameHolder = gameHolder,
                 settings = settings,
         )
 
@@ -269,7 +273,7 @@ fun (() -> Unit).SettingAutoAutoPlay(
         if (gameHolder.playerB.id == ProfileHolder.human.id || gameHolder.playerA.id == ProfileHolder.human.id) {
             delay = 5000L
         }
-//        delay(delay)
+        delay(delay)
         this@SettingAutoAutoPlay()
     }
 }
@@ -285,7 +289,7 @@ fun (() -> Unit).SettingNormalAutoPlay(
             this@SettingNormalAutoPlay()
             val end = System.currentTimeMillis()
             if (end - start < gameHolder.playerOnTurn().timeLimit) {
-                val amount = gameHolder.playerOnTurn().timeLimit - (end - start)
+                val amount = min(gameHolder.playerOnTurn().timeLimit - (end - start), 10)
                 delay(amount)
             }
         }

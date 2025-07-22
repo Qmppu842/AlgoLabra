@@ -58,12 +58,28 @@ data class Board(
         return result
     }
 
+    /**
+     * @return list of all the wells with space
+     * Each entry is index of well with space
+     */
+    fun getLegalMovesFromMiddleOut(): MutableList<Int> {
+        val result = getLegalMoves()
+        val result2 = mutableListOf<Int>()
+        for (i in 0..<result.size) {
+            result2.add(result[i])
+            result2.add(result[result.size - i - 1])
+        }
+
+        result2.reverse()
+        return result2
+    }
+
     fun dropLockedToken(column: Int): Board = dropToken(column, getOnTurnToken())
 
     /**
      * @return next turn token so on turn 32 token is -32
      */
-    fun getOnTurnToken(): Int = history.size * if (history.size % 2 == 1) 1 else -1
+    fun getOnTurnToken(): Int = history.size * if (history.size % 2 == 0) 1 else -1
 
     /**
      * Drops the token to the well
@@ -346,7 +362,6 @@ data class Board(
     fun lastMovesValue3(neededForWin: Int = 4): Int {
         if (history.isEmpty()) return 0
         val lastOne = history.last()
-//        if (lastOne == -1) return 0
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
         val sp = board.get(startingPoint) ?: return 0

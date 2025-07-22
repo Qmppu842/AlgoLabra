@@ -26,3 +26,31 @@ fun IntArray.getListOfIndexesOfMax(): MutableList<Int> {
     }
     return indexList
 }
+
+
+fun IntArray.getIndexOfMin(): Int {
+    var indexe = 0
+    var min = this[indexe]
+    this.forEachIndexed { index, value ->
+        if (value < min){
+            indexe = index
+            min = value
+        }
+    }
+    return indexe
+}
+
+fun IntArray.getListOfIndexesOfMin(): MutableList<Int> {
+    val indexList = mutableListOf<Int>()
+    var min = Int.MAX_VALUE
+    this.forEachIndexed { index, value ->
+        if (value < min) {
+            indexList.clear()
+            min = value
+        }
+        if (value == min) {
+            indexList.add(index)
+        }
+    }
+    return indexList
+}

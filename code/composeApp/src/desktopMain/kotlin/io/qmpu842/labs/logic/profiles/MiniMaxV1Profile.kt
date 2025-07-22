@@ -1,7 +1,12 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.getIndexOfMax
+import io.qmpu842.labs.helpers.MyRandom
+import io.qmpu842.labs.helpers.getListOfIndexesOfMax
+import io.qmpu842.labs.helpers.getListOfIndexesOfMin
+import io.qmpu842.labs.helpers.summa
 import io.qmpu842.labs.logic.Board
+import io.qmpu842.labs.logic.Way
+import java.awt.Point
 import kotlin.math.max
 import kotlin.math.min
 
@@ -16,7 +21,7 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
         currentMaxTime = System.currentTimeMillis() + timeLimit
         val secondBoard = board.deepCopy()
         val winnersAndLoser = IntArray(board.getWells()) { 0 }
-        val moves = secondBoard.getLegalMoves()
+        val moves = secondBoard.getLegalMovesFromMiddleOut()
         for (move in moves) {
             val valuee =
                 minimax(
@@ -28,29 +33,19 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
         }
 //        val endtime = System.currentTimeMillis() -(currentMaxTime - timeLimit)
 //        println("Stopping minimax, spend time $endtime ms")
-//        println("Winners and losers: ${winnersAndLoser.toList()}")
+        println("Winners and losers: ${winnersAndLoser.toList()}")
 
-        return winnersAndLoser.getIndexOfMax()
-    }
+//        return winnersAndLoser.getIndexOfMax()
+//        return winnersAndLoser.getListOfIndexesOfMax().random(MyRandom.random)
 
-    fun minimaxAsHearisticWells(
-        board: Board,
-        forSide: Int,
-    ): IntArray {
-        val secondBoard = board.deepCopy()
-        val winnersAndLoser = IntArray(board.getWells()) { 0 }
-        val moves = secondBoard.getLegalMoves()
-        for (move in moves) {
-            val valuee =
-                minimax(
-                    board = board.dropLockedToken(move).deepCopy(),
-                    depth = depth,
-                    maximizingPlayer = false,
-                )
-            winnersAndLoser[move] = valuee
+        //        return winnersAndLoser.getIndexOfMin()
+//        return winnersAndLoser.getListOfIndexesOfMin().random(MyRandom.random)
+
+        return if (forSide == -1) {
+            winnersAndLoser.getListOfIndexesOfMin().random(MyRandom.random)
+        } else {
+            winnersAndLoser.getListOfIndexesOfMax().random(MyRandom.random)
         }
-
-        return winnersAndLoser
     }
 
     fun minimax(
@@ -68,9 +63,9 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
 
         val time = System.currentTimeMillis()
 
-        if (depth == 0 || time >= currentMaxTime || terminal) return board.lastMovesValue3()
+        if (depth == 0 || time >= currentMaxTime || terminal) return lastMovesValue3(board)
 
-        val moves = board.getLegalMoves()
+        val moves = board.getLegalMovesFromMiddleOut()
 
         if (maximizingPlayer) {
             var value = Int.MIN_VALUE
@@ -109,5 +104,50 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             }
             return value
         }
+    }
+
+    fun lastMovesValue3(
+        board: Board,
+        neededForWin: Int = 4,
+    ): Int {
+        if (board.history.isEmpty()) return 0
+        val lastOne = board.history.last()
+        val wellSpace = board.getWellSpace(lastOne)
+        val startingPoint = Point(lastOne, wellSpace)
+//        val sp = board.board.get(startingPoint) ?: return 0
+
+        var counter = 0
+
+        for (way in Way.entries) {
+            val doubleLineOma =
+                board.doubleLineNoJumpStart(
+                    current = startingPoint,
+                    sign = 1,
+                    way = way,
+                )
+            val doubleLineAir =
+                board.doubleLineWithJumpStart(
+                    current = startingPoint,
+                    sign = 0,
+                    way = way,
+                )
+            val doubleLineVihu =
+                board.doubleLineNoJumpStart(
+                    current = startingPoint,
+                    sign = -1,
+                    way = way,
+                )
+
+            if (doubleLineOma.summa() >= neededForWin) {
+                counter += 1000
+//                counter = Int.MAX_VALUE
+            }else
+            if (doubleLineVihu.summa() >= neededForWin) {
+                counter -= 1000
+//                counter = Int.MIN_VALUE
+            }
+        }
+
+        return counter / 2
     }
 }
