@@ -1,6 +1,7 @@
 package io.qmpu842.labs.logic.profiles
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.qmpu842.labs.logic.Board
 
@@ -56,7 +57,47 @@ class MiniMaxV1ProfileTest : FunSpec({
         lastMoveValue shouldBe Int.MAX_VALUE
     }
 
-    test("lastMovesValue4 with win3") {
+    test("lastMovesValue4 with win #3") {
+        var board =
+            Board(
+                board =
+                    arrayOf(
+                        intArrayOf(0, 0, 0, 0, 0, 1),
+                        intArrayOf(0, 0, 0, 0, 3, -2),
+                        intArrayOf(0, 0, 0, 7, 5, -4),
+                        intArrayOf(0, 0, 0, 9, -8, -6),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                    ),
+            )
+        val minimax = MiniMaxV1Profile(depth = 1)
+
+        board = board.dropToken(4, -10)
+        minimax.lastMovesValue4(board) shouldBe Int.MIN_VALUE
+
+        board = board.dropToken(3, 11)
+        minimax.lastMovesValue4(board) shouldBe Int.MAX_VALUE
+    }
+
+    test("lastMovesValue4 with win #4") {
+        var board = Board()
+
+        board = board.dropLockedToken(0)
+
+        repeat(3) {
+            board = board.dropLockedToken(1)
+            board = board.dropLockedToken(0)
+        }
+
+        val minimax = MiniMaxV1Profile()
+        val lastMoveValue = minimax.lastMovesValue4(board)
+
+        lastMoveValue shouldBe Int.MAX_VALUE
+    }
+
+
+    test("collectMinimax #5") {
         var board =
             Board(
                 board =
@@ -71,12 +112,9 @@ class MiniMaxV1ProfileTest : FunSpec({
                     ),
             )
 
-        board = board.dropToken(5, -10)
-        board = board.dropToken(3, 11)
+        val minimax = MiniMaxV1Profile(depth = 1,)
+        val collectMinimax = minimax.collectMinimax(board, maximizingPlayer = false)
 
-        val minimax = MiniMaxV1Profile()
-        val lastMoveValue = minimax.lastMovesValue4(board)
-
-        lastMoveValue shouldBe Int.MAX_VALUE
+        collectMinimax.toList() shouldContainExactly listOf(0, 0, 0, Int.MAX_VALUE, Int.MIN_VALUE, 0, 0)
     }
 })

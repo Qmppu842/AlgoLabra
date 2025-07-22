@@ -52,7 +52,7 @@ object ProfileHolder {
 
     val miniMaxV3Profile6 =
         MiniMaxV1Profile(
-            depth = 1,
+            depth = 0,
             timeLimit = 100
         )
 

@@ -5,6 +5,8 @@ import io.qmpu842.labs.helpers.get
 import io.qmpu842.labs.helpers.next
 import io.qmpu842.labs.helpers.summa
 import java.awt.Point
+import kotlin.math.abs
+import kotlin.math.round
 import kotlin.math.sign
 
 data class Board(
@@ -39,7 +41,41 @@ data class Board(
         neededForWin = boardConfig.neededForWin,
     )
 
-    constructor(board: Array<IntArray>) : this(board = board, boardConfig = BoardConfig())
+    companion object {
+        operator fun invoke(board: Array<IntArray>): Board {
+            val width = board.size
+            val height = board.first().size
+
+            return Board(
+                board = board,
+                boardConfig =
+                    BoardConfig(
+                        width = width,
+                        height = height,
+                        neededForWin = round((width * height) / 10f).toInt(),
+                    ),
+                history = makeHistoryFromBoard(board),
+            )
+        }
+
+        private fun makeHistoryFromBoard(board: Array<IntArray>): MutableList<Int> {
+            val wellMap = hashMapOf<Int, Int>()
+
+            board.forEachIndexed { index, well ->
+                well.forEach { target ->
+                    if (target != 0) {
+                        wellMap.put(abs(target), index)
+                    }
+                }
+            }
+
+            val thing = wellMap.entries.sortedWith(compareBy { entry -> entry.key })
+            val history = mutableListOf<Int>()
+            thing.forEach { (_, value) -> history.add(value) }
+            return history
+        }
+
+    }
 
     /**
      * @return the last token put in to the board
@@ -65,16 +101,15 @@ data class Board(
     fun getLegalMovesFromMiddleOut(): MutableList<Int> {
         val moves = getLegalMoves()
         val result2 = mutableListOf<Int>()
-        for (i in 0..<moves.size) {
-            val nouse = i
-            val laskeva = moves.size - i - 1
-            if (nouse >= laskeva) {
+        for (nouseva in 0..<moves.size) {
+            val laskeva = moves.size - nouseva - 1
+            if (nouseva >= laskeva) {
                 if (moves.size % 2 == 1) {
-                    result2.add(moves[nouse])
+                    result2.add(moves[nouseva])
                 }
                 break
             }
-            result2.add(moves[nouse])
+            result2.add(moves[nouseva])
             result2.add(moves[laskeva])
         }
         result2.reverse()
@@ -167,7 +202,6 @@ data class Board(
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         if (history.isEmpty()) return false
         val lastOne = history.last()
-//        if (lastOne == -1) return false
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
         val sp = board.get(startingPoint) ?: return false

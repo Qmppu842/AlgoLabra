@@ -17,35 +17,30 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
         board: Board,
         forSide: Int,
     ): Int {
-//        println("Starting minimax")
         currentMaxTime = System.currentTimeMillis() + timeLimit
-        val secondBoard = board.deepCopy()
-        val winnersAndLoser = IntArray(board.getWells()) { 0 }
-        val moves = secondBoard.getLegalMovesFromMiddleOut()
-        for (move in moves) {
-            val valuee =
-                minimax(
-                    board = board.dropLockedToken(move).deepCopy(),
-                    depth = depth,
-                    maximizingPlayer = true,
-                )
-            winnersAndLoser[winnersAndLoser.size-move -1] = valuee
-        }
-//        val endtime = System.currentTimeMillis() -(currentMaxTime - timeLimit)
-//        println("Stopping minimax, spend time $endtime ms")
+        val winnersAndLoser = collectMinimax(board)
         println("Winners and losers: ${winnersAndLoser.toList()}")
-
-//        return winnersAndLoser.getIndexOfMax()
-//        return winnersAndLoser.getListOfIndexesOfMax().random(MyRandom.random)
-
-        //        return winnersAndLoser.getIndexOfMin()
-//        return winnersAndLoser.getListOfIndexesOfMin().random(MyRandom.random)
 
         return if (forSide == -1) {
             winnersAndLoser.getListOfIndexesOfMin().random(MyRandom.random)
         } else {
             winnersAndLoser.getListOfIndexesOfMax().random(MyRandom.random)
         }
+    }
+
+    fun collectMinimax(board: Board, depth: Int = this.depth, maximizingPlayer: Boolean = true): IntArray {
+        val winnersAndLoser = IntArray(board.getWells()) { 0 }
+        val moves = board.getLegalMovesFromMiddleOut()
+        for (move in moves) {
+            val collected =
+                minimax(
+                    board = board.dropLockedToken(move).deepCopy(),
+                    depth = depth,
+                    maximizingPlayer = maximizingPlayer,
+                )
+            winnersAndLoser[winnersAndLoser.size - move - 1] = collected
+        }
+        return winnersAndLoser
     }
 
     fun minimax(
@@ -194,11 +189,11 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
 //                counter += 1000
                 counter = Int.MAX_VALUE
             }
-//            else
+            else
                 if (doubleLineVihu.summa() >= neededForWin) {
-//                    counter -= 1000
+//                counter -= 100
                 counter = Int.MIN_VALUE
-                }
+            }
         }
 
         return counter
