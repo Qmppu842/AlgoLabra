@@ -1,7 +1,7 @@
 package io.qmpu842.labs.logic.profiles
 
+import io.qmpu842.labs.helpers.getIndexOfMax
 import io.qmpu842.labs.logic.Board
-import kotlin.math.sign
 
 class DFSProfile(
     val side: Int,
@@ -9,54 +9,41 @@ class DFSProfile(
     /**
      * Allowed time limit for this to think
      */
-    var timeLimit = 1000
+    override var timeLimit = 1000
+
+    var currentMaxTime = System.currentTimeMillis() + timeLimit
 
     override fun nextMove(
         board: Board,
         forSide: Int,
     ): Int {
-        val eka = System.currentTimeMillis()
-//        println("Time on starting: $eka")
+        currentMaxTime = System.currentTimeMillis() + timeLimit
         val joku =
             resulting(
                 board = board.deepCopy(),
                 forSide = forSide,
-                timeMax = System.currentTimeMillis() + timeLimit
         )
-//        println("joku: ${joku.toList()}")
 
-        var indexe = 0
-        var max = joku[indexe]
-        
-        joku.forEachIndexed { index, t -> 
-            if (t > max){
-                indexe = index
-                max = t
-            }
-        }
-        val toka = System.currentTimeMillis()
-        val diff = toka - eka
-//        println("Done")
-//        println("Time spend2: ${diff} ms")
 
-        return indexe
+        return joku.getIndexOfMax()
     }
 
     fun resulting(
         board: Board,
         forSide: Int,
-        timeMax: Long = System.currentTimeMillis() + timeLimit,
         winnersAndLoser: IntArray = IntArray(board.getWells()) { 0 },
     ): IntArray {
         val timeNow = System.currentTimeMillis()
-        if (timeNow >= timeMax) {
+        if (timeNow >= currentMaxTime) {
             return winnersAndLoser
         }
 
         val voittaja = board.isLastPlayWinning()
         if (voittaja) {
             val laste = board.history.last()
-            if (laste.sign == forSide) {
+            // Nvm the performance is about the same, still weird, not as weird as the other. I was using the wrong profile
+            // Maybe tiny bit better
+            if (forSide == side) {
                 winnersAndLoser[laste] -= 1
             } else {
                 winnersAndLoser[laste] += 1
@@ -74,7 +61,6 @@ class DFSProfile(
                 resulting(
                     board = ddd,
                     forSide = -forSide,
-                    timeMax = timeMax,
                     winnersAndLoser,
                 )
             ccc.forEachIndexed { index, t ->

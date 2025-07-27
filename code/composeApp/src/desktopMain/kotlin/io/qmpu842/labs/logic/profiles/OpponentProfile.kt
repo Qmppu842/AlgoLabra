@@ -1,15 +1,23 @@
 package io.qmpu842.labs.logic.profiles
 
 import io.qmpu842.labs.helpers.MyRandom
+import io.qmpu842.labs.helpers.Stats
 import io.qmpu842.labs.logic.Board
 
 abstract class OpponentProfile {
     val rand = MyRandom.random
     val id: Int = rand.nextInt()
 
-    var wins = 0
-    var lose = 0
-    var tie = 0
+    open val timeLimit:Int = 10
+
+    var firstPlayStats: Stats = Stats()
+    var secondPlayStats: Stats = Stats()
+
+
+    val name: String
+        get(){
+            return "${this::class.simpleName}"
+        }
 
     abstract fun nextMove(
         board: Board,

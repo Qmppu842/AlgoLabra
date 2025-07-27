@@ -1,6 +1,7 @@
 package io.qmpu842.labs
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -9,10 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import io.qmpu842.labs.helpers.ProfileCreator
+import io.qmpu842.labs.helpers.BoardConfig
+import io.qmpu842.labs.helpers.ProfileHolder
+import io.qmpu842.labs.helpers.Settings
 import io.qmpu842.labs.logic.Board
+import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.SecondHeuristicThing
-import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlinx.coroutines.delay
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
@@ -20,153 +23,178 @@ import onlydesktop.composeapp.generated.resources.red_cell
 import onlydesktop.composeapp.generated.resources.yellow_cell
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import kotlin.math.min
+import kotlin.math.sign
 
+@Suppress("ktlint:compose:modifier-missing-check")
 @Composable
 fun App2() {
+    println("Game on!")
     MaterialTheme {
-        TheGame()
+        TheGame(Modifier.padding(top = 20.dp, bottom = 50.dp, start = 50.dp, end = 50.dp))
     }
 }
 
 @Composable
 fun TheGame(modifier: Modifier = Modifier) {
-    val playerA: OpponentProfile = ProfileCreator.simpleOpportunisticProfile
-    val playerB: OpponentProfile = ProfileCreator.rand
-    var playerOnTurn by remember { mutableStateOf(playerA) }
+    var settings by remember { mutableStateOf(Settings()) }
 
-    val forSide = remember { mutableIntStateOf(-1) }
-    var isThereWinner by remember { mutableIntStateOf(0) }
-    var boardState by remember { mutableStateOf(Board()) }
-
-    val aStats = remember { mutableIntStateOf(playerA.wins) }
-    val bStats = remember { mutableIntStateOf(playerB.wins) }
+    var gameHolder by remember {
+        mutableStateOf(
+            GameHolder(
+                Board(),
+                ProfileHolder.human,
+                ProfileHolder.miniMaxV3Profile6,
+                bc = BoardConfig(),
+            ),
+        )
+    }
 
     val dropTokenAction: (Int) -> Unit = { column ->
-        if (isThereWinner == 0) {
-            boardState = boardState.dropToken(column, boardState.history.size * forSide.value)
-            val voittaja = boardState.isLastPlayWinning(4)
-            if (voittaja) {
-                isThereWinner = forSide.value
-                if (forSide.value == -1) {
-                    aStats.value += 1
-                } else {
-                    bStats.value += 1
-                }
-            }
-            forSide.value *= -1
-            playerOnTurn = if (playerOnTurn.id == playerA.id) playerB else playerA
-        }
+        gameHolder = gameHolder.dropTokenLimited(column)
     }
 
     val undoAction: () -> Unit = {
-        boardState = boardState.undoLastMove()
+        gameHolder = gameHolder.undo()
     }
 
     val clearBoardAction: () -> Unit = {
-        boardState = boardState.clear()
-        playerOnTurn = playerA
-        forSide.value = -1
-        isThereWinner = 0
+        gameHolder = gameHolder.clearBoard()
     }
+
     val playNextFromProfile = {
-        dropTokenAction(playerOnTurn.nextMove(board = boardState.deepCopy(), forSide = forSide.value))
+        gameHolder = gameHolder.dropTokenLimited()
     }
 
-    var isAutoPlayActive by remember { mutableStateOf(true) }
-
-    var isAutoAutoPlayActive by remember { mutableStateOf(true) }
-
-//    println("player on turn: ${playerOnTurn::class.simpleName}")
-
-    LaunchedEffect(isAutoPlayActive){
-        while (isAutoPlayActive && playerOnTurn.id != ProfileCreator.human.id) {
-            delay(10)
-            playNextFromProfile()
-
-            if (isAutoAutoPlayActive && isThereWinner != 0) {
-                clearBoardAction()
+    // These two are really evil
+    val thing2 =
+        {
+            if (gameHolder.hasGameStopped()) {
+                gameHolder = gameHolder.clearBoardAndUpdateWinners()
             }
-        }
-    }
-
-    val heuristicWells =
-        SecondHeuristicThing.combinedWells(
-            board = boardState,
-            forSide = forSide.value,
+        }.SettingAutoAutoPlay(
+            gameHolder = gameHolder,
+            settings = settings,
         )
 
+    // ... probably
+    val thing =
+        {
+            if (gameHolder.playerOnTurn().id != ProfileHolder.human.id && !gameHolder.hasGameStopped()) {
+                gameHolder = gameHolder.dropTokenLimited()
+            }
+        }.SettingNormalAutoPlay(
+            gameHolder = gameHolder,
+                settings = settings,
+        )
 
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
             dropTokenAction = dropTokenAction,
-            boardWidth = boardState.getWells(),
+            boardWidth = gameHolder.bc.width,
         )
-        DrawTheBoard(board = boardState)
-        Row(modifier = Modifier.fillMaxWidth()) {
-            for (well in heuristicWells) {
-                Button(
-                    onClick = {},
-                    Modifier.width(102.dp),
-                ) {
-                    var texti = "H:$well"
-                    if (well == Int.MAX_VALUE) {
-                        texti = "H:WIN!!"
-                    } else if (well == Int.MIN_VALUE) {
-                        texti = "H:Must block"
-                        if (heuristicWells.count { it == Int.MIN_VALUE } >= 2) {
-                            texti = "H:☹\uFE0F"
-                        }
-                    }
-                    Text(text = texti)
-                }
-            }
-        }
+        DrawTheBoard(
+            board = gameHolder.board,
+            dropTokenAction = dropTokenAction,
+            settings = settings,
+        )
 
-        Row {
-            Button(onClick = undoAction) {
-                Text("Undo last move")
-            }
-            Button(onClick = clearBoardAction) {
-                Text("Restart")
-            }
-            Button(onClick = playNextFromProfile) {
-                Text("Play next move")
-            }
-            Button(onClick = {isAutoPlayActive = !isAutoPlayActive}){
-                Text("Activate autoplay from profiles")
-            }
-        }
-        Row {
-            Button(onClick = {}, modifier = Modifier.width(308.dp)) {
-                Text("Red player wins: ${aStats.value}")
-            }
-            Button(onClick = {}, modifier = Modifier.width(308.dp)) {
-                Text("Yellow player wins: ${bStats.value}")
-            }
-        }
+        HeuristicWells(
+            board = gameHolder.board,
+            forSide = gameHolder.board.getOnTurnToken().sign,
+            wellFunction = SecondHeuristicThing::combinedWells,
+            dropTokenAction = dropTokenAction,
+            settings = settings
+        )
 
-        Button(onClick = {}) {
-            Text(
-                text =
-                    if (isThereWinner != 0) {
-                        "Winner is " +  if (isThereWinner == 1) "Player B, The Yellow One!" else "Player A, The Red One!"
-                    } else {
-                        "No winner, yet..."
-                    },
-            )
+        ControlPanel(
+            undoAction,
+            clearBoardAction,
+            playNextFromProfile,
+            { settings = settings.toggleAutoPlay().toggleAutoAutoPlay() },
+        )
+        PlayStatsDisplay(gameHolder)
+
+        WinnerDisplay(gameHolder)
+    }
+}
+
+@Composable
+fun PlayStatsDisplay(
+    gameHolder: GameHolder,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier) {
+        Button(onClick = {}, modifier = Modifier.width(205.dp)) {
+            Text("Red ${gameHolder.playerA.name} player wins: ${gameHolder.playerA.firstPlayStats.wins}")
         }
+        Button(onClick = {}, modifier = Modifier.width(205.dp)) {
+            Text("Draws: ${gameHolder.playerA.firstPlayStats.draws}")
+        }
+        Button(onClick = {}, modifier = Modifier.width(205.dp)) {
+            Text("Yellow ${gameHolder.playerB.name} player wins: ${gameHolder.playerB.secondPlayStats.wins}")
+        }
+    }
+}
+
+@Composable
+fun ControlPanel(
+    undoAction: () -> Unit,
+    clearBoardAction: () -> Unit,
+    playNextFromProfile: () -> Unit,
+    toggleAutoPlay: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier) {
+        Button(onClick = undoAction) {
+            Text("Undo last move")
+        }
+        Button(onClick = clearBoardAction) {
+            Text("Restart")
+        }
+        Button(onClick = playNextFromProfile) {
+            Text("Play next move")
+        }
+        Button(onClick = toggleAutoPlay) {
+            Text("Activate autoplay from profiles")
+        }
+    }
+}
+
+@Composable
+private fun WinnerDisplay(gameHolder: GameHolder) {
+    val winner = gameHolder.whoisWinner()
+    val result =
+        if (winner == null && gameHolder.hasGameStopped()) {
+            "It is a draw, now draw your own tie"
+        } else if (gameHolder.hasGameStopped()) {
+            "Winner is " + gameHolder.whoisWinnerText()
+        } else {
+            "No winner, yet..."
+        }
+    Button(onClick = {}) {
+        Text(
+            text = result,
+        )
     }
 }
 
 @Composable
 fun DrawTheBoard(
     board: Board,
+    settings: Settings,
     modifier: Modifier = Modifier,
+    dropTokenAction: (Int) -> Unit,
 ) {
     Row(modifier = modifier) {
         repeat(board.board.size) { rowNum ->
             Column(
-                modifier = Modifier,
+                modifier =
+                    Modifier.clickable(
+                        enabled = settings.isColumnClickingEnabled,
+                        onClickLabel = "Drop it like it's hot",
+                        onClick = { dropTokenAction(rowNum) },
+                    ),
             ) {
                 repeat(board.board[rowNum].size) { columnNum ->
                     val move = board.board[rowNum][columnNum]
@@ -184,10 +212,10 @@ fun ChoosePic(
 ) {
     var contentDescription: String
     val resource: DrawableResource
-    if (move > 0) {
+    if (move < 0) {
         resource = Res.drawable.yellow_cell
         contentDescription = "Yellow Cell"
-    } else if (move < 0) {
+    } else if (move > 0) {
         resource = Res.drawable.red_cell
         contentDescription = "Red Cell"
     } else {
@@ -209,12 +237,78 @@ fun DropButtons(
     modifier: Modifier = Modifier,
     boardWidth: Int = 7,
 ) {
-    Row {
+    Row(modifier) {
         repeat(boardWidth) { num ->
             Button(onClick = {
                 dropTokenAction(num)
             }, modifier = Modifier.width(102.dp)) {
                 Text("Drop@${num + 1}")
+            }
+        }
+    }
+}
+
+@Composable
+fun HeuristicWells(
+    board: Board,
+    forSide: Int,
+    settings: Settings,
+    wellFunction: (Board, Int) -> IntArray,
+    dropTokenAction: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val heuristicWells = wellFunction(board, forSide)
+    Row(modifier = modifier.fillMaxWidth()) {
+        for ((index, well) in heuristicWells.withIndex()) {
+            Button(
+                onClick = { dropTokenAction(index) },
+                enabled = settings.isWellClickingEnabled,
+                modifier = Modifier.width(102.dp),
+            ) {
+                var texti = "H:$well"
+                if (well == Int.MAX_VALUE) {
+                    texti = "H:WIN!!"
+                } else if (well == Int.MIN_VALUE) {
+                    texti = "H:Must block"
+                    if (heuristicWells.count { it == Int.MIN_VALUE } >= 2) {
+                        texti = "H:☹\uFE0F"
+                    }
+                }
+                Text(text = texti)
+            }
+        }
+    }
+}
+
+
+@Composable
+fun (() -> Unit).SettingAutoAutoPlay(
+    gameHolder: GameHolder,
+    settings: Settings,
+) {
+    LaunchedEffect(settings.isAutoAutoPlayActive && gameHolder.hasGameStopped()) {
+        var delay = 10L
+        if (gameHolder.playerB.id == ProfileHolder.human.id || gameHolder.playerA.id == ProfileHolder.human.id) {
+            delay = 5000L
+        }
+        delay(delay)
+        this@SettingAutoAutoPlay()
+    }
+}
+
+@Composable
+fun (() -> Unit).SettingNormalAutoPlay(
+    gameHolder: GameHolder,
+    settings: Settings,
+) {
+    LaunchedEffect(settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileHolder.human.id && !gameHolder.hasGameStopped()) {
+        while (settings.isAutoPlayActive && gameHolder.playerOnTurn().id != ProfileHolder.human.id && !gameHolder.hasGameStopped()) {
+            val start = System.currentTimeMillis()
+            this@SettingNormalAutoPlay()
+            val end = System.currentTimeMillis()
+            if (end - start < gameHolder.playerOnTurn().timeLimit) {
+                val amount = min(gameHolder.playerOnTurn().timeLimit - (end - start), 10)
+                delay(amount)
             }
         }
     }

@@ -3,6 +3,7 @@ package io.qmpu842.labs.logic.profiles
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.HeuristicThing
 
+@Deprecated("Just say no")
 class SimpleHeuristicGuyProfile : OpponentProfile() {
     override fun nextMove(
         board: Board,

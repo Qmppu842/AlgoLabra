@@ -2,6 +2,8 @@ package io.qmpu842.labs.logic
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
 
 class BoardTest :
@@ -13,7 +15,7 @@ class BoardTest :
         test("getLastMove on empty") {
             val board = Board()
 
-            board.getLastMove() shouldBe -1
+            board.getLastMove() shouldBe null
         }
 
         test("getLastMove after moves should give the last well") {
@@ -23,7 +25,7 @@ class BoardTest :
                     boardWidth = 3,
                     boardHeight = height,
                 )
-            board.getLastMove() shouldBe -1
+            board.getLastMove() shouldBe null
 
             board = board.dropToken(0, 1)
             board = board.dropToken(0, -2)
@@ -318,5 +320,68 @@ class BoardTest :
 
             board = board.dropToken(0, -12)
             board.isLastPlayWinning(4) shouldBe true
+        }
+
+        test("getLegalMovesFromMiddleOut on empty odd board") {
+            var board =
+                Board(
+                    boardWidth = 7,
+                    boardHeight = 6,
+                    neededForWin = 4,
+                )
+
+            val list = board.getLegalMovesFromMiddleOut()
+            list shouldContainInOrder listOf(3,4,2,5,1,6,0)
+            list shouldContainExactly listOf(3,4,2,5,1,6,0)
+        }
+        test("getLegalMovesFromMiddleOut on empty even board") {
+            var board =
+                Board(
+                    boardWidth = 6,
+                    boardHeight = 6,
+                    neededForWin = 4,
+                )
+
+            val list = board.getLegalMovesFromMiddleOut()
+            list shouldContainInOrder listOf(3,2,4,1,5,0)
+            list shouldContainExactly listOf(3,2,4,1,5,0)
+        }
+
+        test("getOnTurnToken on empty board") {
+            val height = 6
+            val width = 7
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            board.getOnTurnToken() shouldBe 1
+        }
+
+        test("getOnTurnToken on board with one turn") {
+            val height = 6
+            val width = 7
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            board = board.dropLockedToken(1)
+            board.getOnTurnToken() shouldBe -2
+        }
+
+        test("getOnTurnToken on board with 32 turns") {
+            val height = 100
+            val width = 1
+            var board =
+                Board(
+                    boardWidth = width,
+                    boardHeight = height,
+                )
+            repeat(32) {
+                board = board.dropLockedToken(0)
+                board = board.dropLockedToken(0)
+            }
+            board.getOnTurnToken() shouldBe 65
         }
     })
