@@ -44,7 +44,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             GameHolder(
                 Board(),
                 ProfileHolder.human,
-                ProfileHolder.miniMaxV3Profile6,
+                ProfileHolder.human,
                 bc = BoardConfig(),
             ),
         )

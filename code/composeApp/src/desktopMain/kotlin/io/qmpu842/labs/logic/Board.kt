@@ -218,6 +218,22 @@ data class Board(
         return false
     }
 
+    fun isLastPlayWinning2(x: Int, y: Int, neededForWin: Int = 4): Boolean {
+        val startingPoint = Point(x, y)
+        val sp = board.get(startingPoint) ?: return false
+
+        for (way in Way.entries) {
+            val doubleLine =
+                doubleLineNoJumpStart(
+                    current = startingPoint,
+                    sign = sp.sign,
+                    way = way,
+                )
+            if (doubleLine.summa() >= neededForWin) return true
+        }
+        return false
+    }
+
     fun doubleLineNoJumpStart(
         current: Point,
         sign: Int,

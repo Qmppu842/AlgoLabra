@@ -31,14 +31,17 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
     fun collectMinimax(board: Board, depth: Int = this.depth, maximizingPlayer: Boolean = true): IntArray {
         val winnersAndLoser = IntArray(board.getWells()) { 0 }
         val moves = board.getLegalMovesFromMiddleOut()
+//        val moves = board.getLegalMoves()
         for (move in moves) {
+            val kopiolauta = board.deepCopy()
             val collected =
                 minimax(
-                    board = board.dropLockedToken(move).deepCopy(),
+                    board = kopiolauta.dropLockedToken(move).deepCopy(),
                     depth = depth,
-                    maximizingPlayer = maximizingPlayer,
+                    maximizingPlayer = !maximizingPlayer,
                 )
-            winnersAndLoser[winnersAndLoser.size - move - 1] = collected
+//            winnersAndLoser[winnersAndLoser.size - move - 1] = collected
+            winnersAndLoser[move] = collected
         }
         return winnersAndLoser
     }
@@ -51,26 +54,28 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
         beta: Int = Int.MAX_VALUE,
     ): Int {
         val terminal = board.isLastPlayWinning()
+        val hasStopped = board.history.size
 
-//        if (terminal && maximizingPlayer) return Int.MAX_VALUE
-//
-//        if (terminal) return Int.MIN_VALUE
+        if (terminal && maximizingPlayer && hasStopped <= 42) return 100_000+depth
+
+        if (terminal && hasStopped <= 42) return -100_000 - depth
 
         val time = System.currentTimeMillis()
 
-        if (depth == 0 || time >= currentMaxTime || terminal) return lastMovesValue4(board)
+        if (depth == 0 || time >= currentMaxTime) return lastMovesValue4(board)
 
         val moves = board.getLegalMovesFromMiddleOut()
 
         if (maximizingPlayer) {
             var value = Int.MIN_VALUE
             for (move in moves) {
-                val doTheMove = board.dropLockedToken(move)
+                val kopiolauta = board.deepCopy()
+                val doTheMove = kopiolauta.dropLockedToken(move)
                 value =
                     max(
                         value,
                         minimax(
-                            board = doTheMove.deepCopy(),
+                            board = doTheMove,
                             depth = depth - 1,
                             maximizingPlayer = false,
                         ),
@@ -83,12 +88,13 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
         } else {
             var value = Int.MAX_VALUE
             for (move in moves) {
-                val doTheMove = board.dropLockedToken(move)
+                val kopiolauta = board.deepCopy()
+                val doTheMove = kopiolauta.dropLockedToken(move)
                 value =
                     min(
                         value,
                         minimax(
-                            board = doTheMove.deepCopy(),
+                            board = doTheMove,
                             depth = depth - 1,
                             maximizingPlayer = true,
                         ),
@@ -186,13 +192,13 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
                 )
 //            println("doubleLineVihu: ${doubleLineVihu.summa()}")
             if (doubleLineOma.summa() >= neededForWin) {
-//                counter += 1000
-                counter = Int.MAX_VALUE
+                counter = 8888888
+//                counter = Int.MAX_VALUE
             }
             else
                 if (doubleLineVihu.summa() >= neededForWin) {
-//                counter -= 100
-                counter = Int.MIN_VALUE
+                counter = 9999999
+//                counter = Int.MIN_VALUE
             }
         }
 

@@ -111,8 +111,27 @@ class MiniMaxV1ProfileTest : FunSpec({
                         intArrayOf(0, 0, 0, 0, 0, 0),
                     ),
             )
+        val minimax = MiniMaxV1Profile(depth = 0, timeLimit = 1000000)
+        val collectMinimax = minimax.collectMinimax(board, maximizingPlayer = false)
 
-        val minimax = MiniMaxV1Profile(depth = 1,)
+        collectMinimax.toList() shouldContainExactly listOf(0, 0, 0, Int.MAX_VALUE, Int.MIN_VALUE, 0, 0)
+    }
+
+    test("collectMinimax #6") {
+        var board =
+            Board(
+                board =
+                    arrayOf(
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                        intArrayOf(0, 0, 0, 0, 0, 0),
+                    ),
+            )
+        val minimax = MiniMaxV1Profile(depth = 1, timeLimit = 1000000)
         val collectMinimax = minimax.collectMinimax(board, maximizingPlayer = false)
 
         collectMinimax.toList() shouldContainExactly listOf(0, 0, 0, Int.MAX_VALUE, Int.MIN_VALUE, 0, 0)
