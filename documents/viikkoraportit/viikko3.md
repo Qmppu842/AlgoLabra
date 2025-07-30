@@ -29,5 +29,5 @@ Ja laittamaan minimaxi itsessään palauttamaan siirto sekä maxi
 | 21/07    | 6h   | Minimax                     |
 | 26/07    | 2h   | Palaveri Hannun kanssa      |
 | 27/07    | 1h   | Raportointi                 |
-| 20-26/07 | 11h  | This weeks total            |
-| 10-19/07 | 88h  | Total Total                 |
+| 20-27/07 | 11h  | This weeks total            |
+| 10-27/07 | 88h  | Total Total                 |
