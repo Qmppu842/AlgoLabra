@@ -10,11 +10,6 @@ object ProfileHolder {
     val simpleHeuristicGuyProfile = SimpleHeuristicGuyProfile()
     val simpleOpportunisticProfile = SimpleOpportunisticProfile() // the good guy
     val miniMaxV1Profile = MiniMaxV1Profile()
-    val miniMaxV2Profile =
-        MiniMaxV101Profile(
-            depth = 20,
-            timeLimit = 300,
-        )
     val miniMaxV3Profile = // the current best?
         MiniMaxV1Profile(
             depth = 20,
@@ -32,11 +27,6 @@ object ProfileHolder {
             timeLimit = 150
         )
 
-    val miniMaxV2Profile2 =
-        MiniMaxV101Profile(
-            depth = 10,
-            timeLimit = 1000,
-        )
 
     val miniMaxV3Profile4 =
         MiniMaxV1Profile(
@@ -50,10 +40,16 @@ object ProfileHolder {
             timeLimit = 10
         )
 
-    val miniMaxV3Profile6 =
+    val minimaxDepth0TimeInf =
         MiniMaxV1Profile(
             depth = 0,
-            timeLimit = 100
+            timeLimit = MILLION
+        )
+
+    val minimaxDepth4TimeInf =
+        MiniMaxV1Profile(
+            depth = 0,
+            timeLimit = MILLION
         )
 
 }
