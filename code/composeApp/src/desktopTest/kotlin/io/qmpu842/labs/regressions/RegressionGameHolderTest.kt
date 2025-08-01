@@ -23,7 +23,7 @@ class RegressionGameHolderTest :
             }
 
             gameHolder.hasGameStopped() shouldBe false
-//            gameHolder.whoisWinner() shouldBe null
+            gameHolder.whoisWinner1() shouldBe gameHolder.playerA
 
             gameHolder.board.isLastPlayWinning() shouldBe false
 

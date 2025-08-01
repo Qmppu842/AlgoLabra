@@ -165,12 +165,14 @@ fun ControlPanel(
 private fun WinnerDisplay(gameHolder: GameHolder) {
     val winner = gameHolder.whoisWinner()
     val result =
-        if (winner == null && gameHolder.hasGameStopped()) {
-            "It is a draw, now draw your own tie"
-        } else if (gameHolder.hasGameStopped()) {
-            "Winner is " + gameHolder.whoisWinnerText()
-        } else {
+        if (winner == null) {
             "No winner, yet..."
+        } else if (winner == 0) {
+            "It is a draw, now draw your own tie"
+        } else if (winner.sign == -1) {
+            "Winner is Player A, The Red One! The ${gameHolder.playerA.name}"
+        } else {
+            "Winner is Player B, The Yellow One! The ${gameHolder.playerB.name}"
         }
     Button(onClick = {}) {
         Text(

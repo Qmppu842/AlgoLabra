@@ -52,20 +52,29 @@ data class GameHolder(
 
     fun hasGameStopped() = (board.isLastPlayWinning() || board.isAtMaxSize())
 
-    fun whoisWinner(): OpponentProfile? {
+    /**
+     * This is annoying.
+     * @return value is null only if board is full and no win on last ply.
+     *  Otherwise (even when there is no winner) this will return on turn player
+     *
+     *  So this needs to be used with hasGameStopped all the time to actually know.
+     *
+     *  There is good argument to convert this to return Int?, and then -1 for A, +1 for B, 0 for draw and null for when game is still going.
+     *
+     *  If this style was really really wanted, one could look things like Arrowkt's Either.
+     */
+    fun whoisWinner1(): OpponentProfile? {
         if ((!board.isLastPlayWinning() && board.isAtMaxSize())) return null
         return if (board.getOnTurnToken().sign == 1) playerA else playerB
     }
 
-    fun whoisWinnerText(
-        positiveSideColorName: String = "Red",
-        negativeSideColorName: String = "Yellow",
-    ): String =
-        if (board.getOnTurnToken().sign == -1) {
-            "Player A, The $positiveSideColorName One! The ${playerA.name}"
-        } else {
-            "Player B, The $negativeSideColorName One! The ${playerB.name}"
-        }
+    fun whoisWinner(): Int? {
+        if (hasGameStopped()) return null
+        if ((!board.isLastPlayWinning() && board.isAtMaxSize())) return 0
+        return board.getOnTurnToken().sign
+    }
+
+
 
     fun dropTokenLimited(column: Int = -99): GameHolder {
         if (hasGameStopped()) return this
@@ -76,19 +85,24 @@ data class GameHolder(
         return this.copy(board.dropLockedToken(columnHolder))
     }
 
+    /**
+     * Updates the profile stats only if the game has ended.
+     */
     fun updateWinners() {
         val winner = whoisWinner()
-        if (winner != null) {
-            if (board.getOnTurnToken().sign == -1) {
-                playerA.firstPlayStats = playerA.firstPlayStats.win()
-                playerB.secondPlayStats = playerB.secondPlayStats.lose()
-            } else {
-                playerA.firstPlayStats = playerA.firstPlayStats.lose()
-                playerB.secondPlayStats = playerB.secondPlayStats.win()
-            }
-        } else {
+
+        if (winner == null) {
+            println("Game is still going.")
+            return
+        } else if (winner == 0) {
             playerA.firstPlayStats = playerA.firstPlayStats.draw()
             playerB.secondPlayStats = playerB.secondPlayStats.draw()
+        } else if (winner.sign == -1) {
+            playerA.firstPlayStats = playerA.firstPlayStats.win()
+            playerB.secondPlayStats = playerB.secondPlayStats.lose()
+        } else {
+            playerA.firstPlayStats = playerA.firstPlayStats.lose()
+            playerB.secondPlayStats = playerB.secondPlayStats.win()
         }
     }
 
