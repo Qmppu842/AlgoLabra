@@ -48,7 +48,7 @@ object ProfileHolder {
 
     val minimaxDepth4TimeInf =
         MiniMaxV1Profile(
-            depth = 0,
+            depth = 4,
             timeLimit = MILLION
         )
 

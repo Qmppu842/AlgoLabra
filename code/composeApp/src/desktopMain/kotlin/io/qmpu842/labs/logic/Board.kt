@@ -145,9 +145,10 @@ data class Board(
                 lastZero = index
             }
         }
-        if (lastZero != -1) {
-            board[column][lastZero] = token
-        }
+
+        if (lastZero == -1) return this
+
+        board[column][lastZero] = token
         return this.copy(
             board,
             boardConfig,
