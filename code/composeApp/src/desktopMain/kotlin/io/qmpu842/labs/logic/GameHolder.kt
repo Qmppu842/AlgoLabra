@@ -19,28 +19,39 @@ data class GameHolder(
     ) : this(board = Board(bc), playerA = playerA, playerB = playerB, bc)
 
     companion object {
-        fun runWithOutUi(amount: Int) {
+        /**
+         * Runs
+         * @param amount of games and prints the wins and time it took to do so.
+         * @param playerA and
+         * @param playerB are the profiles used for this tournament.
+         */
+        fun runWithOutUi(
+            amount: Int,
+            playerA: OpponentProfile = ProfileHolder.rand,
+            playerB: OpponentProfile = ProfileHolder.miniMaxV3Profile5,
+        ) {
             var gameHolder =
                 GameHolder(
-                    playerA = ProfileHolder.rand,
-                    playerB = ProfileHolder.miniMaxV3Profile5,
+                    playerA = playerA,
+                    playerB = playerB,
                     bc = BoardConfig(),
                 )
             var gameCounter = 0
-            val alku = System.currentTimeMillis()
+            val startTime = System.currentTimeMillis()
             while (gameCounter < amount) {
                 if (gameHolder.hasGameStopped()) {
                     lapTime()
                     gameCounter++
-                    gameHolder = gameHolder.clearBoardAndUpdateWinners()
+                    gameHolder = gameHolder.updateWinnersAndClearBoard()
                 }
                 gameHolder = gameHolder.dropTokenLimited()
             }
-            val loppu = System.currentTimeMillis()
-            println("Ended, took about ${loppu - alku} ms")
+            val endTime = System.currentTimeMillis()
+            println("Ended, took about ${endTime - startTime} ms")
             println("Stats:")
             println("Red wins: ${gameHolder.playerA.firstPlayStats.wins}")
             println("Yellow wins: ${gameHolder.playerB.secondPlayStats.wins}")
+            println("Draws: ${gameHolder.playerA.firstPlayStats.draws}")
         }
     }
 
@@ -50,32 +61,25 @@ data class GameHolder(
 
     fun clearBoard(): GameHolder = this.copy(board = board.clear())
 
+    /**
+     * @return true if game is won or board full, otherwise false
+     */
     fun hasGameStopped() = (board.isLastPlayWinning() || board.isAtMaxSize())
 
     /**
-     * This is annoying.
-     * @return value is null only if board is full and no win on last ply.
-     *  Otherwise (even when there is no winner) this will return on turn player
-     *
-     *  So this needs to be used with hasGameStopped all the time to actually know.
-     *
-     *  There is good argument to convert this to return Int?, and then -1 for A, +1 for B, 0 for draw and null for when game is still going.
-     *
-     *  If this style was really really wanted, one could look things like Arrowkt's Either.
+     * @return Tells you if game is still going with null, or if game ended in draw, 0, or +1/-1 for wins
      */
-    fun whoisWinner1(): OpponentProfile? {
-        if ((!board.isLastPlayWinning() && board.isAtMaxSize())) return null
-        return if (board.getOnTurnToken().sign == 1) playerA else playerB
-    }
-
     fun whoisWinner(): Int? {
-        if (hasGameStopped()) return null
+        if (!hasGameStopped()) return null
         if ((!board.isLastPlayWinning() && board.isAtMaxSize())) return 0
         return board.getOnTurnToken().sign
     }
 
-
-
+    /**
+     * This drops token to well if
+     * @param column is equal or greater than 0, that well is used,
+     * Otherwise it will ask current profiles next move and use that well.
+     */
     fun dropTokenLimited(column: Int = -99): GameHolder {
         if (hasGameStopped()) return this
         var columnHolder = column
@@ -106,7 +110,7 @@ data class GameHolder(
         }
     }
 
-    fun clearBoardAndUpdateWinners(): GameHolder {
+    fun updateWinnersAndClearBoard(): GameHolder {
         lapTime()
         updateWinners()
         return clearBoard()

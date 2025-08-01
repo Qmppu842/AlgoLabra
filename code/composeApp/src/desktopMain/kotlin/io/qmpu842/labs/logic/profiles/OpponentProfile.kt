@@ -13,12 +13,20 @@ abstract class OpponentProfile {
     var firstPlayStats: Stats = Stats()
     var secondPlayStats: Stats = Stats()
 
-
+    /**
+     * Name of the profile
+     */
     val name: String
         get(){
             return "${this::class.simpleName}"
         }
 
+    /**
+     * Takes the
+     *  @param board and
+     *  @param forSide then
+     *  @return the index of the well that the profile wants to play next
+     */
     abstract fun nextMove(
         board: Board,
         forSide: Int): Int

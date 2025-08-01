@@ -70,7 +70,7 @@ fun TheGame(modifier: Modifier = Modifier) {
     val thing2 =
         {
             if (gameHolder.hasGameStopped()) {
-                gameHolder = gameHolder.clearBoardAndUpdateWinners()
+                gameHolder = gameHolder.updateWinnersAndClearBoard()
             }
         }.SettingAutoAutoPlay(
             gameHolder = gameHolder,
@@ -161,6 +161,10 @@ fun ControlPanel(
     }
 }
 
+/**
+ * Displays the winner text.
+ * Or text to indicate still going game
+ */
 @Composable
 private fun WinnerDisplay(gameHolder: GameHolder) {
     val winner = gameHolder.whoisWinner()
@@ -181,6 +185,14 @@ private fun WinnerDisplay(gameHolder: GameHolder) {
     }
 }
 
+/**
+ * This allows us to draw the board.
+ *
+ *
+ * Also the
+ * @param dropTokenAction allows us to click columns in order to drop tokens
+ *  Simple yet nice QoL feature.
+ */
 @Composable
 fun DrawTheBoard(
     board: Board,
@@ -207,6 +219,9 @@ fun DrawTheBoard(
     }
 }
 
+/**
+ * This chooses the pictures for each cell based on its value.
+ */
 @Composable
 fun ChoosePic(
     move: Int,
@@ -233,6 +248,9 @@ fun ChoosePic(
     )
 }
 
+/**
+ * Draws the basic drop buttons.
+ */
 @Composable
 fun DropButtons(
     dropTokenAction: (Int) -> Unit,
@@ -250,6 +268,16 @@ fun DropButtons(
     }
 }
 
+/**
+ * This draws the displays for the heuristic wells.
+ *
+ * I should not but wanted so
+ * @param dropTokenAction allows these to work as drop buttons too.
+ *
+ *
+ * @param wellFunction is the heuristic thing to show here.
+ * It should be method that takes board and for side to evaluate, and returns array of the heuristic values of each index
+ */
 @Composable
 fun HeuristicWells(
     board: Board,
@@ -283,6 +311,9 @@ fun HeuristicWells(
 }
 
 
+/**
+ * This controls if games start automatically when game has ended
+ */
 @Composable
 fun (() -> Unit).SettingAutoAutoPlay(
     gameHolder: GameHolder,
@@ -298,6 +329,9 @@ fun (() -> Unit).SettingAutoAutoPlay(
     }
 }
 
+/**
+ * This controls if the profiles should automatically play their next move
+ */
 @Composable
 fun (() -> Unit).SettingNormalAutoPlay(
     gameHolder: GameHolder,

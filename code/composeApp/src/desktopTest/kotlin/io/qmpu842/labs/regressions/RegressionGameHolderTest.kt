@@ -27,13 +27,13 @@ class RegressionGameHolderTest :
 
             gameHolder.board.isLastPlayWinning() shouldBe false
 
-            gameHolder.board.isLastPlayWinning(
+            gameHolder.board.doesPlaceHaveWinning(
                 x = 3,
                 y = 0,
                 neededForWin = 4,
             ) shouldBe false
 
-            gameHolder.board.isLastPlayWinning(
+            gameHolder.board.doesPlaceHaveWinning(
                 x = 2,
                 y = 0,
                 neededForWin = 4,

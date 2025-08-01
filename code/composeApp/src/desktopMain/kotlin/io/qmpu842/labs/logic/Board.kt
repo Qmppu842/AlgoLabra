@@ -116,11 +116,14 @@ data class Board(
         return result2
     }
 
+    /**
+     * Drops token that is determined by the player on turn and length of history
+     */
     fun dropLockedToken(column: Int): Board = dropToken(column, getOnTurnToken())
 
     /**
      * @return next turn token so on turn 32 token is -32
-     * first is 0...
+     * First token is 1
      */
     fun getOnTurnToken(): Int = (history.size+ 1) * if (history.size % 2 == 0) 1 else -1
 
@@ -129,7 +132,7 @@ data class Board(
      * @param column the well to drop in
      * @param token the token to drop
      *
-     * @return -1 if no space otherwise the height the token was put in
+     * @return the modified board
      */
     fun dropToken(
         column: Int,
@@ -152,6 +155,9 @@ data class Board(
         )
     }
 
+    /**
+     * @return the board but last move removed.
+     */
     fun undoLastMove(): Board {
         if (history.isEmpty()) return this
         val lastWell = history.last()
@@ -198,6 +204,11 @@ data class Board(
      */
     fun getHighestSpaceIndex(column: Int) = getWellSpace(column) - 1
 
+    /**
+     * Checks in any direction if last move is winning move
+     *
+     * (Gets last move from history)
+     */
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         if (history.isEmpty()) return false
         val lastOne = history.last()
@@ -218,7 +229,13 @@ data class Board(
         return false
     }
 
-    fun isLastPlayWinning(x: Int, y: Int, neededForWin: Int): Boolean {
+    /**
+     * Checks if (x|y) is winning in any direction
+     *
+     * Caution: Uses the sing at the place
+     * So at empty board basically any place is "winning" as this counts the zero lines as wins
+     */
+    fun doesPlaceHaveWinning(x: Int, y: Int, neededForWin: Int): Boolean {
         val startingPoint = Point(x, y)
         val sp = board.get(startingPoint)
         if(sp == null || sp == 0) return false
@@ -235,6 +252,10 @@ data class Board(
         return false
     }
 
+    /**
+     * Checks the line and the "anti-line" without allowing starting zero.
+     * Thus, this is good for situation like 1121  where the 2 is the latest
+     */
     fun doubleLineNoJumpStart(
         current: Point,
         sign: Int,
@@ -262,6 +283,10 @@ data class Board(
         return Pair(result, result2)
     }
 
+    /**
+     * Checks the line and the "anti-line" with allowing starting zero.
+     * Thus, this is good for situation like 1101  where the 0 is the space we want to check
+     */
     fun doubleLineWithJumpStart(
         current: Point,
         sign: Int,
@@ -295,6 +320,15 @@ data class Board(
     }
 
 
+    /**
+     * Counts recursively how many of each thing in the line
+     * @param current where we currently are.
+     * @param sign what things to count -1/+1/0
+     * @param way what way the line should go
+     * @param length how many counted so far.
+     *
+     * @return the amount of sign countered before other sign broke the chain
+     */
     fun checkLine(
         current: Point,
         sign: Int,
@@ -320,6 +354,10 @@ data class Board(
         )
     }
 
+    /**
+     * @return mutable list of valid starting points.
+     *  So the wells with space and the first free index of that well
+     */
     fun startingPoints(): MutableList<Point> {
         val startingPoints = mutableListOf<Point>()
 
@@ -330,6 +368,10 @@ data class Board(
         return startingPoints
     }
 
+    /**
+     * Deep copies the board so the arrays are not linked anymore -.-
+     * @return copy of the board without any reference linking
+     */
     fun deepCopy(): Board {
         val board2 =
             Array(board.size) {
@@ -348,6 +390,9 @@ data class Board(
         return Board(board2, boardConfig, copiedHistory)
     }
 
+    /**
+     * @return true if board is full (based on history)
+     */
     fun isAtMaxSize(): Boolean {
         var allSize = 0
         board.forEachIndexed { index, ints ->
