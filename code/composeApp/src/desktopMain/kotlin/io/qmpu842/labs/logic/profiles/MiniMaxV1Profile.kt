@@ -4,27 +4,9 @@ import io.qmpu842.labs.helpers.*
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
 import java.awt.Point
-import kotlin.math.max
-import kotlin.math.min
 
 class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) : OpponentProfile() {
-//    var currentMaxTime = System.currentTimeMillis() + timeLimit
     var currentMaxTime = Long.MAX_VALUE
-
-    fun nextMove1(
-        board: Board,
-        forSide: Int,
-    ): Int {
-        currentMaxTime = System.currentTimeMillis() + timeLimit
-        val winnersAndLoser = collectMinimax(board)
-        println("Winners and losers: ${winnersAndLoser.toList()}")
-
-        return if (forSide == -1) {
-            winnersAndLoser.getListOfIndexesOfMin().random(MyRandom.random)
-        } else {
-            winnersAndLoser.getListOfIndexesOfMax().random(MyRandom.random)
-        }
-    }
 
     override fun nextMove(
         board: Board,
@@ -38,87 +20,8 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             maximizingPlayer = true,
             alpha = 0,
             beta = 0,
-            forLastSide = -forSide
+            forLastSide = forSide
         ).second
-    }
-
-    fun collectMinimax(board: Board, depth: Int = this.depth, maximizingPlayer: Boolean = true): IntArray {
-        val winnersAndLoser = IntArray(board.getWells()) { 0 }
-        val moves = board.getLegalMovesFromMiddleOut()
-//        val moves = board.getLegalMoves()
-        for (move in moves) {
-            val kopiolauta = board.deepCopy()
-            val collected =
-                minimax(
-                    board = kopiolauta.dropLockedToken(move).deepCopy(),
-                    depth = depth,
-                    maximizingPlayer = !maximizingPlayer,
-                )
-//            winnersAndLoser[winnersAndLoser.size - move - 1] = collected
-            winnersAndLoser[move] = collected
-        }
-        return winnersAndLoser
-    }
-
-    fun minimax(
-        board: Board,
-        depth: Int,
-        maximizingPlayer: Boolean,
-        alpha: Int = Int.MIN_VALUE,
-        beta: Int = Int.MAX_VALUE,
-    ): Int {
-        val terminal = board.isLastPlayWinning()
-        val hasStopped = board.isAtMaxSize()
-
-        if (terminal && maximizingPlayer && hasStopped) return HUNDRED_K + depth
-
-        if (terminal && hasStopped) return -HUNDRED_K - depth
-
-        val time = System.currentTimeMillis()
-
-        if (depth == 0 || time >= currentMaxTime) return lastMovesValue4(board)
-
-        val moves = board.getLegalMovesFromMiddleOut()
-
-        if (maximizingPlayer) {
-            var value = Int.MIN_VALUE
-            for (move in moves) {
-                val kopiolauta = board.deepCopy()
-                val doTheMove = kopiolauta.dropLockedToken(move)
-                value =
-                    max(
-                        value,
-                        minimax(
-                            board = doTheMove,
-                            depth = depth - 1,
-                            maximizingPlayer = false,
-                        ),
-                    )
-
-//                val alpha2 = max(alpha, value)
-//                if (beta <= alpha2) break
-            }
-            return value
-        } else {
-            var value = Int.MAX_VALUE
-            for (move in moves) {
-                val kopiolauta = board.deepCopy()
-                val doTheMove = kopiolauta.dropLockedToken(move)
-                value =
-                    min(
-                        value,
-                        minimax(
-                            board = doTheMove,
-                            depth = depth - 1,
-                            maximizingPlayer = true,
-                        ),
-                    )
-
-//                val beta2 = min(beta, value)
-//                if (beta2 <= alpha) break
-            }
-            return value
-        }
     }
 
     /**
@@ -203,6 +106,7 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
 
 
 
+    @Deprecated("The 5 is 'more accurate'")
     fun lastMovesValue4(
         board: Board
     ): Int {
@@ -287,15 +191,23 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
                     sign = -forSide,
                     way = way,
                 )
+
+            val doubleLineVihu2 =
+                board.doubleLineWithJumpStart(
+                    current = startingPoint,
+                    sign = -forSide,
+                    way = way,
+                )
 //            println("doubleLineVihu: ${doubleLineVihu.summa()}")
             if (doubleLineOma.summa() >= neededForWin) {
                 counter = MAX_WIN
 //                counter = Int.MAX_VALUE
-            } else {
-                if (doubleLineVihu.summa() >= neededForWin) {
+            } else if (doubleLineVihu.summa() >= neededForWin) {
                     counter = MIN_LOSE
 //                counter = Int.MIN_VALUE
-                }
+
+            }else if (doubleLineVihu2.summa() >= neededForWin -1){
+                counter = BLOCK_WIN
             }
         }
         return counter

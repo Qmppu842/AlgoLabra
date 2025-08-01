@@ -44,12 +44,13 @@ fun TheGame(modifier: Modifier = Modifier) {
             GameHolder(
                 Board(),
                 ProfileHolder.human,
-                ProfileHolder.human,
+                ProfileHolder.minimaxDepth4TimeInf,
                 bc = BoardConfig(),
             ),
         )
     }
 
+    //All the methods wrapped into holders
     val dropTokenAction: (Int) -> Unit = { column ->
         gameHolder = gameHolder.dropTokenLimited(column)
     }
@@ -88,6 +89,7 @@ fun TheGame(modifier: Modifier = Modifier) {
                 settings = settings,
         )
 
+    // The Actual ui drawing things
     Column(modifier = modifier.width(IntrinsicSize.Max)) {
         DropButtons(
             dropTokenAction = dropTokenAction,
