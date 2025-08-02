@@ -65,6 +65,9 @@ Sitten pitänee alkaa pohtia iteratiivista syvenemistä ja transpositiotaluja.
 Miten ne sitten ikinä ilmeneekään.
 
 
+Ja toteutan viikon viisi alussa myös testaus ja toteutus dokumentit.
+
+
 ## Ajan käyttö:
 
 | Päivä       | aika | syy                                            |
