@@ -9,7 +9,7 @@ class DFSProfile(
     /**
      * Allowed time limit for this to think
      */
-    override var timeLimit = 1000
+    override var timeLimit = 1000L
 
     var currentMaxTime = System.currentTimeMillis() + timeLimit
 

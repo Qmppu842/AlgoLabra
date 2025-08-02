@@ -1,11 +1,20 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.*
+import io.qmpu842.labs.helpers.BLOCK_WIN
+import io.qmpu842.labs.helpers.MAX_WIN
+import io.qmpu842.labs.helpers.MIN_LOSE
+import io.qmpu842.labs.helpers.summa
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
 import java.awt.Point
 
-class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) : OpponentProfile() {
+class MiniMaxV1Profile(
+    var depth: Int = 10,
+    override var timeLimit: Long = 100L,
+) : OpponentProfile() {
+
+    constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
+
     var currentMaxTime = Long.MAX_VALUE
 
     override fun nextMove(
@@ -44,19 +53,21 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
 
 //        println("And the board would look like: ${board.board.contentDeepToString()}")
 
-        if (terminal && maximizingPlayer && hasStopped) return Pair(HUNDRED_K + depth, lastMove)
+        if (terminal && maximizingPlayer && hasStopped) return Pair((MAX_WIN * 2) - depth, lastMove)
 
-        if (terminal && hasStopped) return Pair(-HUNDRED_K - depth, lastMove)
+        if (terminal && hasStopped) return Pair(-(MIN_LOSE * 2) + depth, lastMove)
 
         val time = System.currentTimeMillis()
         val y = board.getWellSpace(lastMove)
 
-        if (depth == 0 || time >= currentMaxTime) return Pair(lastMovesValue5(
-            board = board,
-            x = lastMove,
-            y = y,
-            forSide = forLastSide * if (maximizingPlayer) -1 else 1
-        ),lastMove)
+//        if (depth == 0 || time >= currentMaxTime) return Pair(lastMovesValue5(
+//            board = board,
+//            x = lastMove,
+//            y = y,
+//            forSide = forLastSide * if (maximizingPlayer) -1 else 1
+//        ),lastMove)
+
+        if (depth == 0 || time >= currentMaxTime) return Pair(0,lastMove)
 
         val moves = board.getLegalMovesFromMiddleOut()
 
@@ -210,7 +221,6 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             } else if (doubleLineVihu.summa() >= neededForWin) {
                     counter = MIN_LOSE
 //                counter = Int.MIN_VALUE
-                println("Now the min lose is used")
             } else if (doubleLineVihu2.summa() >= neededForWin -1){
                 counter = BLOCK_WIN
             }

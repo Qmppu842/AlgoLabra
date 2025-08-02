@@ -8,7 +8,7 @@ abstract class OpponentProfile {
     val rand = MyRandom.random
     val id: Int = rand.nextInt()
 
-    open val timeLimit:Int = 10
+    open val timeLimit:Long = 100
 
     var firstPlayStats: Stats = Stats()
     var secondPlayStats: Stats = Stats()
