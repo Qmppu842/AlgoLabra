@@ -1,6 +1,7 @@
 package io.qmpu842.labs.regressions
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.qmpu842.labs.logic.Board
 
@@ -72,5 +73,16 @@ class RegressionBoardTest :
 
             board = board.dropToken(0, 9)
             board.isLastPlayWinning(4) shouldBe true
+        }
+
+        test("Check no win on these moves #5") {
+            var board = Board()
+
+            repeat(6) {
+               board = board.dropLockedToken(3)
+            }
+            board.isLastPlayWinning(4) shouldBe false
+            board.isAtMaxSize() shouldBe false
+            board.getLegalMoves() shouldContainExactly listOf(0,1,2,4,5,6)
         }
     })

@@ -116,11 +116,14 @@ data class Board(
         return result2
     }
 
+    /**
+     * Drops token that is determined by the player on turn and length of history
+     */
     fun dropLockedToken(column: Int): Board = dropToken(column, getOnTurnToken())
 
     /**
      * @return next turn token so on turn 32 token is -32
-     * first is 0...
+     * First token is 1
      */
     fun getOnTurnToken(): Int = (history.size+ 1) * if (history.size % 2 == 0) 1 else -1
 
@@ -129,7 +132,7 @@ data class Board(
      * @param column the well to drop in
      * @param token the token to drop
      *
-     * @return -1 if no space otherwise the height the token was put in
+     * @return the modified board
      */
     fun dropToken(
         column: Int,
@@ -142,9 +145,10 @@ data class Board(
                 lastZero = index
             }
         }
-        if (lastZero != -1) {
-            board[column][lastZero] = token
-        }
+
+        if (lastZero == -1) return this
+
+        board[column][lastZero] = token
         return this.copy(
             board,
             boardConfig,
@@ -152,10 +156,12 @@ data class Board(
         )
     }
 
+    /**
+     * @return the board but last move removed.
+     */
     fun undoLastMove(): Board {
         if (history.isEmpty()) return this
         val lastWell = history.last()
-//        if (lastWell == -1) return this
 
         val thing = board[lastWell]
         var toRemove = -1
@@ -199,12 +205,18 @@ data class Board(
      */
     fun getHighestSpaceIndex(column: Int) = getWellSpace(column) - 1
 
+    /**
+     * Checks in any direction if last move is winning move
+     *
+     * (Gets last move from history)
+     */
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         if (history.isEmpty()) return false
         val lastOne = history.last()
         val wellSpace = getWellSpace(lastOne)
         val startingPoint = Point(lastOne, wellSpace)
-        val sp = board.get(startingPoint) ?: return false
+        val sp = board.get(startingPoint)
+        if(sp == null || sp == 0) return false
 
         for (way in Way.entries) {
             val doubleLine =
@@ -218,6 +230,33 @@ data class Board(
         return false
     }
 
+    /**
+     * Checks if (x|y) is winning in any direction
+     *
+     * Caution: Uses the sing at the place
+     * So at empty board basically any place is "winning" as this counts the zero lines as wins
+     */
+    fun doesPlaceHaveWinning(x: Int, y: Int, neededForWin: Int): Boolean {
+        val startingPoint = Point(x, y)
+        val sp = board.get(startingPoint)
+        if(sp == null || sp == 0) return false
+
+        for (way in Way.entries) {
+            val doubleLine =
+                doubleLineNoJumpStart(
+                    current = startingPoint,
+                    sign = sp.sign,
+                    way = way,
+                )
+            if (doubleLine.summa() >= neededForWin) return true
+        }
+        return false
+    }
+
+    /**
+     * Checks the line and the "anti-line" without allowing starting zero.
+     * Thus, this is good for situation like 1121  where the 2 is the latest
+     */
     fun doubleLineNoJumpStart(
         current: Point,
         sign: Int,
@@ -245,6 +284,10 @@ data class Board(
         return Pair(result, result2)
     }
 
+    /**
+     * Checks the line and the "anti-line" with allowing starting zero.
+     * Thus, this is good for situation like 1101  where the 0 is the space we want to check
+     */
     fun doubleLineWithJumpStart(
         current: Point,
         sign: Int,
@@ -278,6 +321,15 @@ data class Board(
     }
 
 
+    /**
+     * Counts recursively how many of each thing in the line
+     * @param current where we currently are.
+     * @param sign what things to count -1/+1/0
+     * @param way what way the line should go
+     * @param length how many counted so far.
+     *
+     * @return the amount of sign countered before other sign broke the chain
+     */
     fun checkLine(
         current: Point,
         sign: Int,
@@ -303,32 +355,10 @@ data class Board(
         )
     }
 
-    fun countInLineForWin(
-        current: Point,
-        sign: Int,
-        way: Way,
-        length: Int = 0,
-        aaa: Triple<Int, Int, Int>
-    ): Int {
-        var realLength = length
-        val currentValue = board.get(current)
-        if (currentValue == null) return realLength
-
-        if (currentValue.sign != sign) return realLength
-
-        realLength += 1
-
-        val next = board.next(current, way)
-        if (next == null) return realLength
-
-        return checkLine(
-            current = next,
-            sign = sign,
-            way = way,
-            length = realLength,
-        )
-    }
-
+    /**
+     * @return mutable list of valid starting points.
+     *  So the wells with space and the first free index of that well
+     */
     fun startingPoints(): MutableList<Point> {
         val startingPoints = mutableListOf<Point>()
 
@@ -339,6 +369,10 @@ data class Board(
         return startingPoints
     }
 
+    /**
+     * Deep copies the board so the arrays are not linked anymore -.-
+     * @return copy of the board without any reference linking
+     */
     fun deepCopy(): Board {
         val board2 =
             Array(board.size) {
@@ -357,108 +391,14 @@ data class Board(
         return Board(board2, boardConfig, copiedHistory)
     }
 
-    fun lastMovesValue(neededForWin: Int = boardConfig.neededForWin): Int {
-        if (history.isEmpty()) return 0
-        val lastOne = history.last()
-//        if (lastOne == -1) return 0
-        val wellSpace = getWellSpace(lastOne)
-        val startingPoint = Point(lastOne, wellSpace)
-        val sp = board.get(startingPoint) ?: return 0
-
-        var counter = 0
-
-        for (way in Way.entries) {
-            val doubleLineOma =
-                doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = sp.sign,
-                    way = way,
-                )
-//            println("doubleLineOma: ${doubleLineOma.summa()}")
-            val doubleLineAir =
-                doubleLineWithJumpStart(
-                    current = startingPoint,
-                    sign = 0,
-                    way = way,
-                )
-//            println("doubleLineAir: ${doubleLineAir.summa()}")
-            val doubleLineVihu =
-                doubleLineWithJumpStart(
-                    current = startingPoint,
-                    sign = -sp.sign,
-                    way = way,
-                )
-
-//            println("doubleLineVihu: ${doubleLineVihu.summa()}")
-            val valivaihe = 0
-            +doubleLineOma.summa()
-            +doubleLineAir.summa() / 2
-            -doubleLineVihu.summa()
-            counter = valivaihe
-        }
-
-        return counter
-    }
-
-    fun lastMovesValue2(neededForWin: Int = 4): Int {
-        if (history.isEmpty()) return 0
-        val lastOne = history.last()
-//        if (lastOne == -1) return 0
-        val wellSpace = getWellSpace(lastOne)
-        val startingPoint = Point(lastOne, wellSpace)
-        val listaa = SecondHeuristicThing.combinedWells(this, 1)
-        return listaa[startingPoint.x]
-    }
-
-    fun lastMovesValue3(neededForWin: Int = 4): Int {
-        if (history.isEmpty()) return 0
-        val lastOne = history.last()
-        val wellSpace = getWellSpace(lastOne)
-        val startingPoint = Point(lastOne, wellSpace)
-        val sp = board.get(startingPoint) ?: return 0
-
-        var counter = 0
-
-        for (way in Way.entries) {
-            val doubleLineOma =
-                doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = sp.sign,
-                    way = way,
-                )
-//            println("doubleLineOma: ${doubleLineOma.summa()}")
-            val doubleLineAir =
-                doubleLineWithJumpStart(
-                    current = startingPoint,
-                    sign = 0,
-                    way = way,
-                )
-//            println("doubleLineAir: ${doubleLineAir.summa()}")
-            val doubleLineVihu =
-                doubleLineWithJumpStart(
-                    current = startingPoint,
-                    sign = -sp.sign,
-                    way = way,
-                )
-
-//            println("doubleLineVihu: ${doubleLineVihu.summa()}")
-//            val valivaihe = 0
-//            +doubleLineOma.summa()
-//            +doubleLineAir.summa() / 2
-//            -doubleLineVihu.summa()
-
-            val summa = doubleLineOma.summa()
-            if (summa >= 4) {
-//                val valivaihe = doubleLineOma.summa() / 2
-//                counter = valivaihe
-                counter++
-            }
-        }
-
-        return counter / 2
-    }
-
+    /**
+     * @return true if board is full (based on history)
+     */
     fun isAtMaxSize(): Boolean {
-        return history.size == board.fold(0) { acc, ints -> acc + ints.size }
+        var allSize = 0
+        board.forEachIndexed { index, ints ->
+            allSize += ints.size
+        }
+        return history.size == allSize
     }
 }

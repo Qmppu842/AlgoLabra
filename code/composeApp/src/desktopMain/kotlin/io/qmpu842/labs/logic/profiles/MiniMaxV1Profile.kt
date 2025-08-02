@@ -1,8 +1,8 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.MyRandom
-import io.qmpu842.labs.helpers.getListOfIndexesOfMax
-import io.qmpu842.labs.helpers.getListOfIndexesOfMin
+import io.qmpu842.labs.helpers.BLOCK_WIN
+import io.qmpu842.labs.helpers.MAX_WIN
+import io.qmpu842.labs.helpers.MIN_LOSE
 import io.qmpu842.labs.helpers.summa
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
@@ -10,105 +10,129 @@ import java.awt.Point
 import kotlin.math.max
 import kotlin.math.min
 
-class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) : OpponentProfile() {
-    var currentMaxTime = System.currentTimeMillis() + timeLimit
+class MiniMaxV1Profile(
+    var depth: Int = 10,
+    override var timeLimit: Long = 100L,
+) : OpponentProfile() {
+
+    constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
+
+    var currentMaxTime = Long.MAX_VALUE
 
     override fun nextMove(
         board: Board,
         forSide: Int,
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
-        val winnersAndLoser = collectMinimax(board)
-        println("Winners and losers: ${winnersAndLoser.toList()}")
 
-        return if (forSide == -1) {
-            winnersAndLoser.getListOfIndexesOfMin().random(MyRandom.random)
-        } else {
-            winnersAndLoser.getListOfIndexesOfMax().random(MyRandom.random)
-        }
+        val thing = minimax2(
+            board = board,
+            depth = depth,
+            maximizingPlayer = true,
+            alpha = 0,
+            beta = 0,
+            forLastSide = -forSide
+        )
+//        println("The thing: $thing")
+        return thing.second
     }
 
-    fun collectMinimax(board: Board, depth: Int = this.depth, maximizingPlayer: Boolean = true): IntArray {
-        val winnersAndLoser = IntArray(board.getWells()) { 0 }
-        val moves = board.getLegalMovesFromMiddleOut()
-        for (move in moves) {
-            val collected =
-                minimax(
-                    board = board.dropLockedToken(move).deepCopy(),
-                    depth = depth,
-                    maximizingPlayer = maximizingPlayer,
-                )
-            winnersAndLoser[winnersAndLoser.size - move - 1] = collected
-        }
-        return winnersAndLoser
-    }
-
-    fun minimax(
+    /**
+     * @param forLastSide you should put here the value of last turns side.
+     *  Why this way?
+     *  Because the first round of minimax does nothing, only after it can do the first moves
+     */
+    fun minimax2(
         board: Board,
         depth: Int,
         maximizingPlayer: Boolean,
-        alpha: Int = Int.MIN_VALUE,
-        beta: Int = Int.MAX_VALUE,
-    ): Int {
+        alpha: Int,
+        beta: Int,
+        forLastSide: Int,
+    ): Pair<Int, Int> {
         val terminal = board.isLastPlayWinning()
+        val hasStopped = board.isAtMaxSize()
+        val lastMove = board.getLastMove() ?: 0
 
-//        if (terminal && maximizingPlayer) return Int.MAX_VALUE
-//
-//        if (terminal) return Int.MIN_VALUE
+
+        if (terminal) {
+            return if (!maximizingPlayer) {
+                Pair(7777 + depth, lastMove)
+            } else {
+                Pair(-888 - depth, lastMove)
+            }
+        } else if (hasStopped) {
+            return Pair(-99 + depth, lastMove)
+        }
 
         val time = System.currentTimeMillis()
+        val y = board.getWellSpace(lastMove)
 
-        if (depth == 0 || time >= currentMaxTime || terminal) return lastMovesValue4(board)
+        if (depth == 0 || time >= currentMaxTime) return Pair(lastMovesValue5(
+            board = board,
+            x = lastMove,
+            y = y,
+            forSide = forLastSide * if (maximizingPlayer) -1 else 1
+        ),lastMove)
+
+//        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
 
         val moves = board.getLegalMovesFromMiddleOut()
 
         if (maximizingPlayer) {
             var value = Int.MIN_VALUE
+            var bestMove = moves.first()
             for (move in moves) {
-                val doTheMove = board.dropLockedToken(move)
-                value =
-                    max(
-                        value,
-                        minimax(
-                            board = doTheMove.deepCopy(),
-                            depth = depth - 1,
-                            maximizingPlayer = false,
-                        ),
+                val minied =
+                    minimax2(
+                        board = board.deepCopy().dropLockedToken(move),
+                        depth = depth - 1,
+                        maximizingPlayer = false,
+                        alpha = 0,
+                        beta = 0,
+                        forLastSide = -forLastSide,
                     )
+                if (minied.first > value) {
+                    bestMove = move
+                    value = minied.first
+                }
 
-//                val alpha2 = max(alpha, value)
-//                if (beta <= alpha2) break
+                val alpha2 = max(alpha, value)
+                if (beta <= alpha2) break
             }
-            return value
+            return Pair(value, bestMove)
         } else {
             var value = Int.MAX_VALUE
+            var bestMove = moves.first()
             for (move in moves) {
-                val doTheMove = board.dropLockedToken(move)
-                value =
-                    min(
-                        value,
-                        minimax(
-                            board = doTheMove.deepCopy(),
-                            depth = depth - 1,
-                            maximizingPlayer = true,
-                        ),
+                val minied =
+                    minimax2(
+                        board = board.deepCopy().dropLockedToken(move),
+                        depth = depth - 1,
+                        maximizingPlayer = true,
+                        alpha = 0,
+                        beta = 0,
+                        forLastSide = -forLastSide,
                     )
+                if (minied.first < value) {
+                    bestMove = move
+                    value = minied.first
+                }
 
-//                val beta2 = min(beta, value)
-//                if (beta2 <= alpha) break
+                val beta2 = min(beta, value)
+                if (beta2 <= alpha) break
             }
-            return value
+            return Pair(value, bestMove)
         }
     }
 
-    fun lastMovesValue3(
-        board: Board
+    fun lastMovesValue5(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
     ): Int {
-        if (board.history.isEmpty()) return 0
-        val lastOne = board.history.last()
-        val wellSpace = board.getWellSpace(lastOne)
-        val startingPoint = Point(lastOne, wellSpace)
-//        val sp = board.board.get(startingPoint) ?: return 0
+        val startingPoint = Point(x, y)
         val neededForWin = board.boardConfig.neededForWin
 
         var counter = 0
@@ -117,57 +141,7 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             val doubleLineOma =
                 board.doubleLineNoJumpStart(
                     current = startingPoint,
-                    sign = 1,
-                    way = way,
-                )
-            val doubleLineAir =
-                board.doubleLineWithJumpStart(
-                    current = startingPoint,
-                    sign = 0,
-                    way = way,
-                )
-            val doubleLineVihu =
-                board.doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = -1,
-                    way = way,
-                )
-
-            if (doubleLineOma.summa() >= neededForWin) {
-                counter += 1000
-//                counter = Int.MAX_VALUE
-            }else
-            if (doubleLineVihu.summa() >= neededForWin) {
-                counter -= 1000
-//                counter = Int.MIN_VALUE
-            }
-        }
-
-        return counter /2
-    }
-
-
-    fun lastMovesValue4(
-        board: Board
-    ): Int {
-        if (board.history.isEmpty()) return 0
-        val lastOne = board.history.last()
-        val wellSpace = board.getWellSpace(lastOne)
-        val startingPoint = Point(lastOne, wellSpace)
-        val neededForWin = board.boardConfig.neededForWin
-
-//        println("board: ${board.board.contentDeepToString()}")
-//
-//        println("needed for win: $neededForWin")
-
-        var counter = 0
-
-        for (way in Way.entries) {
-//            println("Looking at way $way")
-            val doubleLineOma =
-                board.doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = 1,
+                    sign = forSide,
                     way = way,
                 )
 //            println("doubleLineOma: ${doubleLineOma.summa()}")
@@ -181,21 +155,27 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             val doubleLineVihu =
                 board.doubleLineNoJumpStart(
                     current = startingPoint,
-                    sign = -1,
+                    sign = -forSide,
+                    way = way,
+                )
+
+            val doubleLineVihu2 =
+                board.doubleLineWithJumpStart(
+                    current = startingPoint,
+                    sign = -forSide,
                     way = way,
                 )
 //            println("doubleLineVihu: ${doubleLineVihu.summa()}")
             if (doubleLineOma.summa() >= neededForWin) {
-//                counter += 1000
-                counter = Int.MAX_VALUE
-            }
-            else
-                if (doubleLineVihu.summa() >= neededForWin) {
-//                counter -= 100
-                counter = Int.MIN_VALUE
+                counter = MAX_WIN
+//                counter = Int.MAX_VALUE
+            } else if (doubleLineVihu.summa() >= neededForWin) {
+                    counter = MIN_LOSE
+//                counter = Int.MIN_VALUE
+            } else if (doubleLineVihu2.summa() >= neededForWin -1){
+                counter = BLOCK_WIN
             }
         }
-
         return counter
     }
 }

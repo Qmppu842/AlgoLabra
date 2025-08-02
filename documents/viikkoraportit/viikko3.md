@@ -23,14 +23,11 @@ Ja laittamaan minimaxi itsessään palauttamaan siirto sekä maxi
 
 ## Ajan käyttö:
 
-| Päivä    | aika | syy              |
-|----------|------|------------------|
-| 20/07    | 2h   | ??               |
-| 21/07    | 6h   | Minimax               |
-| 22/07    | ??   | ??               |
-| 23/07    | ??   | ??               |
-| 24/07    | ??   | ??               |
-| 26/07    | 2h   | Palaveri Hannun kanssa               |
-| 27/07    | 1h   | Raportointi               |
-| 20-26/07 | 11h   | This weeks total |
-| 10-19/07 | 88h  | Total Total      |
+| Päivä    | aika | syy                         |
+|----------|------|-----------------------------|
+| 20/07    | 2h   | Jotain mutta en muista mitä |
+| 21/07    | 6h   | Minimax                     |
+| 26/07    | 2h   | Palaveri Hannun kanssa      |
+| 27/07    | 1h   | Raportointi                 |
+| 20-27/07 | 11h  | This weeks total            |
+| 10-27/07 | 88h  | Total Total                 |
