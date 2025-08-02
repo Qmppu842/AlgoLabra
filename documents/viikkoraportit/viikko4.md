@@ -16,7 +16,7 @@ Minimax ei käytä heurestiikaa tässä kuvassa.](\documents\week4_random_images
 ![Punainen pelaaja on minimax syvyydellä 1.
 Keltainen on minimax syvyydellä 5.
 Kumpikaan ei käytä heurestiikaa.
-Usempi tunti pelejä takana.](\documents\week4_random_images\minimax_depth_1_v_minimax_depth_5_without_heuristics.png "Minimax V Minimax")
+Usempi tunti pelejä takana.](documents/week4_random_images/minimax_depth_1_v_minimax_depth_5_without_heuristics.png "Minimax V Minimax")
 
 ![Kuvassa muutama minuutti minimax syvyydellä 5 sekä heuristiikalla vastaan random.](\documents\week4_random_images\minimax_depth_5_v_random_with_heuristics.png "Minimax v Random")
 
@@ -50,8 +50,8 @@ Miten ne sitten ikinä ilmeneekään.
 |-------------|------|------------------------------------------------|
 | 30/07       | 1h   | Pohdintaa                                      |
 | 31/07       | 5h   | Oli jotain gradle säätöä kun buildi ei toiminu |
-| 01/08       | ??   | ??                                             |
-| 02/08       | 6h   | ??                                             |
-| 03/08       | 2h   | ??                                             |
-| 30/07-03/08 | ??   | This weeks total                               |
-| 10/07-??/08 | 88h  | Total Total                                    |
+| 01/08       | 6h   | Korjailua ja dokumentointia                    |
+| 02/08       | 2h   | Minimax korjailua                              |
+| 03/08       | 2h   | Raportointi                                    |
+| 30/07-03/08 | 16h  | This weeks total                               |
+| 10/07-??/08 | 104h | Total Total                                    |
