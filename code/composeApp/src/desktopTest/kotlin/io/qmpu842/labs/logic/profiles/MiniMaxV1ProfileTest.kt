@@ -219,7 +219,7 @@ class MiniMaxV1ProfileTest : FunSpec({
                         intArrayOf(0, 0, 0, 0, 0, 0),
                     ),
             )
-        val minimax = MiniMaxV1Profile(depth = 0, timeLimit = MILLION)
+        val minimax = MiniMaxV1Profile(depth = 1 , timeLimit = MILLION)
         val result = minimax.minimax2(
             board = board,
             depth = minimax.depth,

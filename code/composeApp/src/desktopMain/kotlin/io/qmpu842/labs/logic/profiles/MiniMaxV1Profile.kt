@@ -23,14 +23,17 @@ class MiniMaxV1Profile(
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
 
-        return minimax2(
+        println("Starting")
+        val thing = minimax2(
             board = board,
             depth = depth,
             maximizingPlayer = true,
             alpha = 0,
             beta = 0,
             forLastSide = -forSide
-        ).second
+        )
+        println("The thing: $thing")
+        return thing.second
     }
 
     /**
@@ -48,14 +51,27 @@ class MiniMaxV1Profile(
     ): Pair<Int, Int> {
         val terminal = board.isLastPlayWinning()
         val hasStopped = board.isAtMaxSize()
-        val lastMove = board.getLastMove() ?: board.getLegalMovesFromMiddleOut().first()
-
+        val lastMove = board.getLastMove() ?: 0
 
 //        println("And the board would look like: ${board.board.contentDeepToString()}")
 
-        if (terminal && maximizingPlayer && hasStopped) return Pair((MAX_WIN * 2) - depth, lastMove)
-
-        if (terminal && hasStopped) return Pair(-(MIN_LOSE * 2) + depth, lastMove)
+//        if ( lastMove != null) {
+        if (terminal) {
+            if (!maximizingPlayer) {
+//                println("maximising")
+                return Pair(7777 + depth, lastMove)
+            } else {
+//                println("minimazing")
+                return Pair(-888 - depth, lastMove)
+            }
+        } else if (hasStopped) {
+//            println("draw")
+            return Pair(-99 + depth, lastMove)
+        }
+//        println("No easy solution")
+//        if (terminal && maximizingPlayer ) return Pair(HUNDRED_K + depth, lastMove)
+//
+//        if (terminal && !maximizingPlayer) return Pair(-HUNDRED_K - depth, lastMove)
 
         val time = System.currentTimeMillis()
         val y = board.getWellSpace(lastMove)
@@ -67,8 +83,10 @@ class MiniMaxV1Profile(
 //            forSide = forLastSide * if (maximizingPlayer) -1 else 1
 //        ),lastMove)
 
-        if (depth == 0 || time >= currentMaxTime) return Pair(0,lastMove)
+        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
+//        }
 
+//        println("We still have things to explore")
         val moves = board.getLegalMovesFromMiddleOut()
 
         if (maximizingPlayer) {
@@ -118,60 +136,6 @@ class MiniMaxV1Profile(
             }
             return Pair(value, bestMove)
         }
-    }
-
-
-
-    @Deprecated("The 5 is 'more accurate'")
-    fun lastMovesValue4(
-        board: Board
-    ): Int {
-        if (board.history.isEmpty()) return 0
-        val lastOne = board.history.last()
-        val wellSpace = board.getWellSpace(lastOne)
-        val startingPoint = Point(lastOne, wellSpace)
-        val neededForWin = board.boardConfig.neededForWin
-
-//        println("board: ${board.board.contentDeepToString()}")
-//
-//        println("needed for win: $neededForWin")
-
-        var counter = 0
-
-        for (way in Way.entries) {
-//            println("Looking at way $way")
-            val doubleLineOma =
-                board.doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = 1,
-                    way = way,
-                )
-//            println("doubleLineOma: ${doubleLineOma.summa()}")
-            val doubleLineAir =
-                board.doubleLineWithJumpStart(
-                    current = startingPoint,
-                    sign = 0,
-                    way = way,
-                )
-//            println("doubleLineAir: ${doubleLineAir.summa()}")
-            val doubleLineVihu =
-                board.doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = -1,
-                    way = way,
-                )
-//            println("doubleLineVihu: ${doubleLineVihu.summa()}")
-            if (doubleLineOma.summa() >= neededForWin) {
-                counter = MAX_WIN
-//                counter = Int.MAX_VALUE
-            } else {
-                if (doubleLineVihu.summa() >= neededForWin) {
-                    counter = MIN_LOSE
-//                counter = Int.MIN_VALUE
-                }
-            }
-        }
-        return counter
     }
 
     fun lastMovesValue5(

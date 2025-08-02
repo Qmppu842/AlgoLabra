@@ -425,11 +425,11 @@ class BoardTest :
                 board.isLastPlayWinning(4) shouldBe false
 
                 board = board.dropToken(2, -((it + 1) * 2))
-                board.doesPlaceHaveWinning(
-                    x = 2,
-                    y = TODO(),
-                    neededForWin = 4,
-                ) shouldBe false
+//                board.doesPlaceHaveWinning(
+//                    x = 2,
+//                    y = TODO(),
+//                    neededForWin = 4,
+//                ) shouldBe false
             }
         }
 

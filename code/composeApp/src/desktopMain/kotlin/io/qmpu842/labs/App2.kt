@@ -324,7 +324,7 @@ fun (() -> Unit).SettingAutoAutoPlay(
     LaunchedEffect(settings.isAutoAutoPlayActive && gameHolder.hasGameStopped()) {
         var delay = 10L
         if (gameHolder.playerB.id == ProfileHolder.human.id || gameHolder.playerA.id == ProfileHolder.human.id) {
-            delay = 5000L
+            delay = 10000L
         }
         delay(delay)
         this@SettingAutoAutoPlay()
