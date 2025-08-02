@@ -25,3 +25,11 @@ Täällä asustaa minimax koodi:   [minimax pikalinkki](code/composeApp/src/desk
 
 Täällä asustaa testit:   [testit pikalinkki](code/composeApp/src/desktopTest/kotlin/io/qmpu842/labs)
 Testailuun liittyviä asioita: [lisäkansio](documents/testaus)
+
+
+## Ajaminen
+
+Tällä hetkellä pitäisi pystyä ajamaan jos menet [koodin kansioon](code)  
+Ja ajat komennon ```./gradlew code:composeApp:run```  
+  
+Tai voit suoraa myös ajaa tämän komennon tässä ```./code/gradlew --project-dir=code :composeApp:run```
