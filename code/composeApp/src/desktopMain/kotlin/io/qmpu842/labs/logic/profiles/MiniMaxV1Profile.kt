@@ -7,6 +7,8 @@ import io.qmpu842.labs.helpers.summa
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
 import java.awt.Point
+import kotlin.math.max
+import kotlin.math.min
 
 class MiniMaxV1Profile(
     var depth: Int = 10,
@@ -23,7 +25,6 @@ class MiniMaxV1Profile(
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
 
-        println("Starting")
         val thing = minimax2(
             board = board,
             depth = depth,
@@ -32,7 +33,7 @@ class MiniMaxV1Profile(
             beta = 0,
             forLastSide = -forSide
         )
-        println("The thing: $thing")
+//        println("The thing: $thing")
         return thing.second
     }
 
@@ -53,40 +54,29 @@ class MiniMaxV1Profile(
         val hasStopped = board.isAtMaxSize()
         val lastMove = board.getLastMove() ?: 0
 
-//        println("And the board would look like: ${board.board.contentDeepToString()}")
 
-//        if ( lastMove != null) {
         if (terminal) {
-            if (!maximizingPlayer) {
-//                println("maximising")
-                return Pair(7777 + depth, lastMove)
+            return if (!maximizingPlayer) {
+                Pair(7777 + depth, lastMove)
             } else {
-//                println("minimazing")
-                return Pair(-888 - depth, lastMove)
+                Pair(-888 - depth, lastMove)
             }
         } else if (hasStopped) {
-//            println("draw")
             return Pair(-99 + depth, lastMove)
         }
-//        println("No easy solution")
-//        if (terminal && maximizingPlayer ) return Pair(HUNDRED_K + depth, lastMove)
-//
-//        if (terminal && !maximizingPlayer) return Pair(-HUNDRED_K - depth, lastMove)
 
         val time = System.currentTimeMillis()
         val y = board.getWellSpace(lastMove)
 
-//        if (depth == 0 || time >= currentMaxTime) return Pair(lastMovesValue5(
-//            board = board,
-//            x = lastMove,
-//            y = y,
-//            forSide = forLastSide * if (maximizingPlayer) -1 else 1
-//        ),lastMove)
+        if (depth == 0 || time >= currentMaxTime) return Pair(lastMovesValue5(
+            board = board,
+            x = lastMove,
+            y = y,
+            forSide = forLastSide * if (maximizingPlayer) -1 else 1
+        ),lastMove)
 
-        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
-//        }
+//        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
 
-//        println("We still have things to explore")
         val moves = board.getLegalMovesFromMiddleOut()
 
         if (maximizingPlayer) {
@@ -102,15 +92,13 @@ class MiniMaxV1Profile(
                         beta = 0,
                         forLastSide = -forLastSide,
                     )
-//                println("On depth: $depth")
-//                println("The minied: ${minied.first} and the pos: ${minied.second}")
                 if (minied.first > value) {
                     bestMove = move
                     value = minied.first
                 }
 
-//                val alpha2 = max(alpha, value)
-//                if (beta <= alpha2) break
+                val alpha2 = max(alpha, value)
+                if (beta <= alpha2) break
             }
             return Pair(value, bestMove)
         } else {
@@ -131,8 +119,8 @@ class MiniMaxV1Profile(
                     value = minied.first
                 }
 
-//                val beta2 = min(beta, value)
-//                if (beta2 <= alpha) break
+                val beta2 = min(beta, value)
+                if (beta2 <= alpha) break
             }
             return Pair(value, bestMove)
         }
@@ -150,7 +138,6 @@ class MiniMaxV1Profile(
         var counter = 0
 
         for (way in Way.entries) {
-//            println("Looking at way $way")
             val doubleLineOma =
                 board.doubleLineNoJumpStart(
                     current = startingPoint,

@@ -17,8 +17,8 @@ Updates are loading...
 
 ## Koodi
 
-Täällä asustaa itse koodi:   [koodin pikalinkki](code/composeApp/src/desktopMain/kotlin/io/qmpu842/labs)
-Täällä asustaa minimax koodi:   [minimax pikalinkki](https://github.com/Qmppu842/AlgoLabra/blob/4ab1d3c2b8cb290f481c8dbae898ffcbba7acf48/code/composeApp/src/desktopMain/kotlin/io/qmpu842/labs/logic/profiles/MiniMaxV1Profile.kt#L49)
+Täällä asustaa itse koodi:   [koodin pikalinkki](code/composeApp/src/desktopMain/kotlin/io/qmpu842/labs)  
+Täällä asustaa minimax koodi:   [minimax pikalinkki](code/composeApp/src/desktopMain/kotlin/io/qmpu842/labs/logic/profiles/MiniMaxV1Profile.kt)
 
 
 ## Testit
