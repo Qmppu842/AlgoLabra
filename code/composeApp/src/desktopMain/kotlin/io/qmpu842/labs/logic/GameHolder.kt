@@ -86,6 +86,9 @@ data class GameHolder(
         if (column < 0) {
             columnHolder = playerOnTurn().nextMove(board = board.deepCopy(), forSide = board.getOnTurnToken().sign)
         }
+//        else{
+//            println("human playing")
+//        }
         return this.copy(board.dropLockedToken(columnHolder))
     }
 

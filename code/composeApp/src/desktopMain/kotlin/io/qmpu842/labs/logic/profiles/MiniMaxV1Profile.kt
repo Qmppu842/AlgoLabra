@@ -20,7 +20,7 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             maximizingPlayer = true,
             alpha = 0,
             beta = 0,
-            forLastSide = forSide
+            forLastSide = -forSide
         ).second
     }
 
@@ -41,6 +41,9 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
         val hasStopped = board.isAtMaxSize()
         val lastMove = board.getLastMove() ?: board.getLegalMovesFromMiddleOut().first()
 
+
+//        println("And the board would look like: ${board.board.contentDeepToString()}")
+
         if (terminal && maximizingPlayer && hasStopped) return Pair(HUNDRED_K + depth, lastMove)
 
         if (terminal && hasStopped) return Pair(-HUNDRED_K - depth, lastMove)
@@ -52,7 +55,7 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             board = board,
             x = lastMove,
             y = y,
-            forSide = forLastSide
+            forSide = forLastSide * if (maximizingPlayer) -1 else 1
         ),lastMove)
 
         val moves = board.getLegalMovesFromMiddleOut()
@@ -70,6 +73,8 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
                         beta = 0,
                         forLastSide = -forLastSide,
                     )
+//                println("On depth: $depth")
+//                println("The minied: ${minied.first} and the pos: ${minied.second}")
                 if (minied.first > value) {
                     bestMove = move
                     value = minied.first
@@ -205,8 +210,8 @@ class MiniMaxV1Profile(var depth: Int = 10, override var timeLimit: Int = 100) :
             } else if (doubleLineVihu.summa() >= neededForWin) {
                     counter = MIN_LOSE
 //                counter = Int.MIN_VALUE
-
-            }else if (doubleLineVihu2.summa() >= neededForWin -1){
+                println("Now the min lose is used")
+            } else if (doubleLineVihu2.summa() >= neededForWin -1){
                 counter = BLOCK_WIN
             }
         }
