@@ -11,17 +11,17 @@ Alla muutamia otteita minimax v random/minimax peleistä:
 
 ![Kuvassa on useampi tunti minimaxin ja randomin välillä pelejä.
 Minimaxi muistaakseni on 4 syvyydellä.
-Minimax ei käytä heurestiikaa tässä kuvassa.](\documents\week4_random_images\minimax_depth_4_v_random_without_heuristics.png "Minimax v Random")
+Minimax ei käytä heurestiikaa tässä kuvassa.](minimax_depth_4_v_random_without_heuristics.png "Minimax v Random")
 
 ![Punainen pelaaja on minimax syvyydellä 1.
 Keltainen on minimax syvyydellä 5.
 Kumpikaan ei käytä heurestiikaa.
-Usempi tunti pelejä takana.](documents/week4_random_images/minimax_depth_1_v_minimax_depth_5_without_heuristics.png "Minimax V Minimax")
+Usempi tunti pelejä takana.](minimax_depth_1_v_minimax_depth_5_without_heuristics.png "Minimax V Minimax")
 
-![Kuvassa muutama minuutti minimax syvyydellä 5 sekä heuristiikalla vastaan random.](\documents\week4_random_images\minimax_depth_5_v_random_with_heuristics.png "Minimax v Random")
+![Kuvassa muutama minuutti minimax syvyydellä 5 sekä heuristiikalla vastaan random.](minimax_depth_5_v_random_with_heuristics.png "Minimax v Random")
 
 ![Minimax syvyydellä 5, heuristiikalla sekä alpha/beta -karsinnalla vastaan random.
-Kuvassa on noin viisi minuuttia pelejä.](\documents\week4_random_images\minimax_depth_5_v_random_with_heuristics_and_a_b_pruning.png "Minimax v Random")
+Kuvassa on noin viisi minuuttia pelejä.](minimax_depth_5_v_random_with_heuristics_and_a_b_pruning.png "Minimax v Random")
 
 ## Miten ohjelma on edistynyt?
 Minimax toimii ja maailma on mukavasti.  
