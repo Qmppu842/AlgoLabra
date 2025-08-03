@@ -79,7 +79,7 @@ class MiniMaxV1Profile(
             board = board,
             x = lastMove,
             y = y,
-            forSide = forLastSide * if (maximizingPlayer) 1 else -1,
+            forSide = forLastSide * if (maximizingPlayer) -1 else 1,
         ),lastMove)
 
 //        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
@@ -176,8 +176,8 @@ class MiniMaxV1Profile(
             if (doubleLineOma.summa() >= neededForWin) {
                 counter = HEURESTIC_WIN
 //                counter = Int.MAX_VALUE
-            } else if (doubleLineVihu.summa() >= neededForWin) {
-                    counter = HEURESTIC_LOSE
+//            } else if (doubleLineVihu.summa() >= neededForWin) {
+//                    counter = HEURESTIC_LOSE
 //                counter = Int.MIN_VALUE
             } else if (doubleLineVihu2.summa() >= neededForWin -1){
                 counter = BLOCK_WIN

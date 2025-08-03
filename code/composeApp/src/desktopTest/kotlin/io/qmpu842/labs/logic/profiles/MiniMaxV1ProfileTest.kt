@@ -2,10 +2,7 @@ package io.qmpu842.labs.logic.profiles
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.qmpu842.labs.helpers.BLOCK_WIN
-import io.qmpu842.labs.helpers.HEURESTIC_WIN
-import io.qmpu842.labs.helpers.MILLION
-import io.qmpu842.labs.helpers.MINIMAX_WIN
+import io.qmpu842.labs.helpers.*
 import io.qmpu842.labs.logic.Board
 
 class MiniMaxV1ProfileTest : FunSpec({
@@ -242,7 +239,7 @@ class MiniMaxV1ProfileTest : FunSpec({
         val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
         val result = minimax.minimax2(
             board = board,
-            forLastSide = -1
+            forLastSide = 1
         )
         result shouldBe Pair(BLOCK_WIN, 3)
     }
@@ -328,7 +325,7 @@ class MiniMaxV1ProfileTest : FunSpec({
                         intArrayOf(0, 0, 0, 0, 0, 0),
                     ),
             )
-        val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+        val minimax = MiniMaxV1Profile(depth = 1, timeLimit = TRILLION)
         val result = minimax.minimax2(
             board = board,
             forLastSide = 1,

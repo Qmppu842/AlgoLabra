@@ -260,4 +260,28 @@ class BoardTestLineCheckerTest :
             )
             lineLength shouldBe dropThisMany
         }
+
+
+        test("DoubleLine with opponent as jump start") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, -2, 1),
+                            intArrayOf(0, 0, 0, 0, -4, 3),
+                            intArrayOf(0, 0, 0, 0, 0, -8),
+                            intArrayOf(0, 0, 0, 0, -6, 5),
+                            intArrayOf(0, 0, 0, 0, 0, 7),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            val lineLength =
+                board.doubleLineWithJumpStart(
+                    current = Point(2, 5),
+                    sign = 1,
+                    way = Way.Right,
+                )
+            lineLength.summa() shouldBe 4
+        }
  })
