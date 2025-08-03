@@ -1,9 +1,6 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.BLOCK_WIN
-import io.qmpu842.labs.helpers.MAX_WIN
-import io.qmpu842.labs.helpers.MIN_LOSE
-import io.qmpu842.labs.helpers.summa
+import io.qmpu842.labs.helpers.*
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
 import java.awt.Point
@@ -19,6 +16,15 @@ class MiniMaxV1Profile(
 
     var currentMaxTime = Long.MAX_VALUE
 
+    /**
+     * This is dumb
+     * it only purpose is that min and max imports stay even if I comment a/b part in minimax.
+     */
+    fun dumm() {
+        val asd = min(1, 3)
+        val qwe = max(1, 3)
+    }
+
     override fun nextMove(
         board: Board,
         forSide: Int,
@@ -29,11 +35,11 @@ class MiniMaxV1Profile(
             board = board,
             depth = depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+            alpha = Int.MIN_VALUE,
+            beta = Int.MAX_VALUE,
             forLastSide = -forSide
         )
-//        println("The thing: $thing")
+        println("The Minimax valinnat: $thing")
         return thing.second
     }
 
@@ -46,8 +52,8 @@ class MiniMaxV1Profile(
         board: Board,
         depth: Int,
         maximizingPlayer: Boolean,
-        alpha: Int,
-        beta: Int,
+        alpha: Int = Int.MIN_VALUE,
+        beta: Int = Int.MAX_VALUE,
         forLastSide: Int,
     ): Pair<Int, Int> {
         val terminal = board.isLastPlayWinning()
@@ -57,12 +63,13 @@ class MiniMaxV1Profile(
 
         if (terminal) {
             return if (!maximizingPlayer) {
-                Pair(7777 + depth, lastMove)
+                Pair(MINIMAX_WIN + depth, lastMove)
             } else {
-                Pair(-888 - depth, lastMove)
+                Pair(MINIMAX_LOSE - depth, lastMove)
             }
         } else if (hasStopped) {
-            return Pair(-99 + depth, lastMove)
+            //On case of Draw
+            return Pair(0, lastMove)
         }
 
         val time = System.currentTimeMillis()
@@ -72,7 +79,7 @@ class MiniMaxV1Profile(
             board = board,
             x = lastMove,
             y = y,
-            forSide = forLastSide * if (maximizingPlayer) -1 else 1
+            forSide = forLastSide * if (maximizingPlayer) 1 else -1,
         ),lastMove)
 
 //        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
@@ -88,8 +95,8 @@ class MiniMaxV1Profile(
                         board = board.deepCopy().dropLockedToken(move),
                         depth = depth - 1,
                         maximizingPlayer = false,
-                        alpha = 0,
-                        beta = 0,
+                        alpha = alpha,
+                        beta = beta,
                         forLastSide = -forLastSide,
                     )
                 if (minied.first > value) {
@@ -97,8 +104,8 @@ class MiniMaxV1Profile(
                     value = minied.first
                 }
 
-                val alpha2 = max(alpha, value)
-                if (beta <= alpha2) break
+//                val alpha2 = max(alpha, value)
+//                if (beta <= alpha2) break
             }
             return Pair(value, bestMove)
         } else {
@@ -110,8 +117,8 @@ class MiniMaxV1Profile(
                         board = board.deepCopy().dropLockedToken(move),
                         depth = depth - 1,
                         maximizingPlayer = true,
-                        alpha = 0,
-                        beta = 0,
+                        alpha = alpha,
+                        beta = beta,
                         forLastSide = -forLastSide,
                     )
                 if (minied.first < value) {
@@ -167,10 +174,10 @@ class MiniMaxV1Profile(
                 )
 //            println("doubleLineVihu: ${doubleLineVihu.summa()}")
             if (doubleLineOma.summa() >= neededForWin) {
-                counter = MAX_WIN
+                counter = HEURESTIC_WIN
 //                counter = Int.MAX_VALUE
             } else if (doubleLineVihu.summa() >= neededForWin) {
-                    counter = MIN_LOSE
+                    counter = HEURESTIC_LOSE
 //                counter = Int.MIN_VALUE
             } else if (doubleLineVihu2.summa() >= neededForWin -1){
                 counter = BLOCK_WIN

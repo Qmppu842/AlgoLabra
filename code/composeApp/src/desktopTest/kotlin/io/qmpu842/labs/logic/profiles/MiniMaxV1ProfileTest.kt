@@ -3,8 +3,9 @@ package io.qmpu842.labs.logic.profiles
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.qmpu842.labs.helpers.BLOCK_WIN
-import io.qmpu842.labs.helpers.MAX_WIN
+import io.qmpu842.labs.helpers.HEURESTIC_WIN
 import io.qmpu842.labs.helpers.MILLION
+import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.logic.Board
 
 class MiniMaxV1ProfileTest : FunSpec({
@@ -35,7 +36,7 @@ class MiniMaxV1ProfileTest : FunSpec({
             x = 4,
             y = 5,
             forSide = -1,
-        ) shouldBe MAX_WIN
+        ) shouldBe HEURESTIC_WIN
     }
 
     test("lastMovesValue5 with win #2") {
@@ -62,7 +63,7 @@ class MiniMaxV1ProfileTest : FunSpec({
             x = 3,
             y = 2,
             forSide = 1,
-        ) shouldBe MAX_WIN
+        ) shouldBe HEURESTIC_WIN
     }
 
     test("lastMovesValue5 with win #3") {
@@ -87,7 +88,7 @@ class MiniMaxV1ProfileTest : FunSpec({
             x = 4,
             y = 5,
             forSide = -1,
-        ) shouldBe MAX_WIN
+        ) shouldBe HEURESTIC_WIN
 
         board = board.dropToken(3, 11)
         minimax.lastMovesValue5(
@@ -95,7 +96,7 @@ class MiniMaxV1ProfileTest : FunSpec({
             x = 3,
             y = 2,
             forSide = 1,
-        ) shouldBe MAX_WIN
+        ) shouldBe HEURESTIC_WIN
     }
 
     test("lastMovesValue5 with win #4") {
@@ -114,7 +115,7 @@ class MiniMaxV1ProfileTest : FunSpec({
             x = 0,
             y = 2,
             forSide = 1,
-        ) shouldBe MAX_WIN
+        ) shouldBe HEURESTIC_WIN
     }
 
 
@@ -198,11 +199,11 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+            alpha = Int.MIN_VALUE,
+            beta = Int.MAX_VALUE,
             forLastSide = -1
         )
-        result shouldBe Pair(MAX_WIN, 3)
+        result shouldBe Pair(MINIMAX_WIN, 3)
     }
 
     test("MiniMax #2") {
@@ -224,8 +225,8 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+            alpha = Int.MIN_VALUE,
+            beta = Int.MAX_VALUE,
             forLastSide = -1
         )
         result shouldBe Pair(0, 3)
@@ -251,11 +252,11 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+            alpha = Int.MIN_VALUE,
+            beta = Int.MAX_VALUE,
             forLastSide = -1
         )
-        result shouldBe Pair(0, 3)
+        result shouldBe Pair(BLOCK_WIN, 3)
     }
 
 
@@ -278,11 +279,11 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+            alpha = Int.MIN_VALUE,
+            beta = Int.MAX_VALUE,
             forLastSide = -1,
         )
-        result shouldBe Pair(MAX_WIN, 0)
+        result shouldBe Pair(MINIMAX_WIN, 0)
     }
 
     test("MiniMax #5") {
@@ -304,11 +305,11 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+//            alpha = 0,
+//            beta = 0,
             forLastSide = 1
         )
-        result shouldBe Pair(MAX_WIN, 1)
+        result shouldBe Pair(MINIMAX_WIN, 1)
     }
 
     test("MiniMax #6") {
@@ -330,11 +331,11 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+//            alpha = 0,
+//            beta = 0,
             forLastSide = -1,
         )
-        result shouldBe Pair(MAX_WIN, 2)
+        result shouldBe Pair(MINIMAX_WIN, 2)
     }
 
     test("MiniMax #7") {
@@ -356,8 +357,8 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+//            alpha = 0,
+//            beta = 0,
             forLastSide = 1,
         )
         result shouldBe Pair(BLOCK_WIN, 2)
@@ -382,11 +383,11 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+//            alpha = 0,
+//            beta = 0,
             forLastSide = -1,
         )
-        result shouldBe Pair(MAX_WIN, 0)
+        result shouldBe Pair(MINIMAX_WIN, 0)
     }
 
     test("MiniMax #9") {
@@ -408,10 +409,10 @@ class MiniMaxV1ProfileTest : FunSpec({
             board = board,
             depth = minimax.depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+//            alpha = 0,
+//            beta = 0,
             forLastSide = -1,
         )
-        result shouldBe Pair(MAX_WIN, 6)
+        result shouldBe Pair(MINIMAX_WIN, 6)
     }
 })

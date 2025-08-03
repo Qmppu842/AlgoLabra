@@ -42,8 +42,7 @@ fun TheGame(modifier: Modifier = Modifier) {
     var gameHolder by remember {
         mutableStateOf(
             GameHolder(
-                Board(),
-                ProfileHolder.human,
+                ProfileHolder.rand,
                 ProfileHolder.minimaxDepth5TimeInf,
                 bc = BoardConfig(),
             ),

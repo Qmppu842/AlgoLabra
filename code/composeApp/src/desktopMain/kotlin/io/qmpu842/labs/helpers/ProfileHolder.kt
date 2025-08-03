@@ -63,4 +63,10 @@ object ProfileHolder {
             depth = 5,
             timeLimit = TRILLION
         )
+
+    val minimaxDepth7TimeInf =
+        MiniMaxV1Profile(
+            depth = 7,
+            timeLimit = TRILLION
+        )
 }
