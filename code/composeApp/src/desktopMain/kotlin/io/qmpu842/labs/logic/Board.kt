@@ -42,6 +42,10 @@ data class Board(
     )
 
     companion object {
+        /**
+         * Allows us to use only board as constructor
+         * And build the history from it.
+         */
         operator fun invoke(board: Array<IntArray>): Board {
             val width = board.size
             val height = board.first().size
@@ -75,6 +79,31 @@ data class Board(
             return history
         }
 
+        /**
+         * This allows us to make the board from string and board config
+         * @param boardConfig is normal board config.
+         * @param historyAsText is history in this kind a format: "44444222245355266776662611135533" where odds are player A and player B is evens
+         * @param offset is if the text is in other format like the above one needs -1 as their wells are 1 indexed instead of 0 indexed.
+         */
+        operator fun invoke(
+            boardConfig: BoardConfig,
+            historyAsText: String,
+            offset: Int = 0,
+        ): Board = invoke(boardConfig = boardConfig, history = historyAsText.map { h -> h.digitToInt() + offset })
+
+        /**
+         * This allows us to make the board from history and board config
+         */
+        operator fun invoke(
+            boardConfig: BoardConfig,
+            history: List<Int>,
+        ): Board {
+            var board = Board(boardConfig)
+            history.forEach { i ->
+                board = board.dropLockedToken(i)
+            }
+            return board
+        }
     }
 
     /**
