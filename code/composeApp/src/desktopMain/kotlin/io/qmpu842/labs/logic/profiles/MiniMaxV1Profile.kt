@@ -4,6 +4,8 @@ import io.qmpu842.labs.helpers.*
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
 import java.awt.Point
+import kotlin.math.max
+import kotlin.math.min
 
 class MiniMaxV1Profile(
     var depth: Int = 10,
@@ -13,6 +15,15 @@ class MiniMaxV1Profile(
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
 
     var currentMaxTime = Long.MAX_VALUE
+
+    /**
+     * This is dumb
+     * it only purpose is that min and max imports stay even if I comment a/b part in minimax.
+     */
+    fun dumm() {
+        val asd = min(1, 3)
+        val qwe = max(1, 3)
+    }
 
     override fun nextMove(
         board: Board,
@@ -24,11 +35,11 @@ class MiniMaxV1Profile(
             board = board,
             depth = depth,
             maximizingPlayer = true,
-            alpha = 0,
-            beta = 0,
+            alpha = Int.MIN_VALUE,
+            beta = Int.MAX_VALUE,
             forLastSide = -forSide
         )
-//        println("The thing: $thing")
+        println("The Minimax valinnat: $thing")
         return thing.second
     }
 
@@ -41,8 +52,8 @@ class MiniMaxV1Profile(
         board: Board,
         depth: Int,
         maximizingPlayer: Boolean,
-        alpha: Int,
-        beta: Int,
+        alpha: Int = Int.MIN_VALUE,
+        beta: Int = Int.MAX_VALUE,
         forLastSide: Int,
     ): Pair<Int, Int> {
         val terminal = board.isLastPlayWinning()
@@ -68,7 +79,7 @@ class MiniMaxV1Profile(
             board = board,
             x = lastMove,
             y = y,
-            forSide = forLastSide * if (maximizingPlayer) -1 else 1
+            forSide = forLastSide * if (maximizingPlayer) 1 else -1,
         ),lastMove)
 
 //        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
@@ -115,8 +126,8 @@ class MiniMaxV1Profile(
                     value = minied.first
                 }
 
-//                val beta2 = min(beta, value)
-//                if (beta2 <= alpha) break
+                val beta2 = min(beta, value)
+                if (beta2 <= alpha) break
             }
             return Pair(value, bestMove)
         }
