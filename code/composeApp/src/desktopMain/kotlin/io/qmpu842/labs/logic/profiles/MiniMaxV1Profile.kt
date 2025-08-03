@@ -39,7 +39,7 @@ class MiniMaxV1Profile(
             beta = Int.MAX_VALUE,
             forLastSide = -forSide
         )
-        println("The Minimax valinnat: $thing")
+//        println("The Minimax valinnat: $thing")
         return thing.second
     }
 
@@ -50,8 +50,8 @@ class MiniMaxV1Profile(
      */
     fun minimax2(
         board: Board,
-        depth: Int,
-        maximizingPlayer: Boolean,
+        depth: Int = this.depth,
+        maximizingPlayer: Boolean = true,
         alpha: Int = Int.MIN_VALUE,
         beta: Int = Int.MAX_VALUE,
         forLastSide: Int,
@@ -104,8 +104,8 @@ class MiniMaxV1Profile(
                     value = minied.first
                 }
 
-//                val alpha2 = max(alpha, value)
-//                if (beta <= alpha2) break
+                val alpha2 = max(alpha, value)
+                if (beta <= alpha2) break
             }
             return Pair(value, bestMove)
         } else {
