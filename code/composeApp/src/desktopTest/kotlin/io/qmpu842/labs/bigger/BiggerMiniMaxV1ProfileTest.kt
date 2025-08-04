@@ -9,7 +9,7 @@ import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.profiles.HumanProfile
 import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
 
-class MiniMaxV1ProfileTest :
+class BiggerMiniMaxV1ProfileTest :
     FunSpec({
 
         beforeTest {

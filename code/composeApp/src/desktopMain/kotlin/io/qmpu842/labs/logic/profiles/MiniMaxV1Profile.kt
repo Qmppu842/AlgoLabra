@@ -6,6 +6,7 @@ import io.qmpu842.labs.logic.Way
 import java.awt.Point
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.round
 
 class MiniMaxV1Profile(
     var depth: Int = 10,
@@ -30,7 +31,7 @@ class MiniMaxV1Profile(
         forSide: Int,
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
-
+        val alku = System.currentTimeMillis()
         val thing = minimax2(
             board = board,
             depth = depth,
@@ -39,6 +40,9 @@ class MiniMaxV1Profile(
             beta = Int.MAX_VALUE,
             forLastSide = -forSide
         )
+        val loppu = System.currentTimeMillis()
+        val aikaaa = loppu - alku
+        println("It took me ${round(aikaaa/1000f)}s to do depth $depth")
 //        println("The Minimax valinnat: $thing")
         return thing.second
     }
