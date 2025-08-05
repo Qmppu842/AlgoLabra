@@ -154,7 +154,8 @@ class MiniMaxV1Profile(
 
         var counter = 0
 
-        for (way in Way.entries) {
+//        for (way in Way.entries) {
+        for (way in Way.half) {
             var vali = 0
             val result: Int =
                 board.checkLine(

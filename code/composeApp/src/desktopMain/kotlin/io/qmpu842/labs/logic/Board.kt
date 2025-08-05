@@ -237,7 +237,8 @@ data class Board(
      */
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         if (history.isEmpty()) return false
-        val x = history.last()
+//        val x = history.last()
+        val x = history[history.size-1]
         return doesPlaceHaveWinning(
             x = x,
             y = getWellSpace(x),
@@ -259,7 +260,8 @@ data class Board(
         val sign = board[x][y].sign
         if (sign == 0) return false
 
-        for (way in Way.entries) {
+//        for (way in Way.entries) {
+        for (way in Way.half) {
             val result: Int =
                 checkLine(
                     x = x,
