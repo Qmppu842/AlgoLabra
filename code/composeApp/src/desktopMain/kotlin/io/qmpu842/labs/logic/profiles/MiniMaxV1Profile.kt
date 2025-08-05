@@ -1,9 +1,12 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.*
+import io.qmpu842.labs.helpers.BLOCK_WIN
+import io.qmpu842.labs.helpers.HEURESTIC_WIN
+import io.qmpu842.labs.helpers.MINIMAX_LOSE
+import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
-import java.awt.Point
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
@@ -12,7 +15,6 @@ class MiniMaxV1Profile(
     var depth: Int = 10,
     override var timeLimit: Long = 100L,
 ) : OpponentProfile() {
-
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
 
     var currentMaxTime = Long.MAX_VALUE
@@ -31,20 +33,21 @@ class MiniMaxV1Profile(
         forSide: Int,
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
-        val alku = System.currentTimeMillis()
-        val thing = minimax2(
-            board = board,
-            depth = depth,
-            maximizingPlayer = true,
-            alpha = Int.MIN_VALUE,
-            beta = Int.MAX_VALUE,
-            forLastSide = -forSide
-        )
-        val loppu = System.currentTimeMillis()
-        val aikaaa = loppu - alku
-        println("It took me ${round(aikaaa/1000f)}s to do depth $depth")
+        val startingTime = System.currentTimeMillis()
+        val minimaxResult =
+            minimax2(
+                board = board,
+                depth = depth,
+                maximizingPlayer = true,
+                alpha = Int.MIN_VALUE,
+                beta = Int.MAX_VALUE,
+                forLastSide = -forSide,
+            )
+        val endTime = System.currentTimeMillis()
+        val totalTime = endTime - startingTime
+        println("It took me ${round(totalTime / 1000f)}s to do depth $depth")
 //        println("The Minimax valinnat: $thing")
-        return thing.second
+        return minimaxResult.second
     }
 
     /**
@@ -64,7 +67,6 @@ class MiniMaxV1Profile(
         val hasStopped = board.isAtMaxSize()
         val lastMove = board.getLastMove() ?: 0
 
-
         if (terminal) {
             return if (!maximizingPlayer) {
                 Pair(MINIMAX_WIN + depth, lastMove)
@@ -72,19 +74,24 @@ class MiniMaxV1Profile(
                 Pair(MINIMAX_LOSE - depth, lastMove)
             }
         } else if (hasStopped) {
-            //On case of Draw
+            // On case of Draw
             return Pair(0, lastMove)
         }
 
         val time = System.currentTimeMillis()
         val y = board.getWellSpace(lastMove)
 
-        if (depth == 0 || time >= currentMaxTime) return Pair(lastMovesValue5(
-            board = board,
-            x = lastMove,
-            y = y,
-            forSide = forLastSide * if (maximizingPlayer) -1 else 1,
-        ),lastMove)
+        if (depth == 0 || time >= currentMaxTime) {
+            return Pair(
+                lastMovesValue5(
+                    board = board,
+                    x = lastMove,
+                    y = y,
+                    forSide = forLastSide * if (maximizingPlayer) -1 else 1,
+                ),
+                lastMove,
+            )
+        }
 
 //        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
 
@@ -143,48 +150,72 @@ class MiniMaxV1Profile(
         y: Int,
         forSide: Int,
     ): Int {
-        val startingPoint = Point(x, y)
         val neededForWin = board.boardConfig.neededForWin
 
         var counter = 0
 
         for (way in Way.entries) {
-            val doubleLineOma =
-                board.doubleLineNoJumpStart(
-                    current = startingPoint,
+            var vali = 0
+            val result: Int =
+                board.checkLine(
+                    x = x,
+                    y = y,
                     sign = forSide,
                     way = way,
                 )
-//            println("doubleLineOma: ${doubleLineOma.summa()}")
-            val doubleLineAir =
-                board.doubleLineWithJumpStart(
-                    current = startingPoint,
-                    sign = 0,
-                    way = way,
+            val opposite = way.getOpposite()
+            val result2: Int =
+                board.checkLine(
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = forSide,
+                    way = opposite,
                 )
-//            println("doubleLineAir: ${doubleLineAir.summa()}")
-            val doubleLineVihu =
-                board.doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = -forSide,
-                    way = way,
-                )
+            val doubleLineOma = result + result2
 
-            val doubleLineVihu2 =
-                board.doubleLineWithJumpStart(
-                    current = startingPoint,
+//            println("doubleLineOma: ${doubleLineOma.summa()}")
+//            val doubleLineAir =
+//                board.doubleLineWithJumpStart(
+//                    current = startingPoint,
+//                    sign = 0,
+//                    way = way,
+//                )
+// //            println("doubleLineAir: ${doubleLineAir.summa()}")
+//            val doubleLineVihu =
+//                board.doubleLineNoJumpStart(
+//                    current = startingPoint,
+//                    sign = -forSide,
+//                    way = way,
+//                )
+
+            val resultV: Int =
+                board.checkLine(
+                    x = x,
+                    y = y,
                     sign = -forSide,
                     way = way,
                 )
+            val resultV2: Int =
+                board.checkLine(
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = -forSide,
+                    way = opposite,
+                )
+            val doubleLineVihu2 = resultV + resultV2
 //            println("doubleLineVihu: ${doubleLineVihu.summa()}")
-            if (doubleLineOma.summa() >= neededForWin) {
-                counter = HEURESTIC_WIN
+            if (doubleLineOma >= neededForWin) {
+                vali = HEURESTIC_WIN
 //                counter = Int.MAX_VALUE
 //            } else if (doubleLineVihu.summa() >= neededForWin) {
 //                    counter = HEURESTIC_LOSE
 //                counter = Int.MIN_VALUE
-            } else if (doubleLineVihu2.summa() >= neededForWin -1){
-                counter = BLOCK_WIN
+            } else if (doubleLineVihu2 >= neededForWin - 1) {
+                vali = BLOCK_WIN
+            }
+
+            if (abs(vali) > counter) {
+                counter = vali
             }
         }
         return counter

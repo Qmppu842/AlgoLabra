@@ -1,10 +1,6 @@
 package io.qmpu842.labs.logic
 
 import io.qmpu842.labs.helpers.BoardConfig
-import io.qmpu842.labs.helpers.get
-import io.qmpu842.labs.helpers.next
-import io.qmpu842.labs.helpers.summa
-import java.awt.Point
 import kotlin.math.abs
 import kotlin.math.round
 import kotlin.math.sign
@@ -154,7 +150,7 @@ data class Board(
      * @return next turn token so on turn 32 token is -32
      * First token is 1
      */
-    fun getOnTurnToken(): Int = (history.size+ 1) * if (history.size % 2 == 0) 1 else -1
+    fun getOnTurnToken(): Int = (history.size + 1) * if (history.size % 2 == 0) 1 else -1
 
     /**
      * Drops the token to the well
@@ -241,22 +237,12 @@ data class Board(
      */
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         if (history.isEmpty()) return false
-        val lastOne = history.last()
-        val wellSpace = getWellSpace(lastOne)
-        val startingPoint = Point(lastOne, wellSpace)
-        val sp = board.get(startingPoint)
-        if(sp == null || sp == 0) return false
-
-        for (way in Way.entries) {
-            val doubleLine =
-                doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = sp.sign,
-                    way = way,
-                )
-            if (doubleLine.summa() >= neededForWin) return true
-        }
-        return false
+        val x = history.last()
+        return doesPlaceHaveWinning(
+            x = x,
+            y = getWellSpace(x),
+            neededForWin = neededForWin,
+        )
     }
 
     /**
@@ -265,19 +251,31 @@ data class Board(
      * Caution: Uses the sing at the place
      * So at empty board basically any place is "winning" as this counts the zero lines as wins
      */
-    fun doesPlaceHaveWinning(x: Int, y: Int, neededForWin: Int): Boolean {
-        val startingPoint = Point(x, y)
-        val sp = board.get(startingPoint)
-        if(sp == null || sp == 0) return false
+    fun doesPlaceHaveWinning(
+        x: Int,
+        y: Int,
+        neededForWin: Int,
+    ): Boolean {
+        val sign = board[x][y].sign
+        if (sign == 0) return false
 
         for (way in Way.entries) {
-            val doubleLine =
-                doubleLineNoJumpStart(
-                    current = startingPoint,
-                    sign = sp.sign,
+            val result: Int =
+                checkLine(
+                    x = x,
+                    y = y,
+                    sign = sign,
                     way = way,
                 )
-            if (doubleLine.summa() >= neededForWin) return true
+            val opposite = way.getOpposite()
+            val result2: Int =
+                checkLine(
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = sign,
+                    way = opposite,
+                )
+            if ((result + result2) >= neededForWin) return true
         }
         return false
     }
@@ -287,30 +285,30 @@ data class Board(
      * Thus, this is good for situation like 1121  where the 2 is the latest
      */
     fun doubleLineNoJumpStart(
-        current: Point,
+        x: Int,
+        y: Int,
         sign: Int,
         way: Way,
         length: Int = 0,
     ): Pair<Int, Int> {
-        val result =
-                checkLine(
-                    current = current,
-                    sign = sign,
-                    way = way,
-                    length = length,
-                )
-
-        val antiSp = board.next(current, way.getOpposite())
-        var result2 = 0
-        if (antiSp != null) {
-            result2 =
-                checkLine(
-                    current = antiSp,
-                    sign = sign,
-                    way = way.getOpposite(),
-                )
-        }
-        return Pair(result, result2)
+        val result: Int =
+            checkLine(
+                x = x,
+                y = y,
+                sign = sign,
+                way = way,
+                length = length,
+            )
+        val opposite = way.getOpposite()
+        val result2: Int =
+            checkLine(
+                x = x + opposite.x,
+                y = y + opposite.y,
+                sign = sign,
+                way = opposite,
+                length = length,
+            )
+        return Pair(result, result2) // TODO: look at these pairs, i dont think they are needed
     }
 
     /**
@@ -318,41 +316,36 @@ data class Board(
      * Thus, this is good for situation like 1101  where the 0 is the space we want to check
      */
     fun doubleLineWithJumpStart(
-        current: Point,
+        x: Int,
+        y: Int,
         sign: Int,
         way: Way,
         length: Int = 0,
     ): Pair<Int, Int> {
-        var result = 0
-        val spJumped =
-            board.next(current, way)
-        if (spJumped != null) {
-            result =
-                checkLine(
-                    current = spJumped,
-                    sign = sign,
-                    way = way,
-                    length = length,
-                )
-        }
-
-        val antiSp = board.next(current, way.getOpposite())
-        var result2 = 0
-        if (antiSp != null) {
-            result2 =
-                checkLine(
-                    current = antiSp,
-                    sign = sign,
-                    way = way.getOpposite(),
-                )
-        }
+        val result: Int =
+            checkLine(
+                x = x + way.x,
+                y = y + way.y,
+                sign = sign,
+                way = way,
+                length = length,
+            )
+        val opposite = way.getOpposite()
+        val result2: Int =
+            checkLine(
+                x = x + opposite.x,
+                y = y + opposite.y,
+                sign = sign,
+                way = opposite,
+                length = length,
+            )
         return Pair(result, result2)
     }
 
-
     /**
      * Counts recursively how many of each thing in the line
-     * @param current where we currently are.
+     * @param x todo
+     * @param y todo
      * @param sign what things to count -1/+1/0
      * @param way what way the line should go
      * @param length how many counted so far.
@@ -360,24 +353,29 @@ data class Board(
      * @return the amount of sign countered before other sign broke the chain
      */
     fun checkLine(
-        current: Point,
+        x: Int,
+        y: Int,
         sign: Int,
         way: Way,
         length: Int = 0,
     ): Int {
         var realLength = length
-        val currentValue = board.get(current)
-        if (currentValue == null) return realLength
+        if ((x !in 0..<board.size)) return realLength
+        if (y !in 0..<board[x].size) return realLength
+        val currentValue = board[x][y]
 
         if (currentValue.sign != sign) return realLength
 
         realLength += 1
 
-        val next = board.next(current, way)
-        if (next == null) return realLength
+        val nextX = x + way.x
+        val nextY = y + way.y
+        if ((nextX !in 0..<board.size)) return realLength
+        if (nextY !in 0..<board[x].size) return realLength
 
         return checkLine(
-            current = next,
+            x = nextX,
+            y = nextY,
             sign = sign,
             way = way,
             length = realLength,
@@ -388,14 +386,15 @@ data class Board(
      * @return mutable list of valid starting points.
      *  So the wells with space and the first free index of that well
      */
-    fun startingPoints(): MutableList<Point> {
-        val startingPoints = mutableListOf<Point>()
+    fun startingPoints(): MutableList<Int> {
+        val startingPoints2 = mutableListOf<Int>()
 
         for (move in getLegalMoves()) {
+            startingPoints2.add(move)
             val startIndex = getHighestSpaceIndex(move)
-            startingPoints.add(Point(move, startIndex))
+            startingPoints2.add(startIndex)
         }
-        return startingPoints
+        return startingPoints2
     }
 
     /**

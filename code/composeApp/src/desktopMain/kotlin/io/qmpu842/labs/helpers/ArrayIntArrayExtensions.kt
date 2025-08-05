@@ -3,6 +3,7 @@ package io.qmpu842.labs.helpers
 import io.qmpu842.labs.logic.Way
 import java.awt.Point
 
+@Deprecated("Points and extensions are sooo underperformed...")
 fun Array<IntArray>.get(current: Point): Int? {
     val x = current.x
     if (x !in 0..<this.size) return null
@@ -12,7 +13,7 @@ fun Array<IntArray>.get(current: Point): Int? {
 
     return this[current.x][current.y]
 }
-
+@Deprecated("Points and extensions are sooo underperformed...")
 fun Array<IntArray>.next(
     current: Point,
     way: Way,
