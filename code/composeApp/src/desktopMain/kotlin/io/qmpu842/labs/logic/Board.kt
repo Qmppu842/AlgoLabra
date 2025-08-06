@@ -163,10 +163,10 @@ data class Board(
         column: Int,
         token: Int,
     ): Board {
-        val thing = board[column]
+        val theWell = board[column]
         var lastZero = -1
-        thing.forEachIndexed { index, t ->
-            if (t == 0) {
+        theWell.forEachIndexed { index, theY ->
+            if (theY == 0) {
                 lastZero = index
             }
         }
@@ -179,6 +179,36 @@ data class Board(
             boardConfig,
             history + column,
         )
+    }
+
+
+    /**
+     * Drops token that is determined by the player on turn and length of history
+     */
+    fun dropLockedTokenWithOutHistory(column: Int): Pair<Board, Int> = dropTokenWithOutHistory(column, getOnTurnToken())
+
+    /**
+     * Drops the token to the well
+     * @param column the well to drop in
+     * @param token the token to drop
+     *
+     * @return the modified board
+     */
+    fun dropTokenWithOutHistory(
+        column: Int,
+        token: Int,
+    ): Pair<Board, Int> {
+        var lastZero = -1
+        board[column].forEachIndexed { index, theY ->
+            if (theY == 0) {
+                lastZero = index
+            }
+        }
+
+        if (lastZero == -1) return Pair(this, -1)
+
+        board[column][lastZero] = token
+        return Pair(this.copy(board), lastZero)
     }
 
     /**

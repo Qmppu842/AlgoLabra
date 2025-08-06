@@ -2,11 +2,13 @@
 
 package io.qmpu842.labs
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import io.qmpu842.labs.logic.GameHolder
+import kotlinx.coroutines.delay
 
 fun main() =
     application {
@@ -16,6 +18,10 @@ fun main() =
             state = rememberWindowState(width = Dp.Unspecified, height = Dp.Unspecified),
             alwaysOnTop = true,
         ) {
+            LaunchedEffect(true) {
+                delay(300_000)
+                this@application.exitApplication()
+            }
             App2()
         }
     }
