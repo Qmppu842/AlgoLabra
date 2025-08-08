@@ -76,7 +76,7 @@ class BoardTestLineCheckerTest :
                     sign = -1,
                     way = Way.LeftUp,
                 )
-            lineLength.summa() shouldBe 3
+            lineLength.summa() shouldBe 2
         }
 
 //        -----------------------

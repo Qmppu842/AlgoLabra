@@ -66,20 +66,21 @@ class BoardTest :
             val board =
                 Board(
                     arrayOf(
-                    IntArray(5) {
-                        it
-                    },
-                    IntArray(5) {
-                        if (it < 3) {
+                        IntArray(5) {
                             it
-                        } else {
-                            0
-                        }
-                    },
-                    IntArray(5) {
-                        -it
-                    },
-                ))
+                        },
+                        IntArray(5) {
+                            if (it < 3) {
+                                it
+                            } else {
+                                0
+                            }
+                        },
+                        IntArray(5) {
+                            -it
+                        },
+                    ),
+                )
 
             val legals = board.getLegalMoves()
 
@@ -165,7 +166,6 @@ class BoardTest :
 
             board = board.undoLastMove()
             board.board.flatMap { it.toList() } shouldContainAll listOf(0)
-
         }
 
         test("getWellSpace should give the correct amount of zeros still present") {
@@ -331,8 +331,8 @@ class BoardTest :
                 )
 
             val list = board.getLegalMovesFromMiddleOut()
-            list shouldContainInOrder listOf(3,4,2,5,1,6,0)
-            list shouldContainExactly listOf(3,4,2,5,1,6,0)
+            list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0)
+            list shouldContainExactly listOf(3, 4, 2, 5, 1, 6, 0)
         }
         test("getLegalMovesFromMiddleOut on empty even board") {
             var board =
@@ -343,8 +343,143 @@ class BoardTest :
                 )
 
             val list = board.getLegalMovesFromMiddleOut()
-            list shouldContainInOrder listOf(3,2,4,1,5,0)
-            list shouldContainExactly listOf(3,2,4,1,5,0)
+            list shouldContainInOrder listOf(3, 2, 4, 1, 5, 0)
+            list shouldContainExactly listOf(3, 2, 4, 1, 5, 0)
+        }
+
+        test("getLegalsMiddleOutSeq on empty odd board") {
+            var board =
+                Board(
+                    boardWidth = 7,
+                    boardHeight = 6,
+                    neededForWin = 4,
+                )
+
+            val seq = board.getLegalsMiddleOutSeq()
+            val list = mutableListOf<Int>()
+            for (move in seq) {
+                list.add(move)
+                print(move)
+                if (move == -1) break
+            }
+            list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0, -1)
+        }
+        test("getLegalsMiddleOutSeq on empty even board") {
+            var board =
+                Board(
+                    boardWidth = 6,
+                    boardHeight = 6,
+                    neededForWin = 4,
+                )
+
+            val seq = board.getLegalsMiddleOutSeq()
+            val list = mutableListOf<Int>()
+            for (move in seq) {
+                list.add(move)
+                print(move)
+                if (move == -1) break
+            }
+            list shouldContainInOrder listOf(2, 3, 1, 4, 0, 5, -1)
+        }
+
+        test("getLegalsMiddleOutSeq on partly full board") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(13, -12, -10, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 11, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            val seq = board.getLegalsMiddleOutSeq()
+            val list = mutableListOf<Int>()
+            for (move in seq) {
+                list.add(move)
+                print(move)
+                if (move == -1) break
+            }
+            println()
+            list shouldContainInOrder listOf(4, 2, 5, 1, 6, 0, -1)
+        }
+
+        test("getLegalsMiddleOutSeq on partly full board twice") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(13, -12, -10, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 11, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            val seq = board.getLegalsMiddleOutSeq()
+            val list = mutableListOf<Int>()
+            var thing = false
+            for (move in seq) {
+                list.add(move)
+                if (thing && move == -1) break
+                if (move == -1) thing = true
+            }
+            list shouldContainInOrder listOf(4, 2, 5, 1, 6, 0, -1, 4, 2, 5, 1, 6, 0, -1)
+        }
+
+        test("getLegalsMiddleOutSeq on quite full board") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(-20, 19, -18, 17, 3, -2),
+                            intArrayOf(-16, 15, -14, 7, 5, -4),
+                            intArrayOf(13, -12, -10, 9, -8, -6),
+                            intArrayOf(-24, 23, -22, 21, 11, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            val seq = board.getLegalsMiddleOutSeq()
+            val list = mutableListOf<Int>()
+            for (move in seq) {
+                list.add(move)
+                print(move)
+                if (move == -1) break
+            }
+            list shouldContainInOrder listOf(5, 6, 0, -1)
+        }
+
+        test("getLegalsMiddleOutSeq on full board") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(1),
+                            intArrayOf(-2),
+                            intArrayOf(3),
+                            intArrayOf(-4),
+                        ),
+                )
+
+            val seq = board.getLegalsMiddleOutSeq()
+            val list = mutableListOf<Int>()
+            var thing = false
+            for (move in seq) {
+                list.add(move)
+                if (thing && move == -1) break
+                if (move == -1) thing = true
+            }
+            list shouldContainInOrder listOf(-1, -1)
         }
 
         test("getOnTurnToken on empty board") {
@@ -397,19 +532,18 @@ class BoardTest :
                 board = board.dropLockedToken(3)
             }
             board.isAtMaxSize() shouldBe false
-            board.getLegalMoves() shouldContainExactly listOf(0,1,2,4,5,6)
+            board.getLegalMoves() shouldContainExactly listOf(0, 1, 2, 4, 5, 6)
         }
 
         test("isAtMaxSize on full board") {
             var board = Board()
-            repeat(7){ well ->
-                repeat(6){ wellSize ->
+            repeat(7) { well ->
+                repeat(6) { wellSize ->
                     board = board.dropLockedToken(well)
                 }
             }
             board.isAtMaxSize() shouldBe true
         }
-
 
 // ----------------------------------------
         test("isLastPlayWinning on straight line down not winning #2") {

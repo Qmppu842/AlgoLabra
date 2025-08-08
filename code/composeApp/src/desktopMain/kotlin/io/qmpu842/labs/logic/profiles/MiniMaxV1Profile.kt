@@ -45,106 +45,10 @@ class MiniMaxV1Profile(
             )
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startingTime
-        println("It took me ${round(totalTime / 1000f)}s to do depth $depth")
+        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
 //        println("The Minimax valinnat: $thing")
         return minimaxResult.second
     }
-
-    /**
-     * @param forLastSide you should put here the value of last turns side.
-     *  Why this way?
-     *  Because the first round of minimax does nothing, only after it can do the first moves
-     */
-    fun minimax21(
-        board: Board,
-        depth: Int = this.depth,
-        maximizingPlayer: Boolean = true,
-        alpha: Int = Int.MIN_VALUE,
-        beta: Int = Int.MAX_VALUE,
-        forLastSide: Int,
-    ): Pair<Int, Int> {
-        val terminal = board.isLastPlayWinning()
-        val hasStopped = board.isAtMaxSize()
-        val lastMove = board.getLastMove() ?: 0
-
-        if (terminal) {
-            return if (!maximizingPlayer) {
-                Pair(MINIMAX_WIN + depth, lastMove)
-            } else {
-                Pair(MINIMAX_LOSE - depth, lastMove)
-            }
-        } else if (hasStopped) {
-            // On case of Draw
-            return Pair(0, lastMove)
-        }
-
-        val time = System.currentTimeMillis()
-        val y = board.getWellSpace(lastMove)
-
-        if (depth == 0 || time >= currentMaxTime) {
-            return Pair(
-                lastMovesValue5(
-                    board = board,
-                    x = lastMove,
-                    y = y,
-                    forSide = forLastSide * if (maximizingPlayer) -1 else 1,
-                ),
-                lastMove,
-            )
-        }
-
-//        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
-
-        val moves = board.getLegalMovesFromMiddleOut()
-
-        if (maximizingPlayer) {
-            var value = Int.MIN_VALUE
-            var bestMove = moves.first()
-            for (move in moves) {
-                val minied =
-                    minimax2(
-                        board = board.deepCopy().dropLockedToken(move),
-                        depth = depth - 1,
-                        maximizingPlayer = false,
-                        alpha = alpha,
-                        beta = beta,
-                        forLastSide = -forLastSide,
-                    )
-                if (minied.first > value) {
-                    bestMove = move
-                    value = minied.first
-                }
-
-                val alpha2 = max(alpha, value)
-                if (beta <= alpha2) break
-            }
-            return Pair(value, bestMove)
-        } else {
-            var value = Int.MAX_VALUE
-            var bestMove = moves.first()
-            for (move in moves) {
-                val minied =
-                    minimax2(
-                        board = board.deepCopy().dropLockedToken(move),
-                        depth = depth - 1,
-                        maximizingPlayer = true,
-                        alpha = alpha,
-                        beta = beta,
-                        forLastSide = -forLastSide,
-                    )
-                if (minied.first < value) {
-                    bestMove = move
-                    value = minied.first
-                }
-
-                val beta2 = min(beta, value)
-                if (beta2 <= alpha) break
-            }
-            return Pair(value, bestMove)
-        }
-    }
-
-
 
     /**
      * @param forLastSide you should put here the value of last turns side.
@@ -158,7 +62,7 @@ class MiniMaxV1Profile(
         alpha: Int = Int.MIN_VALUE,
         beta: Int = Int.MAX_VALUE,
         forLastSide: Int,
-        neededForWin: Int = 4
+        neededForWin: Int = 4,
     ): Pair<Int, Int> {
         val terminal = board.isLastPlayWinning(neededForWin)
         val hasStopped = board.isAtMaxSize()
@@ -185,7 +89,7 @@ class MiniMaxV1Profile(
                     x = lastMove,
                     y = y,
                     forSide = forLastSide * if (maximizingPlayer) -1 else 1,
-                    neededForWin = neededForWin
+                    neededForWin = neededForWin,
                 ),
                 lastMove,
             )
@@ -210,7 +114,7 @@ class MiniMaxV1Profile(
                         alpha = alpha,
                         beta = beta,
                         forLastSide = -forLastSide,
-                        neededForWin = neededForWin
+                        neededForWin = neededForWin,
                     )
                 board.board[move][things.second] = 0
                 if (minied.first > value) {
@@ -236,7 +140,7 @@ class MiniMaxV1Profile(
                         alpha = alpha,
                         beta = beta,
                         forLastSide = -forLastSide,
-                        neededForWin = neededForWin
+                        neededForWin = neededForWin,
                     )
                 board.board[move][things.second] = 0
                 if (minied.first < value) {
@@ -256,16 +160,15 @@ class MiniMaxV1Profile(
         x: Int,
         y: Int,
         forSide: Int,
-        neededForWin: Int = 4
+        neededForWin: Int = 4,
     ): Int {
-
         var counter = 0
 
 //        for (way in Way.entries) {
         for (way in Way.half) {
             var vali = 0
             val result: Int =
-                board.checkLine(
+                board.checkLine2(
                     x = x,
                     y = y,
                     sign = forSide,
@@ -274,7 +177,7 @@ class MiniMaxV1Profile(
 //            val opposite = way.getOpposite()
             val opposite = Way.opp[way.ordinal]
             val result2: Int =
-                board.checkLine(
+                board.checkLine2(
                     x = x + opposite.x,
                     y = y + opposite.y,
                     sign = forSide,
@@ -298,14 +201,14 @@ class MiniMaxV1Profile(
 //                )
 
             val resultV: Int =
-                board.checkLine(
+                board.checkLine2(
                     x = x,
                     y = y,
                     sign = -forSide,
                     way = way,
                 )
             val resultV2: Int =
-                board.checkLine(
+                board.checkLine2(
                     x = x + opposite.x,
                     y = y + opposite.y,
                     sign = -forSide,

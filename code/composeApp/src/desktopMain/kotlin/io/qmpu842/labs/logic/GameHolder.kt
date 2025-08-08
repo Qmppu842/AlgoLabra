@@ -30,6 +30,7 @@ data class GameHolder(
             playerA: OpponentProfile = ProfileHolder.rand,
             playerB: OpponentProfile = ProfileHolder.miniMaxV3Profile5,
         ) {
+            lapTime()
             var gameHolder =
                 GameHolder(
                     playerA = playerA,
@@ -40,9 +41,9 @@ data class GameHolder(
             val startTime = System.currentTimeMillis()
             while (gameCounter < amount) {
                 if (gameHolder.hasGameStopped()) {
-                    lapTime()
                     gameCounter++
                     gameHolder = gameHolder.updateWinnersAndClearBoard()
+                    println("Currently ended game: $gameCounter")
                 }
                 gameHolder = gameHolder.dropTokenLimited()
             }
@@ -52,6 +53,7 @@ data class GameHolder(
             println("Red wins: ${gameHolder.playerA.firstPlayStats.wins}")
             println("Yellow wins: ${gameHolder.playerB.secondPlayStats.wins}")
             println("Draws: ${gameHolder.playerA.firstPlayStats.draws}")
+            println("Total games: $gameCounter")
         }
     }
 

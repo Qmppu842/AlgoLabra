@@ -141,26 +141,12 @@ data class Board(
         return result2
     }
 
-    fun getLegalsMiddleOutSeq1() =
-        sequence {
-            val sizee = boardConfig.width
-            val middle = sizee / 2 + (sizee % 2)
-            var bounce = false
-            var negWalk = 0
-            var posWalk = 0
 
-            while (true) {
-                yield(0)
-                val negaIndex = middle - negWalk
-                val posIndex = middle + posWalk
-
-                if (negaIndex < 0 && posIndex > sizee) {
-                    negWalk = 0
-                    posWalk = 0
-                }
-            }
-        }
-
+    /**
+     * @yield is the free index from middle to out
+     * Once shown all possible will give -1 once.
+     * if no possible moves left, will give only -1
+     */
     fun getLegalsMiddleOutSeq() =
         sequence {
             val sizee = boardConfig.width
@@ -173,18 +159,17 @@ data class Board(
                 val pospos = middle + posWalk
                 if (negneg < 0 && pospos > sizee) {
                     yield(-1)
-                    negWalk = 1
-                    posWalk = 0
+                    negWalk = 0
+                    posWalk = -1
                 }
 
-                if (negneg > 0 && board[negneg][0] == 0) {
+                if (negneg >= 0 && board[negneg][0] == 0) {
                     yield(negneg)
                 }
 
                 if (pospos < sizee && board[pospos][0] == 0) {
                     yield(pospos)
                 }
-
                 negWalk += 1
                 posWalk += 1
             }
@@ -412,7 +397,6 @@ data class Board(
                 way = way,
                 length = length,
             )
-//        val opposite = way.getOpposite()
         val opposite = Way.opp[way.ordinal]
         val result2: Int =
             checkLine(
@@ -442,8 +426,52 @@ data class Board(
         way: Way,
         length: Int = 0,
     ): Int {
-        if ((x !in 0..<board.size) || (y !in 0..<board[x].size) || (board[x][y].sign != sign)) return length
+        if ((x !in 0..<board.size) ||
+            (y !in 0..<board[x].size) ||
+            (board[x][y].sign != sign)
+        ) {
+            return length
+        }
         return checkLine(
+            x = x + way.x,
+            y = y + way.y,
+            sign = sign,
+            way = way,
+            length = length + 1,
+        )
+    }
+
+    /**
+     * Counts recursively how many of each thing in the line
+     * @param x todo
+     * @param y todo
+     * @param sign what things to count -1/+1/0
+     * @param way what way the line should go
+     * @param length how many counted so far.
+     *
+     * @return the amount of sign countered before other sign broke the chain
+     *
+     * In some situations this is faster than the checkLine.
+     * Do know how to know when to use what?
+     * No.
+     * Is this meaning full?
+     * Also, no, it's about ~5% improvement in some cases in some metrics when combined with the other.
+     */
+    fun checkLine2(
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+        length: Int = 0,
+    ): Int {
+        if (x < 0) return length
+        if (x >= board.size) return length
+        if (y < 0) return length
+        val xx = board[x]
+        if (y >= xx.size) return length
+        if (xx[y].sign != sign) return length
+
+        return checkLine2(
             x = x + way.x,
             y = y + way.y,
             sign = sign,

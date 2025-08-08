@@ -7,10 +7,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.logic.GameHolder
 import kotlinx.coroutines.delay
 
-fun main() =
+fun main1() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -26,6 +27,10 @@ fun main() =
         }
     }
 
-fun main2() {
-    GameHolder.runWithOutUi(100)
+fun main() {
+    GameHolder.runWithOutUi(
+        100,
+        playerA = ProfileHolder.rand,
+        playerB = ProfileHolder.minimaxDepth10TimeInf
+    )
 }
