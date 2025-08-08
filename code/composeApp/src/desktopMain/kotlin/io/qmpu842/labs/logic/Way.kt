@@ -24,5 +24,6 @@ enum class Way(
 
     companion object {
         val half = arrayOf(Right, RightDown, Down, DownLeft)
+        val opp = arrayOf(Down, DownLeft, Left, LeftUp, Up, UpRight, Right, RightDown)
     }
 }

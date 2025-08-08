@@ -158,8 +158,9 @@ class MiniMaxV1Profile(
         alpha: Int = Int.MIN_VALUE,
         beta: Int = Int.MAX_VALUE,
         forLastSide: Int,
+        neededForWin: Int = 4
     ): Pair<Int, Int> {
-        val terminal = board.isLastPlayWinning()
+        val terminal = board.isLastPlayWinning(neededForWin)
         val hasStopped = board.isAtMaxSize()
         val lastMove = board.getLastMove() ?: 0
 
@@ -184,6 +185,7 @@ class MiniMaxV1Profile(
                     x = lastMove,
                     y = y,
                     forSide = forLastSide * if (maximizingPlayer) -1 else 1,
+                    neededForWin = neededForWin
                 ),
                 lastMove,
             )
@@ -206,6 +208,7 @@ class MiniMaxV1Profile(
                         alpha = alpha,
                         beta = beta,
                         forLastSide = -forLastSide,
+                        neededForWin = neededForWin
                     )
                 board.board[move][things.second] = 0
                 if (minied.first > value) {
@@ -230,6 +233,7 @@ class MiniMaxV1Profile(
                         alpha = alpha,
                         beta = beta,
                         forLastSide = -forLastSide,
+                        neededForWin = neededForWin
                     )
                 board.board[move][things.second] = 0
                 if (minied.first < value) {
@@ -249,8 +253,8 @@ class MiniMaxV1Profile(
         x: Int,
         y: Int,
         forSide: Int,
+        neededForWin: Int = 4
     ): Int {
-        val neededForWin = board.boardConfig.neededForWin
 
         var counter = 0
 
@@ -264,7 +268,8 @@ class MiniMaxV1Profile(
                     sign = forSide,
                     way = way,
                 )
-            val opposite = way.getOpposite()
+//            val opposite = way.getOpposite()
+            val opposite = Way.opp[way.ordinal]
             val result2: Int =
                 board.checkLine(
                     x = x + opposite.x,

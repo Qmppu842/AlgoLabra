@@ -181,7 +181,6 @@ data class Board(
         )
     }
 
-
     /**
      * Drops token that is determined by the player on turn and length of history
      */
@@ -268,7 +267,7 @@ data class Board(
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         if (history.isEmpty()) return false
 //        val x = history.last()
-        val x = history[history.size-1]
+        val x = history[history.size - 1]
         return doesPlaceHaveWinning(
             x = x,
             y = getWellSpace(x),
@@ -299,7 +298,8 @@ data class Board(
                     sign = sign,
                     way = way,
                 )
-            val opposite = way.getOpposite()
+//            val opposite = way.getOpposite()
+            val opposite = Way.opp[way.ordinal]
             val result2: Int =
                 checkLine(
                     x = x + opposite.x,
@@ -331,7 +331,8 @@ data class Board(
                 way = way,
                 length = length,
             )
-        val opposite = way.getOpposite()
+//        val opposite = way.getOpposite()
+        val opposite = Way.opp[way.ordinal]
         val result2: Int =
             checkLine(
                 x = x + opposite.x,
@@ -362,7 +363,8 @@ data class Board(
                 way = way,
                 length = length,
             )
-        val opposite = way.getOpposite()
+//        val opposite = way.getOpposite()
+        val opposite = Way.opp[way.ordinal]
         val result2: Int =
             checkLine(
                 x = x + opposite.x,
@@ -391,26 +393,13 @@ data class Board(
         way: Way,
         length: Int = 0,
     ): Int {
-        var realLength = length
-        if ((x !in 0..<board.size)) return realLength
-        if (y !in 0..<board[x].size) return realLength
-        val currentValue = board[x][y]
-
-        if (currentValue.sign != sign) return realLength
-
-        realLength += 1
-
-        val nextX = x + way.x
-        val nextY = y + way.y
-        if ((nextX !in 0..<board.size)) return realLength
-        if (nextY !in 0..<board[x].size) return realLength
-
+        if ((x !in 0..<board.size) || (y !in 0..<board[x].size) || (board[x][y].sign != sign)) return length
         return checkLine(
-            x = nextX,
-            y = nextY,
+            x = x + way.x,
+            y = y + way.y,
             sign = sign,
             way = way,
-            length = realLength,
+            length = length + 1,
         )
     }
 

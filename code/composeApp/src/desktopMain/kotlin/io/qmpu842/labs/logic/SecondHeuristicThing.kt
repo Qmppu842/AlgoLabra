@@ -9,6 +9,7 @@ object SecondHeuristicThing {
         board: Board,
         forSide: Int,
     ): IntArray {
+        return IntArray(board.getWells()) { 0 }
         val res = IntArray(board.getWells()) { 0 }
 
         // Tier 0: Insta wins
