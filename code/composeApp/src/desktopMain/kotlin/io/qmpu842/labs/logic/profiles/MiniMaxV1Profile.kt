@@ -193,12 +193,14 @@ class MiniMaxV1Profile(
 
 //        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
 
-        val moves = board.getLegalMovesFromMiddleOut()
+//        val moves = board.getLegalMovesFromMiddleOut()
+        val moves = board.getLegalsMiddleOutSeq()
 
         if (maximizingPlayer) {
             var value = Int.MIN_VALUE
-            var bestMove = moves[0]
+            var bestMove = 0
             for (move in moves) {
+                if (move == -1) break
                 val things = board.dropLockedTokenWithOutHistory(move)
                 val minied =
                     minimax2(
@@ -222,8 +224,9 @@ class MiniMaxV1Profile(
             return Pair(value, bestMove)
         } else {
             var value = Int.MAX_VALUE
-            var bestMove = moves.first()
+            var bestMove = 0
             for (move in moves) {
+                if (move == -1) break
                 val things = board.dropLockedTokenWithOutHistory(move)
                 val minied =
                     minimax2(

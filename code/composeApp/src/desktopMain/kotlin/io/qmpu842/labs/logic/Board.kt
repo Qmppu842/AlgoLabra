@@ -141,6 +141,55 @@ data class Board(
         return result2
     }
 
+    fun getLegalsMiddleOutSeq1() =
+        sequence {
+            val sizee = boardConfig.width
+            val middle = sizee / 2 + (sizee % 2)
+            var bounce = false
+            var negWalk = 0
+            var posWalk = 0
+
+            while (true) {
+                yield(0)
+                val negaIndex = middle - negWalk
+                val posIndex = middle + posWalk
+
+                if (negaIndex < 0 && posIndex > sizee) {
+                    negWalk = 0
+                    posWalk = 0
+                }
+            }
+        }
+
+    fun getLegalsMiddleOutSeq() =
+        sequence {
+            val sizee = boardConfig.width
+            val middle = sizee / 2 + (sizee % 2)
+            var negWalk = 1
+            var posWalk = 0
+
+            while (true) {
+                val negneg = middle - negWalk
+                val pospos = middle + posWalk
+                if (negneg < 0 && pospos > sizee) {
+                    yield(-1)
+                    negWalk = 1
+                    posWalk = 0
+                }
+
+                if (negneg > 0 && board[negneg][0] == 0) {
+                    yield(negneg)
+                }
+
+                if (pospos < sizee && board[pospos][0] == 0) {
+                    yield(pospos)
+                }
+
+                negWalk += 1
+                posWalk += 1
+            }
+        }
+
     /**
      * Drops token that is determined by the player on turn and length of history
      */
