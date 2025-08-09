@@ -141,7 +141,6 @@ data class Board(
         return result2
     }
 
-
     /**
      * @yield is the free index from middle to out
      * Once shown all possible will give -1 once.
@@ -209,9 +208,9 @@ data class Board(
 
         board[column][lastZero] = token
         return this.copy(
-            board,
-            boardConfig,
-            history + column,
+            board = board,
+            boardConfig = boardConfig,
+            history = history + column,
         )
     }
 
@@ -241,7 +240,7 @@ data class Board(
         if (lastZero == -1) return Pair(this, -1)
 
         board[column][lastZero] = token
-        return Pair(this.copy(board), lastZero)
+        return Pair(this.copy(board = board), lastZero)
     }
 
     /**
@@ -263,9 +262,9 @@ data class Board(
         if (toRemove == -1) return this
         board[lastWell][toRemove] = 0
         return this.copy(
-            board,
-            boardConfig,
-            history.take(history.size - 1),
+            board = board,
+            boardConfig = boardConfig,
+            history = history.take(history.size - 1),
         )
     }
 
@@ -300,7 +299,6 @@ data class Board(
      */
     fun isLastPlayWinning(neededForWin: Int = 4): Boolean {
         if (history.isEmpty()) return false
-//        val x = history.last()
         val x = history[history.size - 1]
         return doesPlaceHaveWinning(
             x = x,
@@ -363,7 +361,6 @@ data class Board(
                 y = y,
                 sign = sign,
                 way = way,
-                length = length,
             )
 //        val opposite = way.getOpposite()
         val opposite = Way.opp[way.ordinal]
@@ -373,7 +370,6 @@ data class Board(
                 y = y + opposite.y,
                 sign = sign,
                 way = opposite,
-                length = length,
             )
         return Pair(result, result2) // TODO: look at these pairs, i dont think they are needed
     }
@@ -395,7 +391,6 @@ data class Board(
                 y = y + way.y,
                 sign = sign,
                 way = way,
-                length = length,
             )
         val opposite = Way.opp[way.ordinal]
         val result2: Int =
@@ -404,7 +399,6 @@ data class Board(
                 y = y + opposite.y,
                 sign = sign,
                 way = opposite,
-                length = length,
             )
         return Pair(result, result2)
     }
@@ -419,7 +413,7 @@ data class Board(
      *
      * @return the amount of sign countered before other sign broke the chain
      */
-    fun checkLine(
+    fun checkLine1(
         x: Int,
         y: Int,
         sign: Int,
@@ -432,7 +426,7 @@ data class Board(
         ) {
             return length
         }
-        return checkLine(
+        return checkLine1(
             x = x + way.x,
             y = y + way.y,
             sign = sign,
@@ -481,6 +475,56 @@ data class Board(
     }
 
     /**
+     * Counts recursively how many of each thing in the line
+     * @param x todo
+     * @param y todo
+     * @param sign what things to count -1/+1/0
+     * @param way what way the line should go
+     * @param length how many counted so far.
+     *
+     * @return the amount of sign countered before other sign broke the chain
+     */
+    fun checkLine3(
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+    ): Int {
+        var arvo = 0
+        var x = x
+        var y = y
+        while ((x in 0..<board.size) &&
+            (y in 0..<board[x].size) &&
+            (board[x][y].sign == sign)
+        ) {
+            x += way.x
+            y += way.y
+            arvo += 1
+        }
+        return arvo
+    }
+
+    fun checkLine(
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+    ): Int {
+        var arvo = 0
+        var x = x
+        var y = y
+        val xMax = board.size
+        while (x in 0 until xMax) {
+            val row = board[x]
+            if (y !in 0..<row.size || row[y].sign != sign) break
+            x += way.x
+            y += way.y
+            arvo += 1
+        }
+        return arvo
+    }
+
+    /**
      * @return mutable list of valid starting points.
      *  So the wells with space and the first free index of that well
      */
@@ -522,7 +566,7 @@ data class Board(
      */
     fun isAtMaxSize(): Boolean {
         var allSize = 0
-        board.forEachIndexed { index, ints ->
+        board.forEachIndexed { _, ints ->
             allSize += ints.size
         }
         return history.size == allSize

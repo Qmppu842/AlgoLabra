@@ -168,7 +168,7 @@ class MiniMaxV1Profile(
         for (way in Way.half) {
             var vali = 0
             val result: Int =
-                board.checkLine2(
+                board.checkLine(
                     x = x,
                     y = y,
                     sign = forSide,
@@ -177,7 +177,7 @@ class MiniMaxV1Profile(
 //            val opposite = way.getOpposite()
             val opposite = Way.opp[way.ordinal]
             val result2: Int =
-                board.checkLine2(
+                board.checkLine(
                     x = x + opposite.x,
                     y = y + opposite.y,
                     sign = forSide,
@@ -201,14 +201,14 @@ class MiniMaxV1Profile(
 //                )
 
             val resultV: Int =
-                board.checkLine2(
+                board.checkLine(
                     x = x,
                     y = y,
                     sign = -forSide,
                     way = way,
                 )
             val resultV2: Int =
-                board.checkLine2(
+                board.checkLine(
                     x = x + opposite.x,
                     y = y + opposite.y,
                     sign = -forSide,
