@@ -19,15 +19,6 @@ class MiniMaxV1Profile(
 
     var currentMaxTime = Long.MAX_VALUE
 
-    /**
-     * This is dumb
-     * it only purpose is that min and max imports stay even if I comment a/b part in minimax.
-     */
-    fun dumm() {
-        val asd = min(1, 3)
-        val qwe = max(1, 3)
-    }
-
     override fun nextMove(
         board: Board,
         forSide: Int,
@@ -42,11 +33,13 @@ class MiniMaxV1Profile(
                 alpha = Int.MIN_VALUE,
                 beta = Int.MAX_VALUE,
                 forLastSide = -forSide,
+                lastX = board.getLastMove() ?: -1,
+                lastY = 0
             )
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startingTime
         println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
-//        println("The Minimax valinnat: $thing")
+        println("The Minimax valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         return minimaxResult.second
     }
 
@@ -63,41 +56,40 @@ class MiniMaxV1Profile(
         beta: Int = Int.MAX_VALUE,
         forLastSide: Int,
         neededForWin: Int = 4,
+        lastX: Int = 0,
+        lastY: Int = 0,
     ): Pair<Int, Int> {
         val terminal = board.isLastPlayWinning(neededForWin)
-        val hasStopped = board.isAtMaxSize()
-        val lastMove = board.getLastMove() ?: 0
+//        val hasStopped = board.isAtMaxSize()
+        val hasStopped = isBoardFull(board.board)
 
         if (terminal) {
             return if (!maximizingPlayer) {
-                Pair(MINIMAX_WIN + depth, lastMove)
+                Pair(MINIMAX_WIN + depth, lastX)
             } else {
-                Pair(MINIMAX_LOSE - depth, lastMove)
+                Pair(MINIMAX_LOSE - depth, lastX)
             }
         } else if (hasStopped) {
-            // On case of Draw
-            return Pair(0, lastMove)
+            // In case of Draw
+            return Pair(0, lastX)
         }
 
         val time = System.currentTimeMillis()
-        val y = board.getWellSpace(lastMove)
+        val y = board.getWellSpace(lastX)
 
         if (depth == 0 || time >= currentMaxTime) {
             return Pair(
                 lastMovesValue5(
                     board = board,
-                    x = lastMove,
+                    x = lastX,
                     y = y,
                     forSide = forLastSide * if (maximizingPlayer) -1 else 1,
                     neededForWin = neededForWin,
                 ),
-                lastMove,
+                lastX,
             )
         }
 
-//        if (depth == 0 || time >= currentMaxTime) return Pair(-11, lastMove)
-
-//        val moves = board.getLegalMovesFromMiddleOut()
         val moves = board.getLegalsMiddleOutSeq()
 
         if (maximizingPlayer) {
@@ -153,6 +145,14 @@ class MiniMaxV1Profile(
             }
             return Pair(value, bestMove)
         }
+    }
+
+    fun isBoardFull(board: Array<IntArray>): Boolean {
+        val size = board.size
+        for (aaa in 0..<size) {
+            if (board[aaa][0] == 0) return false
+        }
+        return true
     }
 
     fun lastMovesValue5(

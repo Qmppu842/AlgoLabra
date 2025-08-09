@@ -353,7 +353,6 @@ data class Board(
         y: Int,
         sign: Int,
         way: Way,
-        length: Int = 0,
     ): Pair<Int, Int> {
         val result: Int =
             checkLine(
@@ -383,7 +382,6 @@ data class Board(
         y: Int,
         sign: Int,
         way: Way,
-        length: Int = 0,
     ): Pair<Int, Int> {
         val result: Int =
             checkLine(
@@ -404,106 +402,14 @@ data class Board(
     }
 
     /**
-     * Counts recursively how many of each thing in the line
+     * Counts how many of each thing in the line
      * @param x todo
      * @param y todo
      * @param sign what things to count -1/+1/0
      * @param way what way the line should go
-     * @param length how many counted so far.
      *
      * @return the amount of sign countered before other sign broke the chain
      */
-    fun checkLine1(
-        x: Int,
-        y: Int,
-        sign: Int,
-        way: Way,
-        length: Int = 0,
-    ): Int {
-        if ((x !in 0..<board.size) ||
-            (y !in 0..<board[x].size) ||
-            (board[x][y].sign != sign)
-        ) {
-            return length
-        }
-        return checkLine1(
-            x = x + way.x,
-            y = y + way.y,
-            sign = sign,
-            way = way,
-            length = length + 1,
-        )
-    }
-
-    /**
-     * Counts recursively how many of each thing in the line
-     * @param x todo
-     * @param y todo
-     * @param sign what things to count -1/+1/0
-     * @param way what way the line should go
-     * @param length how many counted so far.
-     *
-     * @return the amount of sign countered before other sign broke the chain
-     *
-     * In some situations this is faster than the checkLine.
-     * Do know how to know when to use what?
-     * No.
-     * Is this meaning full?
-     * Also, no, it's about ~5% improvement in some cases in some metrics when combined with the other.
-     */
-    fun checkLine2(
-        x: Int,
-        y: Int,
-        sign: Int,
-        way: Way,
-        length: Int = 0,
-    ): Int {
-        if (x < 0) return length
-        if (x >= board.size) return length
-        if (y < 0) return length
-        val xx = board[x]
-        if (y >= xx.size) return length
-        if (xx[y].sign != sign) return length
-
-        return checkLine2(
-            x = x + way.x,
-            y = y + way.y,
-            sign = sign,
-            way = way,
-            length = length + 1,
-        )
-    }
-
-    /**
-     * Counts recursively how many of each thing in the line
-     * @param x todo
-     * @param y todo
-     * @param sign what things to count -1/+1/0
-     * @param way what way the line should go
-     * @param length how many counted so far.
-     *
-     * @return the amount of sign countered before other sign broke the chain
-     */
-    fun checkLine3(
-        x: Int,
-        y: Int,
-        sign: Int,
-        way: Way,
-    ): Int {
-        var arvo = 0
-        var x = x
-        var y = y
-        while ((x in 0..<board.size) &&
-            (y in 0..<board[x].size) &&
-            (board[x][y].sign == sign)
-        ) {
-            x += way.x
-            y += way.y
-            arvo += 1
-        }
-        return arvo
-    }
-
     fun checkLine(
         x: Int,
         y: Int,
