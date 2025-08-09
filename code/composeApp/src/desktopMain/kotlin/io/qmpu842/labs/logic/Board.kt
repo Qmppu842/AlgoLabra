@@ -276,7 +276,7 @@ data class Board(
     fun clear(): Board = Board(boardConfig)
 
     /**
-     *  @return the zeroes still in the well
+     *  @return the zeroes still in the well \n
      *  That -1 is equal to next free spaces index
      */
     fun getWellSpace(column: Int): Int = board[column].count({ it == 0 })
@@ -318,7 +318,8 @@ data class Board(
         y: Int,
         neededForWin: Int,
     ): Boolean {
-        val sign = board[x][y].sign
+        val eka = board[x]
+        val sign = eka[y].sign
         if (sign == 0) return false
 
 //        for (way in Way.entries) {

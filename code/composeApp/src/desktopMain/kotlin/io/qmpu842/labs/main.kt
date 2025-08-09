@@ -11,7 +11,7 @@ import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.logic.GameHolder
 import kotlinx.coroutines.delay
 
-fun main() =
+fun main1() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -27,7 +27,7 @@ fun main() =
         }
     }
 
-fun main2() {
+fun main() {
     GameHolder.runWithOutUi(
         10,
         playerA = ProfileHolder.minimaxDepth9TimeInf,

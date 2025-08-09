@@ -25,6 +25,7 @@ class MiniMaxV1Profile(
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
         val startingTime = System.currentTimeMillis()
+        val thinn = board.getLastMove() ?: -1
         val minimaxResult =
             minimax2(
                 board = board,
@@ -33,8 +34,8 @@ class MiniMaxV1Profile(
                 alpha = Int.MIN_VALUE,
                 beta = Int.MAX_VALUE,
                 forLastSide = -forSide,
-                lastX = board.getLastMove() ?: -1,
-                lastY = 0
+                lastX = thinn,
+                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1
             )
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startingTime
@@ -59,7 +60,14 @@ class MiniMaxV1Profile(
         lastX: Int = 0,
         lastY: Int = 0,
     ): Pair<Int, Int> {
-        val terminal = board.isLastPlayWinning(neededForWin)
+        val terminal = if (lastX != -1)
+            board.doesPlaceHaveWinning(
+            x = lastX,
+            y = lastY,
+            neededForWin = neededForWin
+        )else{
+            false
+        }
 //        val hasStopped = board.isAtMaxSize()
         val hasStopped = isBoardFull(board.board)
 
@@ -75,14 +83,14 @@ class MiniMaxV1Profile(
         }
 
         val time = System.currentTimeMillis()
-        val y = board.getWellSpace(lastX)
+//        val y = lastY // board.getWellSpace(lastX)
 
         if (depth == 0 || time >= currentMaxTime) {
             return Pair(
                 lastMovesValue5(
                     board = board,
                     x = lastX,
-                    y = y,
+                    y = lastY,
                     forSide = forLastSide * if (maximizingPlayer) -1 else 1,
                     neededForWin = neededForWin,
                 ),
@@ -107,6 +115,8 @@ class MiniMaxV1Profile(
                         beta = beta,
                         forLastSide = -forLastSide,
                         neededForWin = neededForWin,
+                        lastX = move,
+                        lastY = things.second,
                     )
                 board.board[move][things.second] = 0
                 if (minied.first > value) {
@@ -133,6 +143,8 @@ class MiniMaxV1Profile(
                         beta = beta,
                         forLastSide = -forLastSide,
                         neededForWin = neededForWin,
+                        lastX = move,
+                        lastY = things.second,
                     )
                 board.board[move][things.second] = 0
                 if (minied.first < value) {
