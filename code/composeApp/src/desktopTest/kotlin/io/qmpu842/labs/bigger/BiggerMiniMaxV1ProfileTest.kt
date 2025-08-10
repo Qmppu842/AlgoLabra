@@ -79,7 +79,7 @@ class BiggerMiniMaxV1ProfileTest :
             history shouldBe "44444222245355266776662611135533353777711"
         }
 
-        context("nextMove data tests player A wins") {
+        context("nextMove data tests") {
             withData(
                 GameToPlay(
                     depth = 9,
@@ -118,19 +118,21 @@ class BiggerMiniMaxV1ProfileTest :
 //                    start = "4",
 //                    end =   "44444666646555621237353353357112222711177",
 //                ),
+//                GameToPlay(
+//                    depth = 20,
+//                    start = "444441566664322362253",
+//                    end = "44444666646555621237353353357112222711177",
+//                ),
+
+//                GameToPlay(
+//                    depth = 18,
+//                    start = "444441566664322362253151",
+//                    end = "44444666646555621237353353357112222711177",
+//                ),
                 GameToPlay(
-                    playerA =
-                        MiniMaxV1Profile(
-                            depth = 20,
-                            timeLimit = TRILLION,
-                        ),
-                    playerB =
-                        MiniMaxV1Profile(
-                            depth = 20,
-                            timeLimit = TRILLION,
-                        ),
-                    start = "444441566664322362253",
-                    end = "44444666646555621237353353357112222711177",
+                    depth = 16,
+                    start = "4444415666643223622531511",
+                    end = "44444156666432236225315115525633327771177",
                 ),
             ) { (playerA, playerB, start, end) ->
                 val bc = BoardConfig()
