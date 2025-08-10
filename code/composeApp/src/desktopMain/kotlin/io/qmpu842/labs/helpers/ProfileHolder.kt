@@ -9,101 +9,69 @@ object ProfileHolder {
     val dfsProfileB = DFSProfile(1)
     val simpleHeuristicGuyProfile = SimpleHeuristicGuyProfile()
     val simpleOpportunisticProfile = SimpleOpportunisticProfile() // the good guy
-    val miniMaxV1Profile = MiniMaxV1Profile()
-    val miniMaxV3Profile = // the current best?
-        MiniMaxV1Profile(
-            depth = 20,
-        timeLimit = 300
-    )
-
-    val miniMaxV3Profile2 =
-        MiniMaxV1Profile(
-            depth = 5,
-            timeLimit = 500
-        )
-    val miniMaxV3Profile3 =
-        MiniMaxV1Profile(
-            depth = 20,
-            timeLimit = 150
-        )
-
-
-    val miniMaxV3Profile4 =
-        MiniMaxV1Profile(
-            depth = 10,
-            timeLimit = 300
-        )
-
-    val miniMaxV3Profile5 =
-        MiniMaxV1Profile(
-            depth = 10,
-            timeLimit = 10
-        )
 
     val minimaxDepth0TimeInf =
         MiniMaxV1Profile(
             depth = 0,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
         )
-
 
     val minimaxDepth1TimeInf =
         MiniMaxV1Profile(
             depth = 1,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
+        )
+
+    val minimaxDepth2TimeInf =
+        MiniMaxV1Profile(
+            depth = 2,
+            timeLimit = TRILLION,
+        )
+
+    val minimaxDepth3TimeInf =
+        MiniMaxV1Profile(
+            depth = 3,
+            timeLimit = TRILLION,
         )
     val minimaxDepth4TimeInf =
         MiniMaxV1Profile(
             depth = 4,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
         )
 
     val minimaxDepth5TimeInf =
         MiniMaxV1Profile(
             depth = 5,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
         )
 
     val minimaxDepth7TimeInf =
         MiniMaxV1Profile(
             depth = 7,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
         )
 
     val minimaxDepth8TimeInf =
         MiniMaxV1Profile(
             depth = 8,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
         )
 
     val minimaxDepth9TimeInf =
         MiniMaxV1Profile(
             depth = 9,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
         )
 
     val minimaxDepth10TimeInf =
         MiniMaxV1Profile(
             depth = 10,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
         )
 
     val minimaxDepth15TimeInf =
         MiniMaxV1Profile(
             depth = 15,
-            timeLimit = TRILLION
+            timeLimit = TRILLION,
         )
-
-    val minimaxDepth25TimeInf =
-        MiniMaxV1Profile(
-            depth = 25,
-            timeLimit = TRILLION
-        )
-
-    val minimaxDepth35TimeInf =
-        MiniMaxV1Profile(
-            depth = 35,
-            timeLimit = TRILLION
-        )
-
 }

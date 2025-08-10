@@ -7,8 +7,9 @@ import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
 import kotlin.math.abs
+import kotlin.math.pow
 import kotlin.math.round
-import kotlin.math.sign
+import kotlin.math.sqrt
 
 class MiniMaxV1Profile(
     var depth: Int = 10,
@@ -33,10 +34,12 @@ class MiniMaxV1Profile(
                 alpha = Int.MIN_VALUE,
                 beta = Int.MAX_VALUE,
                 forLastSide = -forSide,
+                neededForWin = board.boardConfig.neededForWin,
                 lastX = thinn,
                 lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
 //                lastX = -1,
 //                lastY = -1,
+                token = abs(board.getOnTurnToken()),
             )
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startingTime
@@ -52,7 +55,7 @@ class MiniMaxV1Profile(
      */
     fun minimax2(
         board: Board,
-        depth: Int,
+        depth: Int = this.depth,
         maximizingPlayer: Boolean = true,
         alpha: Int = Int.MIN_VALUE,
         beta: Int = Int.MAX_VALUE,
@@ -60,8 +63,9 @@ class MiniMaxV1Profile(
         neededForWin: Int = 4,
         lastX: Int = 0,
         lastY: Int = 0,
+        token: Int = 1,
     ): Pair<Int, Int> {
-        println("nyt syvyydessä: $depth")
+//        println("nyt syvyydessä: $depth")
         val terminal =
             board.doesPlaceHaveWinning(
                 x = lastX,
@@ -85,21 +89,21 @@ class MiniMaxV1Profile(
 //        val y = lastY // board.getWellSpace(lastX)
 
         if (depth == 0 || time >= currentMaxTime) {
-//            return Pair(
-//                lastMovesValue5(
-//                    board = board,
-//                    x = lastX,
-//                    y = lastY,
-//                    forSide = forLastSide * if (maximizingPlayer) -1 else 1,
-//                    neededForWin = neededForWin,
-//                ),
-//                lastX,
-//            )
-
             return Pair(
-                simpleEval(board, forLastSide * if (maximizingPlayer) -1 else 1),
+                lastMovesValue5(
+                    board = board,
+                    x = lastX,
+                    y = lastY,
+                    forSide = forLastSide * if (maximizingPlayer) -1 else 1,
+                    neededForWin = neededForWin,
+                ),
                 lastX,
             )
+
+//            return Pair(
+//                simpleEval(board, forLastSide * if (maximizingPlayer) -1 else 1),
+//                lastX,
+//            )
         }
         val moves = board.getLegalMovesFromMiddleOut()
 //        val moves = board.getLegalsMiddleOutSeq()
@@ -111,7 +115,8 @@ class MiniMaxV1Profile(
             var bestMove = 0
             for (move in moves) {
                 if (move == -1) break
-                val things = board.dropLockedTokenWithOutHistory(move)
+//                val things = board.dropLockedTokenWithOutHistory(move)
+                val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
                     minimax2(
                         board = things.first,
@@ -125,6 +130,7 @@ class MiniMaxV1Profile(
                         neededForWin = neededForWin,
                         lastX = move,
                         lastY = things.second,
+                        token =  token + 1
                     )
                 board.board[move][things.second] = 0
                 if (minied.first > value) {
@@ -143,7 +149,8 @@ class MiniMaxV1Profile(
             var bestMove = 0
             for (move in moves) {
                 if (move == -1) break
-                val things = board.dropLockedTokenWithOutHistory(move)
+//                val things = board.dropLockedTokenWithOutHistory(move)
+                val things = board.dropTokenWithOutHistory(move, -forLastSide*token)
                 val minied =
                     minimax2(
                         board = things.first,
@@ -157,6 +164,7 @@ class MiniMaxV1Profile(
                         neededForWin = neededForWin,
                         lastX = move,
                         lastY = things.second,
+                        token =  token + 1
                     )
                 board.board[move][things.second] = 0
                 if (minied.first < value) {
@@ -181,26 +189,7 @@ class MiniMaxV1Profile(
         return true
     }
 
-    fun simpleEval(
-        board: Board,
-        forSide: Int,
-    ): Int {
-        // Count tokens for forSide minus opponent tokens
-        var score = 0
-        for (x in 0 until board.getWells()) {
-            for (y in 0 until board.board[x].size) {
-                val cell = board.board[x][y]
-                if (cell.sign == forSide) {
-                    score++
-                } else if (cell.sign == -forSide) {
-                    score--
-                }
-            }
-        }
-        return score
-    }
-
-    fun lastMovesValue5(
+    fun lastMovesValue51(
         board: Board,
         x: Int,
         y: Int,
@@ -378,12 +367,126 @@ class MiniMaxV1Profile(
             )
 
 //        oma trap
+        val resOmaTrap1: Int =
+            board.checkLine(
+                x = x + (way.x * (resOma1 + 0)),
+                y = y + (way.y * (resOma1 + 1)),
+                sign = 0,
+                way = way,
+            )
+        val resOmaTrap2: Int =
+            board.checkLine(
+                x = x + (opposite.x * (resOma2 + 1)),
+                y = y + (opposite.y * (resOma2 + 1)),
+                sign = 0,
+                way = opposite,
+            )
+//        val resOmaTrap1 = if (board.board[x + (way.x * (resOma1 + 0))][y + (way.y * (resOma1 + 1))] == 0) 1 else 0
+//        val resOmaTrap2 =
+//            if (board.board[x + (opposite.x * (resOma2 + 1))][y + (opposite.y * (resOma2 + 1))] == 0) 1 else 0
 
 //        vihu trap
+        val resVihuTrap1: Int =
+            board.checkLine(
+                x = x + (way.x * (resVih1 + 1)),
+                y = y + (way.y * (resVih1 + 1)),
+                sign = 0,
+                way = way,
+            )
+        val resVihuTrap2: Int =
+            board.checkLine(
+                x = x + (opposite.x * (resVih2 + 1)),
+                y = y + (opposite.y * (resVih2 + 1)),
+                sign = 0,
+                way = opposite,
+            )
+//        val resVihuTrap1 = if (board.board[x + (way.x * (resVih1 + 1))][y + (way.y * (resVih1 + 1))] == 0) 1 else 0
+//        val resVihuTrap2 = if (board.board[x + (opposite.x * (resVih2 + 1))][y + (opposite.y * (resVih2 + 1))] == 0) 1 else 0
 
         resres[0] = resOma1 + resOma2
         resres[1] = resAir1 + resAir2
         resres[2] = resVih1 + resVih2
+        resres[3] = resOmaTrap1 + resOmaTrap2
+        resres[4] = resVihuTrap1 + resVihuTrap2
         return resres
+    }
+
+    fun lastMovesValue5(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+//        println("wad?")
+
+        val w = board.boardConfig.width
+        val h = board.boardConfig.height
+        val size = sqrt(0.0 + w * w + h * h).toInt() + 2
+        val omatLinjat = IntArray(size)
+        val vihuLinjat = IntArray(size)
+//        println("adsad")
+
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
+//            omat linjat
+            val resOma1: Int =
+                board.checkLine(
+                    x = x,
+                    y = y,
+                    sign = forSide,
+                    way = way,
+                )
+            val resOma2: Int =
+                board.checkLine(
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = forSide,
+                    way = opposite,
+                )
+            val omaSum = resOma1 + resOma2
+            omatLinjat[omaSum] += 1
+//            println("kalaa")
+
+            //        vihu linjat
+            val resVih1: Int =
+                board.checkLine(
+                    x = x,
+                    y = y,
+                    sign = -forSide,
+                    way = way,
+                )
+            val resVih2: Int =
+                board.checkLine(
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = -forSide,
+                    way = opposite,
+                )
+            val vihuSum = resVih1 + resVih2
+            vihuLinjat[vihuSum] += 1
+//            println("vehnaa")
+        }
+//        println("omatLinjat ${omatLinjat.toList()}")
+//        println("vihuLinjat ${vihuLinjat.toList()}")
+//        println("pullaa")
+        var omaCounter = 0
+        var vihuCounter = 0
+        for (i in size - 1 downTo 0) {
+            val oma = omatLinjat[i]
+            omaCounter += oma * (10f.pow(i)).toInt()
+//            println("maitoa")
+            val vihu = vihuLinjat[i]
+            vihuCounter += -(vihu * (10f.pow(i)).toInt())
+        }
+//        println("omacounter $omaCounter")
+//        println("vihucounter $vihuCounter")
+//        println("jäde")
+        if (abs(omaCounter) >= abs(vihuCounter)) {
+            return omaCounter
+        } else {
+            return vihuCounter
+        }
+//        return omaCounter
     }
 }

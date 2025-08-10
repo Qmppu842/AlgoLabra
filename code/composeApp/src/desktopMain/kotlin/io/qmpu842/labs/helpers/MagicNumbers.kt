@@ -8,3 +8,5 @@ const val MINIMAX_LOSE = -HUNDRED_K
 const val HEURESTIC_WIN = 888
 const val HEURESTIC_LOSE = -888
 const val BLOCK_WIN = HEURESTIC_WIN / 2
+const val TRAP_WIN = (HEURESTIC_WIN / 1.75).toInt()
+//const val TRAP_LOSE = (HEURESTIC_LOSE / 1.75).toInt()
