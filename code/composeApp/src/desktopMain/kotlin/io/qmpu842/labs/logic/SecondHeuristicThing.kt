@@ -1,29 +1,26 @@
 package io.qmpu842.labs.logic
 
-import io.qmpu842.labs.helpers.next
-import io.qmpu842.labs.helpers.summa
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
 
 object SecondHeuristicThing {
-
     fun combinedWells(
         board: Board,
         forSide: Int,
     ): IntArray {
+        return IntArray(board.getWells()) { 0 }
         val res = IntArray(board.getWells()) { 0 }
 
-        //Tier 0: Insta wins
+        // Tier 0: Insta wins
         val threeStraightPos = getMovesWith3Straight(board, forSide)
         val threeStraightNeg = getMovesWith3Straight(board, -forSide)
         val gappedPos = getMovesWith3TokensWithAirGap(board, forSide)
         val gappedNeg = getMovesWith3TokensWithAirGap(board, -forSide)
 
-        //Tier 1: 2 tokens
+        // Tier 1: 2 tokens
 
-
-        //Tier 99: Just empty boards
+        // Tier 99: Just empty boards
         val openness = getOpenness(board)
 
         res.forEachIndexed { index, t ->
@@ -56,22 +53,21 @@ object SecondHeuristicThing {
 
         val startingPoints = board.startingPoints()
 
-        for (point in startingPoints) {
+        for (i in 0..<startingPoints.size step 2) {
             var counter = 0
             for (way in Way.entries) {
-                val next = board.board.next(point, way)
-                if (next == null) continue
                 val hold =
                     board.checkLine(
-                        current = next,
+                        x = startingPoints[i],
+                        y = startingPoints[i + 1],
                         sign = forSide,
                         way = way,
                     )
-                if (hold >= 3){
+                if (hold >= board.boardConfig.neededForWin - 1) {
                     counter++
                 }
             }
-            result[point.x] = counter
+            result[startingPoints[i]] = counter
         }
         return result
     }
@@ -84,29 +80,42 @@ object SecondHeuristicThing {
      * sign of number is what side would benefit from it
      * And magnitude how many or how dangerous the position is
      */
-    fun getMovesWith3TokensWithAirGap(board: Board, forSide: Int): IntArray {
+    fun getMovesWith3TokensWithAirGap(
+        board: Board,
+        forSide: Int,
+    ): IntArray {
         val result = IntArray(board.board.size) { 0 }
 
         val startingPoints = board.startingPoints()
 
-        for (point in startingPoints) {
+        for (i in 0..<startingPoints.size step 2) {
             var counter = 0
             for (way in Way.entries) {
-                val next = board.board.next(point, way)
-                if (next == null) continue
-                val doubleLine = board.doubleLineWithJumpStart(
-                    current = next,
-                    sign = forSide,
-                    way = way
-                )
+                val x = startingPoints[i]
+                val y = startingPoints[i + 1]
+                val result: Int =
+                    board.checkLine(
+                        x = x + way.x,
+                        y = y + way.y,
+                        sign = forSide,
+                        way = way,
+                    )
+                val opposite = way.getOpposite()
+                val result2: Int =
+                    board.checkLine(
+                        x = x + opposite.x,
+                        y = y + opposite.y,
+                        sign = forSide,
+                        way = opposite,
+                    )
+                val doubleLine = result + result2
 
-                if (doubleLine.summa() >= 3) {
+                if (doubleLine >= board.boardConfig.neededForWin - 1) {
                     counter++
                 }
             }
-            result[point.x] = counter
+            result[startingPoints[i]] = counter
         }
-
         return result
     }
 
@@ -123,94 +132,30 @@ object SecondHeuristicThing {
 
         val startingPoints = board.startingPoints()
 
-        for (asd in startingPoints) {
+        for (i in 0..<startingPoints.size step 2) {
             var counter = 0
             for (way in Way.entries) {
-                val next = board.board.next(asd, way)
-                if (next == null) continue
-                val hold =
+                val x = startingPoints[i]
+                val y = startingPoints[i + 1]
+                val result: Int =
                     board.checkLine(
-                        current = next,
+                        x = x + way.x,
+                        y = y + way.y,
                         sign = 0,
                         way = way,
                     )
-                val antiNext = board.board.next(asd, way.getOpposite())
-
-                var hold2 = 0
-                if (antiNext != null) {
-                    hold2 =
-                        board.checkLine(
-                            current = antiNext,
-                            sign = 0,
-                            way = way.getOpposite(),
-                        )
-                }
-
-                // lol this is some fine-tuning, i am half-half with this
-                if (hold == hold2) counter += (hold + hold2)
-//                if (min(hold, hold2) * 1.2 < max(hold, hold2)) counter -= ((hold + hold2) / 1.25).toInt()
-//                if (way in listOf(Way.Up, Way.UpRight, Way.LeftUp)) counter -= ((hold + hold2) / 3).toInt()
-
-                counter += (hold + hold2)
-            }
-            result[asd.x] = counter
-        }
-
-        return result
-    }
-
-    fun getMovesWithTwoTokens(
-        board: Board,
-        forSide: Int,
-    ): IntArray {
-        val result = IntArray(board.board.size) { 0 }
-
-        val startingPoints = board.startingPoints()
-
-        for (asd in startingPoints) {
-            var counter = 0
-            for (way in Way.entries) {
-                val next = board.board.next(asd, way)
-                if (next == null) continue
-                val hold =
+                val opposite = way.getOpposite()
+                val result2: Int =
                     board.checkLine(
-                        current = next,
-                        sign = forSide,
-                        way = way,
+                        x = x + opposite.x,
+                        y = y + opposite.y,
+                        sign = 0,
+                        way = opposite,
                     )
-                if (hold == 1){
-                    counter++
-                }
+                if (result == result2) counter += (result + result2)
+                counter += (result + result2)
             }
-            result[asd.x] = counter
-        }
-        return result
-    }
-
-    fun getMovesWithTwoTokens1(
-        board: Board,
-        forSide: Int,
-    ): IntArray {
-        val result = IntArray(board.board.size) { 0 }
-
-        val startingPoints = board.startingPoints()
-
-        for (asd in startingPoints) {
-            var counter = 0
-            for (way in Way.entries) {
-                val next = board.board.next(asd, way)
-                if (next == null) continue
-                val hold =
-                    board.checkLine(
-                        current = next,
-                        sign = forSide,
-                        way = way,
-                    )
-                if (hold == 1){
-                    counter++
-                }
-            }
-            result[asd.x] = counter
+            result[startingPoints[i]] = counter
         }
         return result
     }

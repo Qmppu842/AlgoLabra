@@ -21,4 +21,9 @@ enum class Way(
     ;
 
     fun getOpposite(): Way = entries[(this.ordinal + 4) % entries.size]
+
+    companion object {
+        val half = arrayOf(Right, RightDown, Down, DownLeft)
+        val opp = arrayOf(Down, DownLeft, Left, LeftUp, Up, UpRight, Right, RightDown)
+    }
 }

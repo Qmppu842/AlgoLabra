@@ -1,7 +1,6 @@
 package io.qmpu842.labs.logic
 
 import io.qmpu842.labs.helpers.BoardConfig
-import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.helpers.lapTime
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.sign
@@ -27,9 +26,10 @@ data class GameHolder(
          */
         fun runWithOutUi(
             amount: Int,
-            playerA: OpponentProfile = ProfileHolder.rand,
-            playerB: OpponentProfile = ProfileHolder.miniMaxV3Profile5,
+            playerA: OpponentProfile,
+            playerB: OpponentProfile,
         ) {
+            lapTime()
             var gameHolder =
                 GameHolder(
                     playerA = playerA,
@@ -40,9 +40,9 @@ data class GameHolder(
             val startTime = System.currentTimeMillis()
             while (gameCounter < amount) {
                 if (gameHolder.hasGameStopped()) {
-                    lapTime()
                     gameCounter++
                     gameHolder = gameHolder.updateWinnersAndClearBoard()
+                    println("Currently ended game: $gameCounter")
                 }
                 gameHolder = gameHolder.dropTokenLimited()
             }
@@ -52,6 +52,7 @@ data class GameHolder(
             println("Red wins: ${gameHolder.playerA.firstPlayStats.wins}")
             println("Yellow wins: ${gameHolder.playerB.secondPlayStats.wins}")
             println("Draws: ${gameHolder.playerA.firstPlayStats.draws}")
+            println("Total games: $gameCounter")
         }
     }
 
@@ -89,7 +90,7 @@ data class GameHolder(
 //        else{
 //            println("human playing")
 //        }
-        return this.copy(board.dropLockedToken(columnHolder))
+        return this.copy(board = board.dropLockedToken(columnHolder))
     }
 
     /**
