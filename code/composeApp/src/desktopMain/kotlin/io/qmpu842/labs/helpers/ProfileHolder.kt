@@ -45,6 +45,12 @@ object ProfileHolder {
             timeLimit = TRILLION,
         )
 
+    val minimaxDepth6TimeInf =
+        MiniMaxV1Profile(
+            depth = 6,
+            timeLimit = TRILLION,
+        )
+
     val minimaxDepth7TimeInf =
         MiniMaxV1Profile(
             depth = 7,
@@ -68,10 +74,33 @@ object ProfileHolder {
             depth = 10,
             timeLimit = TRILLION,
         )
+    val minimaxDepth11TimeInf =
+        MiniMaxV1Profile(
+            depth = 11,
+            timeLimit = TRILLION,
+        )
+
+    val minimaxDepth12TimeInf =
+        MiniMaxV1Profile(
+            depth = 12,
+            timeLimit = TRILLION,
+        )
+
+    val minimaxDepth13TimeInf =
+        MiniMaxV1Profile(
+            depth = 13,
+            timeLimit = TRILLION,
+        )
+    val minimaxDepth14TimeInf =
+        MiniMaxV1Profile(
+            depth = 14,
+            timeLimit = TRILLION,
+        )
 
     val minimaxDepth15TimeInf =
         MiniMaxV1Profile(
             depth = 15,
             timeLimit = TRILLION,
         )
+
 }

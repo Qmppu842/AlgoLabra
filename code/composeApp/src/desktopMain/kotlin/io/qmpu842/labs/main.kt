@@ -32,7 +32,7 @@ fun main1() =
 fun main() {
     GameHolder.runWithOutUi(
         10,
-        playerA = ProfileHolder.minimaxDepth15TimeInf,
-        playerB = ProfileHolder.minimaxDepth15TimeInf
+        playerA = ProfileHolder.rand,
+        playerB = ProfileHolder.minimaxDepth11TimeInf
     )
 }

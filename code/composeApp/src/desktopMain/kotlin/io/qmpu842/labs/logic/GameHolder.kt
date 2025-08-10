@@ -90,7 +90,7 @@ data class GameHolder(
 //        else{
 //            println("human playing")
 //        }
-        return this.copy(board.dropLockedToken(columnHolder))
+        return this.copy(board = board.dropLockedToken(columnHolder))
     }
 
     /**
