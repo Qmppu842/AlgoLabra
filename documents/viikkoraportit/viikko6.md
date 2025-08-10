@@ -1,4 +1,4 @@
-# Viikko X
+# Viikko 6
 
 
 ## Mitä olen tehnyt tällä viikolla?
