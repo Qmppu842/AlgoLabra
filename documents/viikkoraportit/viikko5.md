@@ -42,15 +42,13 @@ Jonka jälkeen voi harkita iteratiivista syvenemistä tai transpositiotalua.
 
 ## Ajan käyttö:
 
-| Päivä       | aika | syy              |
-|-------------|------|------------------|
-| 03/08       | ??   | ??               |
-| 04/08       | ??   | ??               |
-| 05/08       | ??   | ??               |
-| 06/08       | ??   | ??               |
-| 07/08       | ??   | ??               |
-| 08/08       | ??   | ??               |
-| 09/08       | ??   | ??               |
-| 10/08       | ??   | ??               |
-| 03-10/08    | ??   | This weeks total |
-| 10/07-??/08 | 104h | Total Total      |
+| Päivä       | aika | syy                                       |
+|-------------|------|-------------------------------------------|
+| 04/08       | 2h   | Ison testin pohtimista                    |
+| 05/08       | 4h   | Optimoinnin aloitus                       |
+| 06/08       | 4h   | Nopeampi lisäys                           |
+| 08/08       | 6h   | Hulluuden katsomista                      |
+| 09/08       | 4h   | Epätoivon huumaa                          |
+| 10/08       | 6h   | Oikeasti korjaaminen ja karsinnan korjaus |
+| 04-10/08    | 26h  | This weeks total                          |
+| 10/07-??/08 | 130h | Total Total                               |
