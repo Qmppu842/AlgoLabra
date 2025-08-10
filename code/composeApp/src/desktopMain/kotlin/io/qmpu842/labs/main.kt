@@ -11,7 +11,7 @@ import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.logic.GameHolder
 import kotlinx.coroutines.delay
 
-fun main1() =
+fun main() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -19,6 +19,8 @@ fun main1() =
             state = rememberWindowState(width = Dp.Unspecified, height = Dp.Unspecified),
             alwaysOnTop = true,
         ) {
+
+//            Comment this launchedEffect away if you want to play more than 5 minutes
             LaunchedEffect(true) {
                 delay(300_000)
                 this@application.exitApplication()
@@ -27,10 +29,10 @@ fun main1() =
         }
     }
 
-fun main() {
+fun main2() {
     GameHolder.runWithOutUi(
         10,
-        playerA = ProfileHolder.minimaxDepth9TimeInf,
-        playerB = ProfileHolder.minimaxDepth9TimeInf
+        playerA = ProfileHolder.minimaxDepth35TimeInf,
+        playerB = ProfileHolder.minimaxDepth35TimeInf
     )
 }

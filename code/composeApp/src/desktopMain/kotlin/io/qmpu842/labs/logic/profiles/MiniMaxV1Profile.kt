@@ -7,9 +7,8 @@ import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.round
+import kotlin.math.sign
 
 class MiniMaxV1Profile(
     var depth: Int = 10,
@@ -35,7 +34,9 @@ class MiniMaxV1Profile(
                 beta = Int.MAX_VALUE,
                 forLastSide = -forSide,
                 lastX = thinn,
-                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1
+                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
+//                lastX = -1,
+//                lastY = -1,
             )
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startingTime
@@ -51,7 +52,7 @@ class MiniMaxV1Profile(
      */
     fun minimax2(
         board: Board,
-        depth: Int = this.depth,
+        depth: Int,
         maximizingPlayer: Boolean = true,
         alpha: Int = Int.MIN_VALUE,
         beta: Int = Int.MAX_VALUE,
@@ -60,15 +61,13 @@ class MiniMaxV1Profile(
         lastX: Int = 0,
         lastY: Int = 0,
     ): Pair<Int, Int> {
-        val terminal = if (lastX != -1)
+        println("nyt syvyydessä: $depth")
+        val terminal =
             board.doesPlaceHaveWinning(
-            x = lastX,
-            y = lastY,
-            neededForWin = neededForWin
-        )else{
-            false
-        }
-//        val hasStopped = board.isAtMaxSize()
+                x = lastX,
+                y = lastY,
+                neededForWin = neededForWin,
+            )
         val hasStopped = isBoardFull(board.board)
 
         if (terminal) {
@@ -86,19 +85,26 @@ class MiniMaxV1Profile(
 //        val y = lastY // board.getWellSpace(lastX)
 
         if (depth == 0 || time >= currentMaxTime) {
+//            return Pair(
+//                lastMovesValue5(
+//                    board = board,
+//                    x = lastX,
+//                    y = lastY,
+//                    forSide = forLastSide * if (maximizingPlayer) -1 else 1,
+//                    neededForWin = neededForWin,
+//                ),
+//                lastX,
+//            )
+
             return Pair(
-                lastMovesValue5(
-                    board = board,
-                    x = lastX,
-                    y = lastY,
-                    forSide = forLastSide * if (maximizingPlayer) -1 else 1,
-                    neededForWin = neededForWin,
-                ),
+                simpleEval(board, forLastSide * if (maximizingPlayer) -1 else 1),
                 lastX,
             )
         }
-
-        val moves = board.getLegalsMiddleOutSeq()
+        val moves = board.getLegalMovesFromMiddleOut()
+//        val moves = board.getLegalsMiddleOutSeq()
+//        var alpha2 = alpha
+//        var beta2 = beta
 
         if (maximizingPlayer) {
             var value = Int.MIN_VALUE
@@ -113,6 +119,8 @@ class MiniMaxV1Profile(
                         maximizingPlayer = false,
                         alpha = alpha,
                         beta = beta,
+//                        alpha = alpha2,
+//                        beta = beta2,
                         forLastSide = -forLastSide,
                         neededForWin = neededForWin,
                         lastX = move,
@@ -124,8 +132,10 @@ class MiniMaxV1Profile(
                     value = minied.first
                 }
 
-                val alpha2 = max(alpha, value)
-                if (beta <= alpha2) break
+//                val alpha2 = max(alpha, value)
+//                if (beta <= alpha2) break
+//                val alpha2 = max(alpha2, value)
+//                if (beta2 <= alpha2) break
             }
             return Pair(value, bestMove)
         } else {
@@ -141,6 +151,8 @@ class MiniMaxV1Profile(
                         maximizingPlayer = true,
                         alpha = alpha,
                         beta = beta,
+//                        alpha = alpha2,
+//                        beta = beta2,
                         forLastSide = -forLastSide,
                         neededForWin = neededForWin,
                         lastX = move,
@@ -152,8 +164,10 @@ class MiniMaxV1Profile(
                     value = minied.first
                 }
 
-                val beta2 = min(beta, value)
-                if (beta2 <= alpha) break
+//                val beta2 = min(beta, value)
+//                if (beta2 <= alpha) break
+//                val beta2 = min(beta2, value)
+//                if (beta2 <= alpha2) break
             }
             return Pair(value, bestMove)
         }
@@ -165,6 +179,25 @@ class MiniMaxV1Profile(
             if (board[aaa][0] == 0) return false
         }
         return true
+    }
+
+    fun simpleEval(
+        board: Board,
+        forSide: Int,
+    ): Int {
+        // Count tokens for forSide minus opponent tokens
+        var score = 0
+        for (x in 0 until board.getWells()) {
+            for (y in 0 until board.board[x].size) {
+                val cell = board.board[x][y]
+                if (cell.sign == forSide) {
+                    score++
+                } else if (cell.sign == -forSide) {
+                    score--
+                }
+            }
+        }
+        return score
     }
 
     fun lastMovesValue5(
@@ -243,5 +276,114 @@ class MiniMaxV1Profile(
             }
         }
         return counter
+    }
+
+    fun lastMovesValue52(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+        var counter = 0
+        val mappe = hashMapOf<Int, Int>()
+        println("x : $x")
+        println("y : $y")
+        var combo = 0
+        for (way in Way.half) {
+            val aaaaa =
+                checkDoubleLine(
+                    board = board,
+                    x = x,
+                    y = y,
+                    forSide = forSide,
+                    way = way,
+                )
+            println("the way: $way")
+            println("Aaaa ${aaaaa.contentDeepToString()}")
+//            mappe[aaaaa[0]] = mappe.getOrDefault(aaaaa[0], 0) + 1
+
+            val oma = aaaaa[0] * aaaaa[0] * aaaaa[0] * 1000
+            mappe[oma] = mappe.getOrDefault(oma, 0) + 1
+
+            val air = aaaaa[1] * aaaaa[1] * 100
+            mappe[air] = mappe.getOrDefault(air, 0) + 1
+
+            val vihu = aaaaa[2] * -1
+            mappe[vihu] = mappe.getOrDefault(vihu, 0) + 1
+        }
+
+        println("mappe: $mappe")
+
+        return counter
+    }
+
+    fun checkDoubleLine(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        way: Way,
+    ): Array<Int> {
+        /**
+         * Oma, ilma, vihu, oma + ilma, vihu + ilma
+         */
+        val resres = arrayOf(0, 0, 0, 0, 0)
+        val opposite = Way.opp[way.ordinal]
+
+//        omat linjat
+        val resOma1: Int =
+            board.checkLine(
+                x = x,
+                y = y,
+                sign = forSide,
+                way = way,
+            )
+        val resOma2: Int =
+            board.checkLine(
+                x = x + opposite.x,
+                y = y + opposite.y,
+                sign = forSide,
+                way = opposite,
+            )
+//        vihu linjat
+        val resVih1: Int =
+            board.checkLine(
+                x = x,
+                y = y,
+                sign = -forSide,
+                way = way,
+            )
+        val resVih2: Int =
+            board.checkLine(
+                x = x + opposite.x,
+                y = y + opposite.y,
+                sign = -forSide,
+                way = opposite,
+            )
+//        ilma linjat
+        val resAir1: Int =
+            board.checkLine(
+                x = x,
+                y = y,
+                sign = 0,
+                way = way,
+            )
+        val resAir2: Int =
+            board.checkLine(
+                x = x + opposite.x,
+                y = y + opposite.y,
+                sign = 0,
+                way = opposite,
+            )
+
+//        oma trap
+
+//        vihu trap
+
+        resres[0] = resOma1 + resOma2
+        resres[1] = resAir1 + resAir2
+        resres[2] = resVih1 + resVih2
+        return resres
     }
 }

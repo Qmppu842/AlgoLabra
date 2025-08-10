@@ -55,7 +55,7 @@ class BiggerMiniMaxV1ProfileTest :
             asd =  gameHolder.board.getLegalMoves()
 
             gameHolder.hasGameStopped() shouldBe true
-            gameHolder.whoisWinner() shouldBe gameHolder.playerA
+            gameHolder.whoisWinner() shouldBe 1
 
             val history =
                 gameHolder.board.history

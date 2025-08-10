@@ -1,7 +1,6 @@
 package io.qmpu842.labs.logic
 
 import io.qmpu842.labs.helpers.BoardConfig
-import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.helpers.lapTime
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.sign
@@ -27,8 +26,8 @@ data class GameHolder(
          */
         fun runWithOutUi(
             amount: Int,
-            playerA: OpponentProfile = ProfileHolder.rand,
-            playerB: OpponentProfile = ProfileHolder.miniMaxV3Profile5,
+            playerA: OpponentProfile,
+            playerB: OpponentProfile,
         ) {
             lapTime()
             var gameHolder =

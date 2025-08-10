@@ -318,6 +318,7 @@ data class Board(
         y: Int,
         neededForWin: Int,
     ): Boolean {
+        if (x == -1) return false
         val eka = board[x]
         val sign = eka[y].sign
         if (sign == 0) return false

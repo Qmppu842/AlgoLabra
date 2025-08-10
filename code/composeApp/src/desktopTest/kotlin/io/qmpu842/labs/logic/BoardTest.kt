@@ -364,6 +364,64 @@ class BoardTest :
             }
             list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0, -1)
         }
+
+
+        test("getLegalsMiddleOutSeq on empty odd board #22") {
+            var board =
+                Board(
+                    boardWidth = 7,
+                    boardHeight = 6,
+                    neededForWin = 4,
+                )
+
+            val seq = board.getLegalsMiddleOutSeq()
+            val list = mutableListOf<Int>()
+            val list2 = mutableListOf<Int>()
+            for (move in seq) {
+                list.add(move)
+                print(move)
+                if (move == -1) break
+                for (move1 in  board.getLegalsMiddleOutSeq()) {
+                    list2.add(move1)
+                    print(move1)
+                    if (move1 == -1) break
+                }
+            }
+            list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0, -1)
+        }
+
+
+        test("getLegalsMiddleOutSeq on empty odd board #2222") {
+            var board =
+                Board(
+                    boardWidth = 7,
+                    boardHeight = 6,
+                    neededForWin = 4,
+                )
+            fun thinggg (boarde: Board, list: MutableList<Int>): MutableList<Int> {
+                for (move1 in  boarde.getLegalsMiddleOutSeq()) {
+                    list.add(move1)
+                    print(move1)
+                    if (move1 == -1) break
+                }
+                return list
+            }
+
+            val seq = board.getLegalsMiddleOutSeq()
+            val list = mutableListOf<Int>()
+            val list2 = mutableListOf<Int>()
+            for (move in seq) {
+                list.add(move)
+                print(move)
+                if (move == -1) break
+                for (move1 in  board.getLegalsMiddleOutSeq()) {
+                    list2.add(move1)
+                    print(move1)
+                    if (move1 == -1) break
+                }
+            }
+            list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0, -1)
+        }
         test("getLegalsMiddleOutSeq on empty even board") {
             var board =
                 Board(
