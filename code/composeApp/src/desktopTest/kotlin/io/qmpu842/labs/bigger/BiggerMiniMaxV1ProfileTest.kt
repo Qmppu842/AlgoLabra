@@ -79,7 +79,7 @@ class BiggerMiniMaxV1ProfileTest :
             history shouldBe "44444222245355266776662611135533353777711"
         }
 
-        context("nextMove data tests") {
+        context("nextMove data tests wins") {
             withData(
                 GameToPlay(
                     depth = 6,
@@ -157,9 +157,19 @@ class BiggerMiniMaxV1ProfileTest :
                     end = "44444156666432236225315552563332777111177",
                 ),
                 GameToPlay(
-                    depth = 20,
+                    depth = 19,
                     start = "4444415666643223622531",
-                    end = "44444156666432236225315552563332777111177",
+                    end =   "44444156666432236225315552563332777111177",
+                ),
+                GameToPlay(
+                    depth = 20,
+                    start = "444441566664322362253",
+                    end =   "44444156666432236225315552563332777111177",
+                ),
+                GameToPlay(
+                    depth = 20,
+                    start = "444441566664322362253",
+                    end =   "44444156666432236225315552563332777111177",
                 ),
             ) { (playerA, playerB, start, end) ->
                 val bc = BoardConfig()
