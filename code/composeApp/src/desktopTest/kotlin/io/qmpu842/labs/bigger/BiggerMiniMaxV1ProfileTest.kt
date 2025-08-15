@@ -43,6 +43,7 @@ data class GameToPlay(
 class BiggerMiniMaxV1ProfileTest :
     FunSpec({
 
+        timeout = 10_000_000
         beforeTest {}
 
         /**
@@ -154,7 +155,7 @@ class BiggerMiniMaxV1ProfileTest :
                 GameToPlay(
                     depth = 19,
                     start = "44444156666432236225315",
-                    end = "44444156666432236225315552563332777111177",
+                    end =   "44444156666432236225315552563332777111177",
                 ),
                 GameToPlay(
                     depth = 19,
@@ -164,14 +165,25 @@ class BiggerMiniMaxV1ProfileTest :
                 GameToPlay(
                     depth = 20,
                     start = "444441566664322362253",
-                    end =   "44444156666432236225315552563332777111177",
+                    end =   "44444156666432236225356555333227771111177",
                 ),
                 GameToPlay(
                     depth = 20,
                     start = "444441566664322362253",
-                    end =   "44444156666432236225315552563332777111177",
+                    end =   "44444156666432236225356555333227771111177",
+                ),
+                GameToPlay(
+                    depth = 22,
+                    start = "44444156666432236225",
+                    end =   "44444156666432236225555253333627771111177",
+                ),
+                GameToPlay(
+                    depth = 22,
+                    start = "4444415666643223622",
+                    end =   "44444156666432236225555253333627771111177",
                 ),
             ) { (playerA, playerB, start, end) ->
+
                 val bc = BoardConfig()
 
                 var gameHolder =
@@ -181,6 +193,7 @@ class BiggerMiniMaxV1ProfileTest :
                         playerB = playerB,
                         bc = bc,
                     )
+                println("start is: $start")
 
                 repeat(end.length - start.length) {
                     gameHolder = gameHolder.dropTokenLimited()

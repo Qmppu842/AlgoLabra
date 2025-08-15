@@ -424,14 +424,12 @@ class MiniMaxV1Profile(
         forSide: Int,
         neededForWin: Int = 4,
     ): Int {
-//        println("wad?")
 
         val w = board.boardConfig.width
         val h = board.boardConfig.height
         val size = sqrt(0.0 + w * w + h * h).toInt() + 2
         val omatLinjat = IntArray(size)
         val vihuLinjat = IntArray(size)
-//        println("adsad")
 
         for (way in Way.half) {
             val opposite = Way.opp[way.ordinal]
@@ -452,7 +450,6 @@ class MiniMaxV1Profile(
                 )
             val omaSum = resOma1 + resOma2
             omatLinjat[omaSum] += 1
-//            println("kalaa")
 
             //        vihu linjat
             val resVih1: Int =
@@ -471,7 +468,6 @@ class MiniMaxV1Profile(
                 )
             val vihuSum = resVih1 + resVih2
             vihuLinjat[vihuSum] += 1
-//            println("vehnaa")
         }
 //        println("omatLinjat ${omatLinjat.toList()}")
 //        println("vihuLinjat ${vihuLinjat.toList()}")
@@ -481,18 +477,13 @@ class MiniMaxV1Profile(
         for (i in size - 1 downTo 0) {
             val oma = omatLinjat[i]
             omaCounter += oma * (10f.pow(i)).toInt()
-//            println("maitoa")
             val vihu = vihuLinjat[i]
             vihuCounter += -(vihu * (10f.pow(i)).toInt())
         }
-//        println("omacounter $omaCounter")
-//        println("vihucounter $vihuCounter")
-//        println("jäde")
-        if (abs(omaCounter) >= abs(vihuCounter)) {
-            return omaCounter
+        return if (abs(omaCounter) >= abs(vihuCounter)) {
+            omaCounter
         } else {
-            return vihuCounter
+            vihuCounter
         }
-//        return omaCounter
     }
 }
