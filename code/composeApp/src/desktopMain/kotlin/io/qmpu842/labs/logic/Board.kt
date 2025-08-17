@@ -479,4 +479,12 @@ data class Board(
         }
         return history.size == allSize
     }
+
+    fun maxSize(): Int {
+        var allSize = 0
+        board.forEachIndexed { _, ints ->
+            allSize += ints.size
+        }
+        return allSize
+    }
 }

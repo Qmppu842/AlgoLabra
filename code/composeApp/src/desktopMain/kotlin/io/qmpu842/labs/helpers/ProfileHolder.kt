@@ -103,4 +103,8 @@ object ProfileHolder {
             timeLimit = TRILLION,
         )
 
+    val brainDamage = MiniMaxV2SelfTuningProfile(
+        depth = 5,
+        timeLimit = TRILLION
+    )
 }
