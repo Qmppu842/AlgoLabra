@@ -417,14 +417,16 @@ class MiniMaxV1Profile(
         return resres
     }
 
-    fun lastMovesValue5(
+    /**
+     * current one
+     */
+    fun lastMovesValue53(
         board: Board,
         x: Int,
         y: Int,
         forSide: Int,
         neededForWin: Int = 4,
     ): Int {
-
         val w = board.boardConfig.width
         val h = board.boardConfig.height
         val size = sqrt(0.0 + w * w + h * h).toInt() + 2
@@ -485,5 +487,362 @@ class MiniMaxV1Profile(
         } else {
             vihuCounter
         }
+    }
+
+    fun lastMovesValue54(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+        val w = board.boardConfig.width
+        val h = board.boardConfig.height
+        val size = sqrt(0.0 + w * w + h * h).toInt() + 2
+        val omatLinjat = IntArray(size)
+        val vihuLinjat = IntArray(size)
+
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
+//            omat linjat
+//            val aaa = IntArray(size)
+            val resOma =
+                checkLine(
+                    board2 = board,
+                    x = x,
+                    y = y,
+                    sign = forSide,
+                    way = way,
+//                    aaa,
+//                    size
+                )
+//            println("resOma: $resOma")
+
+            val resOmaback =
+                checkLine(
+                    board2 = board,
+                    x = x,
+                    y = y,
+                    sign = forSide,
+                    way = opposite,
+//                    aaa = aaa,
+//                    size
+                )
+//            println("resOmaback: $resOmaback")
+            val combo =
+                resOmaback.reversed() +
+                    resOma.filterIndexed { aa, _ ->
+                        aa != 0
+                    }
+//            if (combo.size < neededForWin) continue
+            println("combo: $combo")
+//            val joined = aaa.joinToString(", ")
+//            println("joined: $joined")
+        }
+        return 0
+    }
+
+    fun lastMovesValue5(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+        var holder = 0
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
+//            println("way: $way")
+            val resOma =
+                checkLine(
+                    board2 = board,
+                    x = x + way.x,
+                    y = y + way.y,
+                    sign = forSide,
+                    way = way,
+                )
+
+            val resOmaback =
+                checkLine(
+                    board2 = board,
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = forSide,
+                    way = opposite,
+                )
+//            val combo = resOmaback.reversed() + board.board[x][y] + resOma
+            val combo = resOmaback.reversed() + "+" + resOma
+//            if (combo.size < neededForWin) continue
+            if (combo.length < neededForWin) continue
+//            println("combo: $combo")
+            val ggfgf = SoBaaaad.getter(combo)
+            if (abs(ggfgf) > holder){
+                holder = ggfgf
+            }
+        }
+        return holder
+    }
+
+    /**
+     * Counts how many of each thing in the line
+     * @param x todo
+     * @param y todo
+     * @param sign what things to count -1/+1/0
+     * @param way what way the line should go
+     *
+     * @return the amount of sign countered before other sign broke the chain
+     */
+    fun checkLine(
+        board2: Board,
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+    ): String {
+        val board = board2.board
+        var x1 = x
+        var y1 = y
+        val xMax = board.size
+        var thinnge = ""
+        while (x1 in 0 until xMax) {
+            val row = board[x1]
+            if (y1 !in 0..<row.size) break
+            val mm = row[y1].sign * sign
+//            println("row[y1]: ${row[y1]}")
+//            println("mm: $mm")
+            if (mm == 1) {
+                thinnge += "+"
+            } else if (mm == -1) {
+                thinnge += "-"
+            } else {
+                if (way != Way.Down && way != Way.Up) {
+                    var y2 = y1
+                    var merkki = row[y2]
+                    var counter = -1
+                    while (merkki == 0 && y2 < row.size) {
+                        merkki = row[y2]
+                        counter += 1
+                        y2 += 1
+                    }
+                    if (counter > 1) {
+                        thinnge += if (counter % 2 == 1) "¤" else "*"
+                    } else {
+                        thinnge += "o"
+                    }
+                } else {
+                    thinnge += "o"
+                }
+            }
+            x1 += way.x
+            y1 += way.y
+        }
+        return thinnge
+    }
+
+    fun checkLine3(
+        board2: Board,
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+    ): String {
+        val board = board2.board
+        var x1 = x
+        var y1 = y
+        val xMax = board.size
+        var thinnge = ""
+        val nnn = mutableListOf<Int>()
+        val laste = -99
+        while (x1 in 0 until xMax) {
+            val row = board[x1]
+            if (y1 !in 0..<row.size) break
+            val mm = row[y1].sign * sign
+            if (mm == 1) {
+//                thinnge += "o1"
+                thinnge += "+"
+            } else if (mm == -1) {
+//                thinnge += "v1"
+                thinnge += "-"
+            } else {
+                if (way != Way.Down && way != Way.Up) {
+                    var y2 = y1
+                    var merkki = row[y2]
+                    var counter = 0
+                    while (merkki == 0 && y2 < row.size) {
+                        merkki = row[y2]
+                        counter += 1
+                        y2 += 1
+//                        println("merkki $merkki")
+                    }
+//                    thinnge += "d$counter"
+//                    thinnge += "$counter"
+//                    thinnge += "${counter % 2 }"
+                    thinnge += if (counter % 2 == 1) "¤" else "*"
+//                    thinnge += "x"
+                } else {
+//                    thinnge += "t1"
+                    thinnge += "o"
+                }
+            }
+            nnn.add(row[y1])
+//            thinnge += "${row[y1]}, "
+            x1 += way.x
+            y1 += way.y
+        }
+//        println("Thinge: $thinnge")
+        return thinnge
+    }
+
+    fun checkLine2(
+        board2: Board,
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+    ): MutableList<Int> {
+        val board = board2.board
+        var x1 = x
+        var y1 = y
+        val xMax = board.size
+        var thinnge = ""
+        val nnn = mutableListOf<Int>()
+        val laste = -99
+        while (x1 in 0 until xMax) {
+            val row = board[x1]
+            if (y1 !in 0..<row.size) break
+            val mm = row[y1].sign * sign
+            if (mm == 1) {
+//                thinnge += "o1"
+                thinnge += "+"
+            } else if (mm == -1) {
+//                thinnge += "v1"
+                thinnge += "-"
+            } else {
+                if (way != Way.Down && way != Way.Up) {
+//                    thinnge += "t1"
+                    thinnge += "o"
+                } else {
+                    var y2 = y1
+                    var merkki = row[y2]
+                    var counter = 0
+                    while (merkki == 0 || counter < row.size) {
+                        merkki = row[y2]
+                        counter += 1
+                        y2 += 1
+                    }
+//                    thinnge += "d$counter"
+                    thinnge += "$counter"
+                }
+            }
+            nnn.add(row[y1])
+//            thinnge += "${row[y1]}, "
+            x1 += way.x
+            y1 += way.y
+        }
+        println("Thinge: $thinnge")
+        return nnn
+    }
+
+    fun checkLine1(
+        board2: Board,
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+//        aaa: IntArray,
+//        koko: Int
+    ): MutableList<Int> {
+        val board = board2.board
+        var x1 = x
+        var y1 = y
+        val xMax = board.size
+        var thinnge = ""
+//        var arvo = 0
+//        val aaa = IntArray(koko)
+//        println("aaaa: ${aaa.toList()}")
+        val nnn = mutableListOf<Int>()
+        while (x1 in 0 until xMax) {
+//            println("1x $x")
+            val row = board[x1]
+//            if (y !in 0..<row.size || row[y].sign != sign) break
+            if (y1 !in 0..<row.size) break
+//            println("x $x")
+//            val ohgod = x-x1+y-y1
+            nnn.add(row[y1])
+//            aaa[arvo] = row[y1]
+            thinnge += "${row[y1]}, "
+//            thinnge += "${row[y].sign}, "
+            x1 += way.x
+            y1 += way.y
+//            arvo += 1
+        }
+//        println("aaaa2: ${aaa.toList()}")
+//        println("Thinge: $thinnge")
+//        return thinnge
+//        return aaa
+        return nnn
+    }
+}
+
+object SoBaaaad {
+    private val mappe = HashMap<String, Int>(20)
+
+    init {
+        mappe[""] = 0
+    }
+
+    fun getter(key: String): Int {
+        var result: Int?
+        result = mappe.getOrDefault(key, null)
+
+        if (result == null){
+            result = mappe.getOrDefault(mirror(key), null)
+        }
+        if (result == null){
+            result = mappe.getOrDefault(otherSide(key), null)
+            if (result != null){
+                result = -result
+            }
+        }
+        if (result == null){
+            result = mappe.getOrDefault(otherSide(mirror(key)), null)
+            if (result != null){
+                result = -result
+            }
+        }
+
+        println("needed this: $key, got $result")
+
+        if (result == null){
+            result = 0
+        }
+
+        return result
+    }
+
+    fun mirror(key: String): String = key.reversed()
+
+    fun otherSide(key: String): String {
+        var result = ""
+        key.forEach {
+            result += when (it) {
+                '+' -> {
+                    '-'
+                }
+                '-' -> {
+                    '+'
+                }
+                '¤' -> {
+                    '*'
+                }
+                '*' -> {
+                    '¤'
+                }
+                else -> {
+                    it
+                }
+            }
+        }
+        return result
     }
 }
