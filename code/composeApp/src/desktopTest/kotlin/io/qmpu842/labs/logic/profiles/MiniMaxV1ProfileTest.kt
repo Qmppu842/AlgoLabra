@@ -244,6 +244,32 @@ class MiniMaxV1ProfileTest :
             ) shouldBe HEURESTIC_WIN
         }
 
+        test("lastMovesValue5 #9-5") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, -14, 7,   5, -4),
+                            intArrayOf(0, 0, 0, 0,   0, 0),
+                            intArrayOf(0, 0, 0, 0,   3, -2),
+                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0,11, 9,  -8, -6),
+                            intArrayOf(0, 0, 0, 0,   13, 1),
+                            intArrayOf(0, 0, 0, 0,  -12, -10),
+                        ),
+                )
+
+            board = board.dropLockedToken(1 )
+
+            val minimax = MiniMaxV1Profile()
+            minimax.lastMovesValue5(
+                board = board,
+                x = 1,
+                y = 5,
+                forSide = 1,
+            ) shouldBe HEURESTIC_WIN
+        }
+
         test("lastMovesValue5 #10") {
             var board =
                 Board(
