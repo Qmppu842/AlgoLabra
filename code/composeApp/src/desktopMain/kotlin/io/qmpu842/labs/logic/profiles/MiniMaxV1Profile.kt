@@ -5,6 +5,7 @@ import io.qmpu842.labs.helpers.MINIMAX_LOSE
 import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
+import io.qmpu842.labs.otherSide
 import kotlin.math.*
 
 class MiniMaxV1Profile(
@@ -266,8 +267,7 @@ class MiniMaxV1Profile(
         }
     }
 
-
-    fun lastMovesValue5(
+    fun lastMovesValue54(
         board: Board,
         x: Int,
         y: Int,
@@ -301,9 +301,120 @@ class MiniMaxV1Profile(
             if (combo.length < neededForWin) continue
 //            println("combo: $combo")
             val ggfgf = SoBaaaad.getter(combo)
-            if (abs(ggfgf) > holder){
+            if (abs(ggfgf) > holder) {
                 holder = ggfgf
             }
+        }
+        return holder
+    }
+
+    fun lastMovesValue5(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+        var holder = 0
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
+//            println("way: $way")
+            val resOma =
+                checkLine(
+                    board2 = board,
+                    x = x + way.x,
+                    y = y + way.y,
+                    sign = forSide,
+                    way = way,
+                )
+
+            val resOmaback =
+                checkLine(
+                    board2 = board,
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = forSide,
+                    way = opposite,
+                )
+//            val combo = resOmaback.reversed() + board.board[x][y] + resOma
+            val combo = resOmaback.reversed() + "+" + resOma
+//            if (combo.size < neededForWin) continue
+            if (combo.length < neededForWin) continue
+
+            val tier0 = listOf("++++", "++o+") // voitto
+            val tier1 = listOf("o+++o") // varma voitto, 3 ply
+            val tier2 =
+                listOf(
+                    "++¤+",
+                    "+++¤",
+                    "++¤o",
+                    "++o¤",
+                    "+¤+o",
+                    "+¤o+",
+                    "+o+¤",
+                    "¤++o",
+                    "o++oo",
+                ) // varmaish voitto, ~+3 ply
+            val tier3 =
+                listOf(
+                    "++¤¤",
+                    "+¤+¤",
+                    "+¤¤+",
+                    "¤++¤",
+                    "+¤¤o+",
+                    "+¤o¤+",
+                ) // meh
+
+            var value = 0
+
+            tier3.forEach { t ->
+                if (combo.contains(t)) {
+                    value = HEURESTIC_WIN / 3
+                }else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN/ 3
+                }
+            }
+            tier2.forEach { t ->
+                if (combo.contains(t)) {
+                    value = HEURESTIC_WIN / 2
+                }else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN/ 2
+                }
+            }
+
+            tier1.forEach { t ->
+                if (combo.contains(t)) {
+                    value = HEURESTIC_WIN - 10
+                }else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN + 10
+                }
+            }
+            tier0.forEach { t ->
+                if (combo.contains(t)) {
+                    value = HEURESTIC_WIN
+                } else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN
+                }
+            }
+
+            if (abs(value) > holder) {
+                holder = value
+            }
+
+//            val tier0 = listOf("++++")
+//            val tierNeg0 = listOf("----")
+//            val tier1 = listOf("o+++o")
+//
+//            val tier2 = listOf("+++o","++o+","+o++","o+++",)
+//            val tierNeg1 = listOf("---o","--o-","-o--","o---",)
+//
+//            val tier3 = listOf("o++o","++o+","+o++","o+++",)
+
+//            println("combo: $combo")
+//            val ggfgf = SoBaaaad.getter(combo)
+//            if (abs(ggfgf) > holder){
+//                holder = ggfgf
+//            }
         }
         return holder
     }
@@ -385,25 +496,25 @@ object SoBaaaad {
         var result: Int?
         result = mappe.getOrDefault(key, null)
 
-        if (result == null){
+        if (result == null) {
             result = mappe.getOrDefault(mirror(key), null)
         }
-        if (result == null){
+        if (result == null) {
             result = mappe.getOrDefault(otherSide(key), null)
-            if (result != null){
+            if (result != null) {
                 result = -result
             }
         }
-        if (result == null){
+        if (result == null) {
             result = mappe.getOrDefault(otherSide(mirror(key)), null)
-            if (result != null){
+            if (result != null) {
                 result = -result
             }
         }
         println(key)
         println("needed this: $key, got $result")
 
-        if (result == null){
+        if (result == null) {
             result = 0
         }
 
@@ -415,23 +526,28 @@ object SoBaaaad {
     fun otherSide(key: String): String {
         var result = ""
         key.forEach {
-            result += when (it) {
-                '+' -> {
-                    '-'
+            result +=
+                when (it) {
+                    '+' -> {
+                        '-'
+                    }
+
+                    '-' -> {
+                        '+'
+                    }
+
+                    '¤' -> {
+                        '*'
+                    }
+
+                    '*' -> {
+                        '¤'
+                    }
+
+                    else -> {
+                        it
+                    }
                 }
-                '-' -> {
-                    '+'
-                }
-                '¤' -> {
-                    '*'
-                }
-                '*' -> {
-                    '¤'
-                }
-                else -> {
-                    it
-                }
-            }
         }
         return result
     }
