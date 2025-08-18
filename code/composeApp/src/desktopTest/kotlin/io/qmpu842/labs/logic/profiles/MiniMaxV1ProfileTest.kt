@@ -218,7 +218,83 @@ class MiniMaxV1ProfileTest :
                 forSide = 1,
             ) shouldBe HEURESTIC_WIN
         }
+        test("lastMovesValue5 #9") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 7,   5, -4),
+                            intArrayOf(0, 0, 0, 0,   0, 0),
+                            intArrayOf(0, 0, 0, 0,   3, -2),
+                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0,11, 9,  -8, -6),
+                            intArrayOf(0, 0, 0, 0,   0, 1),
+                            intArrayOf(0, 0, 0, 0,  -12, -10),
+                        ),
+                )
 
+            board = board.dropLockedToken(1 )
+
+            val minimax = MiniMaxV1Profile()
+            minimax.lastMovesValue5(
+                board = board,
+                x = 1,
+                y = 5,
+                forSide = 1,
+            ) shouldBe HEURESTIC_WIN
+        }
+
+        test("lastMovesValue5 #9-5") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, -14, 7,   5, -4),
+                            intArrayOf(0, 0, 0, 0,   0, 0),
+                            intArrayOf(0, 0, 0, 0,   3, -2),
+                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0,11, 9,  -8, -6),
+                            intArrayOf(0, 0, 0, 0,   13, 1),
+                            intArrayOf(0, 0, 0, 0,  -12, -10),
+                        ),
+                )
+
+            board = board.dropLockedToken(1 )
+
+            val minimax = MiniMaxV1Profile()
+            minimax.lastMovesValue5(
+                board = board,
+                x = 1,
+                y = 5,
+                forSide = 1,
+            ) shouldBe HEURESTIC_WIN
+        }
+
+        test("lastMovesValue5 #10") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0,  0,  0,   9),
+                            intArrayOf(0, 0, 0,  0,  0,  -8),
+                            intArrayOf(0, 0, 0,  0,  -6,  5),
+                            intArrayOf(0, 0, 0,  0,  -4,  3),
+                            intArrayOf(0, 0, 0, -12, -2,  1),
+                            intArrayOf(0, 0, 0,  0,  11, -10),
+                            intArrayOf(0, 0, 0,  0,  13,  7),
+                        ),
+                )
+
+            board = board.dropLockedToken(1)
+
+            val minimax = MiniMaxV1Profile()
+            minimax.lastMovesValue5(
+                board = board,
+                x = 1,
+                y = 4,
+                forSide = -1,
+            ) shouldBe HEURESTIC_WIN
+        }
         test("MiniMax #1") {
             var board =
                 Board(

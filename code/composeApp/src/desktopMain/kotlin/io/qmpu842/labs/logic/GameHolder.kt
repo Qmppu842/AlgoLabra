@@ -73,7 +73,7 @@ data class GameHolder(
     fun whoisWinner(): Int? {
         if (!hasGameStopped()) return null
         if ((!board.isLastPlayWinning() && board.isAtMaxSize())) return 0
-        return board.getOnTurnToken().sign
+        return -board.getOnTurnToken().sign
     }
 
     /**

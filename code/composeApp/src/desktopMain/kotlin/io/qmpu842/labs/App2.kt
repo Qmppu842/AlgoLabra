@@ -178,7 +178,7 @@ private fun WinnerDisplay(gameHolder: GameHolder) {
             "No winner, yet..."
         } else if (winner == 0) {
             "It is a draw, now draw your own tie"
-        } else if (winner.sign == -1) {
+        } else if (winner.sign == 1) {
             "Winner is Player A, The Red One! The ${gameHolder.playerA.name}"
         } else {
             "Winner is Player B, The Yellow One! The ${gameHolder.playerB.name}"

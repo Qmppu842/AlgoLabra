@@ -161,7 +161,41 @@ class GameHolderTest :
             gameHolder.playerOnTurn() shouldBeSameInstanceAs playerA
         }
 
-        test("whoisWinner") { }
+        test("whoisWinner") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, -6, -4, -2),
+                            intArrayOf(0, 0, 0, 5, 3, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            val playerA = RandomProfile()
+            val playerB = RandomProfile()
+            var gameHolder =
+                GameHolder(
+                    board=board,
+                    playerA = playerA,
+                    playerB = playerB,
+                    bc =
+                        BoardConfig(
+                            width = 7,
+                            height = 6,
+                            neededForWin = 4,
+                        ),
+                )
+
+            gameHolder = gameHolder.dropTokenLimited(3)
+
+            gameHolder.hasGameStopped() shouldBe true
+            gameHolder.whoisWinner() shouldBe 1
+        }
 
         test("whoisWinnerText") { }
 

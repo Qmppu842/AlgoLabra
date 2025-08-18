@@ -1,11 +1,11 @@
 package io.qmpu842.labs.logic.profiles
 
-import io.qmpu842.labs.helpers.BLOCK_WIN
 import io.qmpu842.labs.helpers.HEURESTIC_WIN
 import io.qmpu842.labs.helpers.MINIMAX_LOSE
 import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
+import io.qmpu842.labs.otherSide
 import kotlin.math.*
 
 class MiniMaxV1Profile(
@@ -195,243 +195,21 @@ class MiniMaxV1Profile(
         return true
     }
 
-    fun lastMovesValue51(
+    /**
+     * current one
+     */
+    fun lastMovesValue53(
         board: Board,
         x: Int,
         y: Int,
         forSide: Int,
         neededForWin: Int = 4,
     ): Int {
-        var counter = 0
-
-//        for (way in Way.entries) {
-        for (way in Way.half) {
-            var vali = 0
-            val result: Int =
-                board.checkLine(
-                    x = x,
-                    y = y,
-                    sign = forSide,
-                    way = way,
-                )
-//            val opposite = way.getOpposite()
-            val opposite = Way.opp[way.ordinal]
-            val result2: Int =
-                board.checkLine(
-                    x = x + opposite.x,
-                    y = y + opposite.y,
-                    sign = forSide,
-                    way = opposite,
-                )
-            val doubleLineOma = result + result2
-
-//            println("doubleLineOma: ${doubleLineOma.summa()}")
-//            val doubleLineAir =
-//                board.doubleLineWithJumpStart(
-//                    current = startingPoint,
-//                    sign = 0,
-//                    way = way,
-//                )
-// //            println("doubleLineAir: ${doubleLineAir.summa()}")
-//            val doubleLineVihu =
-//                board.doubleLineNoJumpStart(
-//                    current = startingPoint,
-//                    sign = -forSide,
-//                    way = way,
-//                )
-
-            val resultV: Int =
-                board.checkLine(
-                    x = x,
-                    y = y,
-                    sign = -forSide,
-                    way = way,
-                )
-            val resultV2: Int =
-                board.checkLine(
-                    x = x + opposite.x,
-                    y = y + opposite.y,
-                    sign = -forSide,
-                    way = opposite,
-                )
-            val doubleLineVihu2 = resultV + resultV2
-//            println("doubleLineVihu: ${doubleLineVihu.summa()}")
-            if (doubleLineOma >= neededForWin) {
-                vali = HEURESTIC_WIN
-//                counter = Int.MAX_VALUE
-//            } else if (doubleLineVihu.summa() >= neededForWin) {
-//                    counter = HEURESTIC_LOSE
-//                counter = Int.MIN_VALUE
-            } else if (doubleLineVihu2 >= neededForWin - 1) {
-                vali = BLOCK_WIN
-            }
-
-            if (abs(vali) > counter) {
-                counter = vali
-            }
-        }
-        return counter
-    }
-
-    fun lastMovesValue52(
-        board: Board,
-        x: Int,
-        y: Int,
-        forSide: Int,
-        neededForWin: Int = 4,
-    ): Int {
-        var counter = 0
-        val mappe = hashMapOf<Int, Int>()
-        println("x : $x")
-        println("y : $y")
-        var combo = 0
-        for (way in Way.half) {
-            val aaaaa =
-                checkDoubleLine(
-                    board = board,
-                    x = x,
-                    y = y,
-                    forSide = forSide,
-                    way = way,
-                )
-            println("the way: $way")
-            println("Aaaa ${aaaaa.contentDeepToString()}")
-//            mappe[aaaaa[0]] = mappe.getOrDefault(aaaaa[0], 0) + 1
-
-            val oma = aaaaa[0] * aaaaa[0] * aaaaa[0] * 1000
-            mappe[oma] = mappe.getOrDefault(oma, 0) + 1
-
-            val air = aaaaa[1] * aaaaa[1] * 100
-            mappe[air] = mappe.getOrDefault(air, 0) + 1
-
-            val vihu = aaaaa[2] * -1
-            mappe[vihu] = mappe.getOrDefault(vihu, 0) + 1
-        }
-
-        println("mappe: $mappe")
-
-        return counter
-    }
-
-    fun checkDoubleLine(
-        board: Board,
-        x: Int,
-        y: Int,
-        forSide: Int,
-        way: Way,
-    ): Array<Int> {
-        /**
-         * Oma, ilma, vihu, oma + ilma, vihu + ilma
-         */
-        val resres = arrayOf(0, 0, 0, 0, 0)
-        val opposite = Way.opp[way.ordinal]
-
-//        omat linjat
-        val resOma1: Int =
-            board.checkLine(
-                x = x,
-                y = y,
-                sign = forSide,
-                way = way,
-            )
-        val resOma2: Int =
-            board.checkLine(
-                x = x + opposite.x,
-                y = y + opposite.y,
-                sign = forSide,
-                way = opposite,
-            )
-//        vihu linjat
-        val resVih1: Int =
-            board.checkLine(
-                x = x,
-                y = y,
-                sign = -forSide,
-                way = way,
-            )
-        val resVih2: Int =
-            board.checkLine(
-                x = x + opposite.x,
-                y = y + opposite.y,
-                sign = -forSide,
-                way = opposite,
-            )
-//        ilma linjat
-        val resAir1: Int =
-            board.checkLine(
-                x = x,
-                y = y,
-                sign = 0,
-                way = way,
-            )
-        val resAir2: Int =
-            board.checkLine(
-                x = x + opposite.x,
-                y = y + opposite.y,
-                sign = 0,
-                way = opposite,
-            )
-
-//        oma trap
-        val resOmaTrap1: Int =
-            board.checkLine(
-                x = x + (way.x * (resOma1 + 0)),
-                y = y + (way.y * (resOma1 + 1)),
-                sign = 0,
-                way = way,
-            )
-        val resOmaTrap2: Int =
-            board.checkLine(
-                x = x + (opposite.x * (resOma2 + 1)),
-                y = y + (opposite.y * (resOma2 + 1)),
-                sign = 0,
-                way = opposite,
-            )
-//        val resOmaTrap1 = if (board.board[x + (way.x * (resOma1 + 0))][y + (way.y * (resOma1 + 1))] == 0) 1 else 0
-//        val resOmaTrap2 =
-//            if (board.board[x + (opposite.x * (resOma2 + 1))][y + (opposite.y * (resOma2 + 1))] == 0) 1 else 0
-
-//        vihu trap
-        val resVihuTrap1: Int =
-            board.checkLine(
-                x = x + (way.x * (resVih1 + 1)),
-                y = y + (way.y * (resVih1 + 1)),
-                sign = 0,
-                way = way,
-            )
-        val resVihuTrap2: Int =
-            board.checkLine(
-                x = x + (opposite.x * (resVih2 + 1)),
-                y = y + (opposite.y * (resVih2 + 1)),
-                sign = 0,
-                way = opposite,
-            )
-//        val resVihuTrap1 = if (board.board[x + (way.x * (resVih1 + 1))][y + (way.y * (resVih1 + 1))] == 0) 1 else 0
-//        val resVihuTrap2 = if (board.board[x + (opposite.x * (resVih2 + 1))][y + (opposite.y * (resVih2 + 1))] == 0) 1 else 0
-
-        resres[0] = resOma1 + resOma2
-        resres[1] = resAir1 + resAir2
-        resres[2] = resVih1 + resVih2
-        resres[3] = resOmaTrap1 + resOmaTrap2
-        resres[4] = resVihuTrap1 + resVihuTrap2
-        return resres
-    }
-
-    fun lastMovesValue5(
-        board: Board,
-        x: Int,
-        y: Int,
-        forSide: Int,
-        neededForWin: Int = 4,
-    ): Int {
-//        println("wad?")
-
         val w = board.boardConfig.width
         val h = board.boardConfig.height
         val size = sqrt(0.0 + w * w + h * h).toInt() + 2
         val omatLinjat = IntArray(size)
         val vihuLinjat = IntArray(size)
-//        println("adsad")
 
         for (way in Way.half) {
             val opposite = Way.opp[way.ordinal]
@@ -452,7 +230,6 @@ class MiniMaxV1Profile(
                 )
             val omaSum = resOma1 + resOma2
             omatLinjat[omaSum] += 1
-//            println("kalaa")
 
             //        vihu linjat
             val resVih1: Int =
@@ -471,7 +248,6 @@ class MiniMaxV1Profile(
                 )
             val vihuSum = resVih1 + resVih2
             vihuLinjat[vihuSum] += 1
-//            println("vehnaa")
         }
 //        println("omatLinjat ${omatLinjat.toList()}")
 //        println("vihuLinjat ${vihuLinjat.toList()}")
@@ -481,18 +257,298 @@ class MiniMaxV1Profile(
         for (i in size - 1 downTo 0) {
             val oma = omatLinjat[i]
             omaCounter += oma * (10f.pow(i)).toInt()
-//            println("maitoa")
             val vihu = vihuLinjat[i]
             vihuCounter += -(vihu * (10f.pow(i)).toInt())
         }
-//        println("omacounter $omaCounter")
-//        println("vihucounter $vihuCounter")
-//        println("jäde")
-        if (abs(omaCounter) >= abs(vihuCounter)) {
-            return omaCounter
+        return if (abs(omaCounter) >= abs(vihuCounter)) {
+            omaCounter
         } else {
-            return vihuCounter
+            vihuCounter
         }
-//        return omaCounter
+    }
+
+    fun lastMovesValue54(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+        var holder = 0
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
+//            println("way: $way")
+            val resOma =
+                checkLine(
+                    board2 = board,
+                    x = x + way.x,
+                    y = y + way.y,
+                    sign = forSide,
+                    way = way,
+                )
+
+            val resOmaback =
+                checkLine(
+                    board2 = board,
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = forSide,
+                    way = opposite,
+                )
+//            val combo = resOmaback.reversed() + board.board[x][y] + resOma
+            val combo = resOmaback.reversed() + "+" + resOma
+//            if (combo.size < neededForWin) continue
+            if (combo.length < neededForWin) continue
+//            println("combo: $combo")
+            val ggfgf = SoBaaaad.getter(combo)
+            if (abs(ggfgf) > holder) {
+                holder = ggfgf
+            }
+        }
+        return holder
+    }
+
+    fun lastMovesValue5(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+        var holder = 0
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
+//            println("way: $way")
+            val resOma =
+                checkLine(
+                    board2 = board,
+                    x = x + way.x,
+                    y = y + way.y,
+                    sign = forSide,
+                    way = way,
+                )
+
+            val resOmaback =
+                checkLine(
+                    board2 = board,
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = forSide,
+                    way = opposite,
+                )
+//            val combo = resOmaback.reversed() + board.board[x][y] + resOma
+            val combo = resOmaback.reversed() + "+" + resOma
+//            if (combo.size < neededForWin) continue
+            if (combo.length < neededForWin) continue
+
+            val tier0 = listOf("++++", "++o+") // voitto
+            val tier1 = listOf("o+++o") // varma voitto, 3 ply
+            val tier2 =
+                listOf(
+                    "++¤+",
+                    "+++¤",
+                    "++¤o",
+                    "++o¤",
+                    "+¤+o",
+                    "+¤o+",
+                    "+o+¤",
+                    "¤++o",
+                    "o++oo",
+                ) // varmaish voitto, ~+3 ply
+            val tier3 =
+                listOf(
+                    "++¤¤",
+                    "+¤+¤",
+                    "+¤¤+",
+                    "¤++¤",
+                    "+¤¤o+",
+                    "+¤o¤+",
+                ) // meh
+
+            var value = 0
+
+            tier3.forEach { t ->
+                if (combo.contains(t)) {
+                    value = HEURESTIC_WIN / 3
+                }else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN/ 3
+                }
+            }
+            tier2.forEach { t ->
+                if (combo.contains(t)) {
+                    value = HEURESTIC_WIN / 2
+                }else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN/ 2
+                }
+            }
+
+            tier1.forEach { t ->
+                if (combo.contains(t)) {
+                    value = HEURESTIC_WIN - 10
+                }else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN + 10
+                }
+            }
+            tier0.forEach { t ->
+                if (combo.contains(t)) {
+                    value = HEURESTIC_WIN
+                } else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN
+                }
+            }
+
+            if (abs(value) > holder) {
+                holder = value
+            }
+
+//            val tier0 = listOf("++++")
+//            val tierNeg0 = listOf("----")
+//            val tier1 = listOf("o+++o")
+//
+//            val tier2 = listOf("+++o","++o+","+o++","o+++",)
+//            val tierNeg1 = listOf("---o","--o-","-o--","o---",)
+//
+//            val tier3 = listOf("o++o","++o+","+o++","o+++",)
+
+//            println("combo: $combo")
+//            val ggfgf = SoBaaaad.getter(combo)
+//            if (abs(ggfgf) > holder){
+//                holder = ggfgf
+//            }
+        }
+        return holder
+    }
+
+    /**
+     * Counts how many of each thing in the line
+     * @param x todo
+     * @param y todo
+     * @param sign what things to count -1/+1/0
+     * @param way what way the line should go
+     *
+     * @return the amount of sign countered before other sign broke the chain
+     */
+    fun checkLine(
+        board2: Board,
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+    ): String {
+        val board = board2.board
+        var x1 = x
+        var y1 = y
+        val xMax = board.size
+        var thinnge = ""
+        while (x1 in 0 until xMax) {
+            val row = board[x1]
+            if (y1 !in 0..<row.size) break
+            val mm = row[y1].sign * sign
+//            println("row[y1]: ${row[y1]}")
+//            println("mm: $mm")
+            if (mm == 1) {
+                thinnge += "+"
+            } else if (mm == -1) {
+                thinnge += "-"
+            } else {
+                if (way != Way.Down && way != Way.Up) {
+                    var y2 = y1
+                    var merkki = row[y2]
+                    var counter = -1
+                    while (merkki == 0 && y2 < row.size) {
+                        merkki = row[y2]
+                        counter += 1
+                        y2 += 1
+                    }
+                    if (counter > 1) {
+                        thinnge += if (counter % 2 == 1) "¤" else "*"
+                    } else {
+                        thinnge += "o"
+                    }
+                } else {
+                    thinnge += "o"
+                }
+            }
+            x1 += way.x
+            y1 += way.y
+        }
+        return thinnge
+    }
+}
+
+object SoBaaaad {
+    private val mappe = HashMap<String, Int>(20)
+
+    init {
+        mappe["oo++++o"] = HEURESTIC_WIN
+        mappe[""] = 0
+        mappe[""] = 0
+        mappe[""] = 0
+        mappe[""] = 0
+        mappe[""] = 0
+        mappe[""] = 0
+        mappe[""] = 0
+        mappe[""] = 0
+        mappe[""] = 0
+    }
+
+    fun getter(key: String): Int {
+        var result: Int?
+        result = mappe.getOrDefault(key, null)
+
+        if (result == null) {
+            result = mappe.getOrDefault(mirror(key), null)
+        }
+        if (result == null) {
+            result = mappe.getOrDefault(otherSide(key), null)
+            if (result != null) {
+                result = -result
+            }
+        }
+        if (result == null) {
+            result = mappe.getOrDefault(otherSide(mirror(key)), null)
+            if (result != null) {
+                result = -result
+            }
+        }
+        println(key)
+        println("needed this: $key, got $result")
+
+        if (result == null) {
+            result = 0
+        }
+
+        return result
+    }
+
+    fun mirror(key: String): String = key.reversed()
+
+    fun otherSide(key: String): String {
+        var result = ""
+        key.forEach {
+            result +=
+                when (it) {
+                    '+' -> {
+                        '-'
+                    }
+
+                    '-' -> {
+                        '+'
+                    }
+
+                    '¤' -> {
+                        '*'
+                    }
+
+                    '*' -> {
+                        '¤'
+                    }
+
+                    else -> {
+                        it
+                    }
+                }
+        }
+        return result
     }
 }
