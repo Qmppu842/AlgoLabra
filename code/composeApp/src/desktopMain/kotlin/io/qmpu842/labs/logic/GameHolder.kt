@@ -105,7 +105,7 @@ data class GameHolder(
         } else if (winner == 0) {
             playerA.firstPlayStats = playerA.firstPlayStats.draw()
             playerB.secondPlayStats = playerB.secondPlayStats.draw()
-        } else if (winner.sign == -1) {
+        } else if (winner.sign == 1) {
             playerA.firstPlayStats = playerA.firstPlayStats.win()
             playerB.secondPlayStats = playerB.secondPlayStats.lose()
         } else {
