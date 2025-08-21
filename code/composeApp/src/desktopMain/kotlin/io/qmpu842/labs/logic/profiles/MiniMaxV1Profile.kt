@@ -308,7 +308,7 @@ class MiniMaxV1Profile(
         return holder
     }
 
-    fun lastMovesValue5(
+    fun lastMovesValue55(
         board: Board,
         x: Int,
         y: Int,
@@ -370,22 +370,22 @@ class MiniMaxV1Profile(
             tier3.forEach { t ->
                 if (combo.contains(t)) {
                     value = HEURESTIC_WIN / 3
-                }else if (combo.contains(otherSide(t))) {
-                    value = -HEURESTIC_WIN/ 3
+                } else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN / 3
                 }
             }
             tier2.forEach { t ->
                 if (combo.contains(t)) {
                     value = HEURESTIC_WIN / 2
-                }else if (combo.contains(otherSide(t))) {
-                    value = -HEURESTIC_WIN/ 2
+                } else if (combo.contains(otherSide(t))) {
+                    value = -HEURESTIC_WIN / 2
                 }
             }
 
             tier1.forEach { t ->
                 if (combo.contains(t)) {
                     value = HEURESTIC_WIN - 10
-                }else if (combo.contains(otherSide(t))) {
+                } else if (combo.contains(otherSide(t))) {
                     value = -HEURESTIC_WIN + 10
                 }
             }
@@ -417,6 +417,118 @@ class MiniMaxV1Profile(
 //            }
         }
         return holder
+    }
+
+    fun lastMovesValue5(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+        val w = board.boardConfig.width
+        val h = board.boardConfig.height
+        val size = sqrt(0.0 + w * w + h * h).toInt() + 2
+        val omatLinjat = IntArray(size)
+        val vihuLinjat = IntArray(size)
+        val ilmaLinjat = IntArray(size)
+        val ilmaLinjatOpp = IntArray(size)
+
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
+//            omat linjat
+            val resOma1: Int =
+                board.checkLine(
+                    x = x,
+                    y = y,
+                    sign = forSide,
+                    way = way,
+                )
+            val resOma2: Int =
+                board.checkLine(
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = forSide,
+                    way = opposite,
+                )
+            val omaSum = resOma1 + resOma2
+            omatLinjat[omaSum] += 1
+
+            //        vihu linjat
+            val resVih1: Int =
+                board.checkLine(
+                    x = x,
+                    y = y,
+                    sign = -forSide,
+                    way = way,
+                )
+            val resVih2: Int =
+                board.checkLine(
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = -forSide,
+                    way = opposite,
+                )
+            val vihuSum = resVih1 + resVih2
+            vihuLinjat[vihuSum] += 1
+
+            if (omaSum < 1) continue
+//            ilma linjat
+            val resAir1: Int =
+//                0
+                board.checkLine(
+                    x = x + (resOma1 * way.x),
+                    y = y + (resOma1 * way.y),
+                    sign = 0,
+                    way = way,
+                )
+            if (resAir1 > 0) {
+                ilmaLinjat[omaSum] += 1
+            }
+            val resAir2: Int =
+//                0
+                board.checkLine(
+                    x = x + opposite.x + (resOma2 * opposite.x),
+                    y = y + opposite.y + (resOma2 * opposite.y),
+                    sign = 0,
+                    way = opposite,
+                )
+//            if (resAir1 > 0 && resAir2 > 0) {
+//                ilmaLinjat[omaSum + 1] += 1
+//            }
+//            val airSum = resAir1 + resAir2
+//            ilmaLinjat[omaSum] += 1
+            if (resAir2 > 0) {
+                ilmaLinjatOpp[omaSum] += 1
+            }
+        }
+//        println("omatLinjat ${omatLinjat.toList()}")
+//        println("vihuLinjat ${vihuLinjat.toList()}")
+//        println("ilmaLinjat ${ilmaLinjat.toList()}")
+//        println("ilmaLinOpp ${ilmaLinjatOpp.toList()}")
+//        println("pullaa")
+        var omaCounter = 0
+        var vihuCounter = 0
+        for (i in size - 1 downTo 0) {
+            val ekaIlma = ilmaLinjat[i]
+            val tokaIlma = ilmaLinjatOpp[i]
+            val oma = omatLinjat[i]
+//            omaCounter += (oma + ekaIlma + tokaIlma) * (10f.pow(i)).toInt()
+            if (ekaIlma> 0 && tokaIlma > 0){
+                omaCounter += (oma * (10f.pow(i)).toInt())*2
+            }else{
+                omaCounter += oma * (10f.pow(i)).toInt()
+            }
+//            omaCounter += oma * (10f.pow(i)).toInt()
+            val vihu = vihuLinjat[i]
+            vihuCounter += -(vihu * (10f.pow(i)).toInt())
+//            vihuCounter += -((vihu + ekaIlma + tokaIlma) * (10f.pow(i)).toInt())
+        }
+        return if (abs(omaCounter) >= abs(vihuCounter)) {
+            omaCounter
+        } else {
+            vihuCounter
+        }
     }
 
     /**

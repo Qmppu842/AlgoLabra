@@ -218,6 +218,31 @@ class MiniMaxV1ProfileTest :
                 forSide = 1,
             ) shouldBe HEURESTIC_WIN
         }
+
+        test("lastMovesValue5 with gap win #8-5") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0,  0, 5),
+                            intArrayOf(0, 0, 0, 0,  0, -6),
+                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0, -4, 3),
+                            intArrayOf(0, 0, 0, 0, -2, 1),
+                        ),
+                )
+
+            board = board.dropLockedToken(2)
+
+            val minimax = MiniMaxV1Profile()
+            minimax.lastMovesValue5(
+                board = board,
+                x = 2,
+                y = 5,
+                forSide = 1,
+            ) shouldBe 0
+        }
         test("lastMovesValue5 #9") {
             var board =
                 Board(
