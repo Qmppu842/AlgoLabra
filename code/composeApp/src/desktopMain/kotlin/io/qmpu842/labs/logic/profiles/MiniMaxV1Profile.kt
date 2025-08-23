@@ -3,6 +3,7 @@ package io.qmpu842.labs.logic.profiles
 import io.qmpu842.labs.helpers.HEURESTIC_WIN
 import io.qmpu842.labs.helpers.MINIMAX_LOSE
 import io.qmpu842.labs.helpers.MINIMAX_WIN
+import io.qmpu842.labs.helpers.TRILLION
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
 import io.qmpu842.labs.otherSide
@@ -10,7 +11,7 @@ import kotlin.math.*
 
 class MiniMaxV1Profile(
     var depth: Int = 10,
-    override var timeLimit: Long = 100L,
+    override var timeLimit: Long = TRILLION,
 ) : OpponentProfile() {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
 
@@ -49,8 +50,8 @@ class MiniMaxV1Profile(
             )
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startingTime
-        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
-        println("The Minimax valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
+//        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
+//        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         return minimaxResult.second
     }
 

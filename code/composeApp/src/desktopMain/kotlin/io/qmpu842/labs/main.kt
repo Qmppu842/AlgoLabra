@@ -7,8 +7,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.logic.GameHolder
+import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
+import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1OldProfile
 import kotlinx.coroutines.delay
 
 fun main1() =
@@ -29,10 +30,12 @@ fun main1() =
     }
 
 fun main() {
-    GameHolder.runWithOutUi(
-        100_000,
-        playerA = ProfileHolder.rand,
-        playerB = ProfileHolder.minimaxDepth6TimeInf,
+    GameHolder.runWithOutUiSplit(
+        10,
+        playerA = MiniMaxV1Profile(
+            depth = 10,
+        ),
+        playerB = MiniMaxV1OldProfile(),
     )
 }
 

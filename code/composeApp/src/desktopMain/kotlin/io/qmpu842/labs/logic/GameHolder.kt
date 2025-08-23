@@ -1,6 +1,7 @@
 package io.qmpu842.labs.logic
 
 import io.qmpu842.labs.helpers.BoardConfig
+import io.qmpu842.labs.helpers.Stats
 import io.qmpu842.labs.helpers.lapTime
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.sign
@@ -19,6 +20,48 @@ data class GameHolder(
 
     companion object {
         /**
+         * Same as runWithOutUi but runs both players as first and second player
+         */
+        fun runWithOutUiSplit(
+            amount: Int,
+            playerA: OpponentProfile,
+            playerB: OpponentProfile,
+        ) {
+            val ekaFirstStats = runWithOutUi(amount, playerA, playerB)
+            println("----------------------")
+            println("And now the other way:")
+            val tokaFirstStats = runWithOutUi(amount, playerB, playerA)
+
+            println("----------------------")
+            println("End stats:")
+            printer(playerA,  playerB, ekaFirstStats, "first")
+            println("----------------------")
+            printer(playerB,  playerA, tokaFirstStats, "second")
+
+
+            println("----------------------")
+            println("End stats combined:")
+            println("Player A, ${playerA.name}, wins: ${ekaFirstStats.wins + tokaFirstStats.losses}")
+            println("Player B, ${playerB.name}, wins: ${tokaFirstStats.wins + ekaFirstStats.losses}")
+            println("Draws: ${ekaFirstStats.draws + tokaFirstStats.draws}")
+            println("All games total: ${ekaFirstStats.total() + tokaFirstStats.total()}")
+
+        }
+
+        private fun printer(
+            firstPlayer: OpponentProfile,
+            secondPlayer: OpponentProfile,
+            stats: Stats,
+            text: String
+        ) {
+            println("Stats from $text game:")
+            println("First player, ${firstPlayer.name}, wins: ${stats.wins}")
+            println("Second player, ${secondPlayer.name}, wins: ${stats.losses}")
+            println("Draws: ${stats.draws}")
+            println("Total games: ${stats.total()}")
+        }
+
+        /**
          * Runs
          * @param amount of games and prints the wins and time it took to do so.
          * @param playerA and
@@ -28,7 +71,7 @@ data class GameHolder(
             amount: Int,
             playerA: OpponentProfile,
             playerB: OpponentProfile,
-        ) {
+        ): Stats {
             lapTime()
             var gameHolder =
                 GameHolder(
@@ -49,10 +92,11 @@ data class GameHolder(
             val endTime = System.currentTimeMillis()
             println("Ended, took about ${endTime - startTime} ms")
             println("Stats:")
-            println("Red wins: ${gameHolder.playerA.firstPlayStats.wins}")
-            println("Yellow wins: ${gameHolder.playerB.secondPlayStats.wins}")
+            println("Red, ${gameHolder.playerA.name}, wins: ${gameHolder.playerA.firstPlayStats.wins}")
+            println("Yellow, ${gameHolder.playerB.name}, wins: ${gameHolder.playerB.secondPlayStats.wins}")
             println("Draws: ${gameHolder.playerA.firstPlayStats.draws}")
             println("Total games: $gameCounter")
+            return gameHolder.playerA.firstPlayStats
         }
     }
 

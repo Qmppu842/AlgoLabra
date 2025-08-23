@@ -10,4 +10,6 @@ data class Stats(
     fun draw(): Stats = this.copy(draws = draws + 1)
 
     fun lose(): Stats = this.copy(losses = losses + 1)
+
+    fun total() = wins+draws+losses
 }
