@@ -61,7 +61,6 @@ class MiniMaxV1OldProfile(
         lastY: Int = 0,
         token: Int = 1,
     ): Pair<Int, Int> {
-//        println("nyt syvyydessä: $depth")
         val terminal =
             board.doesPlaceHaveWinning(
                 x = lastX,
@@ -82,7 +81,6 @@ class MiniMaxV1OldProfile(
         }
 
         val time = System.currentTimeMillis()
-//        val y = lastY // board.getWellSpace(lastX)
 
         if (depth == 0 || time >= currentMaxTime) {
             return Pair(
@@ -95,13 +93,7 @@ class MiniMaxV1OldProfile(
                 ),
                 lastX,
             )
-
-//            return Pair(
-//                simpleEval(board, forLastSide * if (maximizingPlayer) -1 else 1),
-//                lastX,
-//            )
         }
-//        val moves = board.getLegalMovesFromMiddleOut()
         val moves = board.getLegalsMiddleOutSeq()
         var alpha2 = alpha
         var beta2 = beta
@@ -111,7 +103,6 @@ class MiniMaxV1OldProfile(
             var bestMove = 0
             for (move in moves) {
                 if (move == -1) break
-//                val things = board.dropLockedTokenWithOutHistory(move)
                 val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
                     minimax2(
@@ -134,8 +125,6 @@ class MiniMaxV1OldProfile(
                     value = minied.first
                 }
 
-//                val alpha2 = max(alpha, value)
-//                if (beta <= alpha2) break
                 alpha2 = max(alpha2, value)
                 if (beta2 <= alpha2) break
             }
@@ -145,7 +134,6 @@ class MiniMaxV1OldProfile(
             var bestMove = 0
             for (move in moves) {
                 if (move == -1) break
-//                val things = board.dropLockedTokenWithOutHistory(move)
                 val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
                     minimax2(
@@ -195,15 +183,14 @@ class MiniMaxV1OldProfile(
         forSide: Int,
         neededForWin: Int = 4,
     ): Int {
-//        return 0;
         val w = board.boardConfig.width
         val h = board.boardConfig.height
         val size = sqrt(0.0 + w * w + h * h).toInt() + 2
         val omatLinjat = IntArray(size)
         val vihuLinjat = IntArray(size)
 
-        for (way in Way.Companion.half) {
-            val opposite = Way.Companion.opp[way.ordinal]
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
 //            omat linjat
             val resOma1: Int =
                 board.checkLine(
