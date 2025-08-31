@@ -33,9 +33,10 @@ fun main() {
     GameHolder.runWithOutUiSplit(
         10,
         playerA = MiniMaxV1Profile(
-            depth = 10,
+            depth = 6,
         ),
-        playerB = MiniMaxV1OldProfile(),
+        playerB = MiniMaxV1OldProfile(depth = 2),
+//        playerB = ProfileHolder.rand
     )
 }
 

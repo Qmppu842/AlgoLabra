@@ -4,6 +4,7 @@ import io.qmpu842.labs.helpers.BoardConfig
 import io.qmpu842.labs.helpers.Stats
 import io.qmpu842.labs.helpers.lapTime
 import io.qmpu842.labs.logic.profiles.OpponentProfile
+import kotlin.math.abs
 import kotlin.math.sign
 
 data class GameHolder(
@@ -27,32 +28,38 @@ data class GameHolder(
             playerA: OpponentProfile,
             playerB: OpponentProfile,
         ) {
-            val ekaFirstStats = runWithOutUi(amount, playerA, playerB)
+            val (ekaFirstStats, ekaSecondStats) = runWithOutUi(amount, playerA, playerB)
             println("----------------------")
             println("And now the other way:")
-            val tokaFirstStats = runWithOutUi(amount, playerB, playerA)
+            val (tokaFirstStats, tokaSecondStats) = runWithOutUi(amount, playerB, playerA)
 
             println("----------------------")
             println("End stats:")
-            printer(playerA,  playerB, ekaFirstStats, "first")
+            printer(playerA, playerB, ekaFirstStats, "first")
             println("----------------------")
-            printer(playerB,  playerA, tokaFirstStats, "second")
-
+            printer(playerB, playerA, tokaFirstStats, "second")
 
             println("----------------------")
             println("End stats combined:")
-            println("Player A, ${playerA.name}, wins: ${ekaFirstStats.wins + tokaFirstStats.losses}")
-            println("Player B, ${playerB.name}, wins: ${tokaFirstStats.wins + ekaFirstStats.losses}")
+            println(
+                "Player A, ${playerA.name}, wins: ${ekaFirstStats.wins + tokaSecondStats.wins}," +
+                    " score: ${ekaFirstStats.cumulativeScore + tokaSecondStats.cumulativeScore}," +
+                    " avg score: ${(ekaFirstStats.cumulativeScore + tokaSecondStats.cumulativeScore) / (ekaFirstStats.total() + tokaSecondStats.total())}",
+            )
+            println(
+                "Player B, ${playerB.name}, wins: ${ekaSecondStats.wins + tokaFirstStats.wins}," +
+                    " score: ${ekaSecondStats.cumulativeScore + tokaFirstStats.cumulativeScore}," +
+                    " avg score: ${(ekaSecondStats.cumulativeScore + tokaFirstStats.cumulativeScore) / (ekaSecondStats.total() + tokaFirstStats.total())}",
+            )
             println("Draws: ${ekaFirstStats.draws + tokaFirstStats.draws}")
             println("All games total: ${ekaFirstStats.total() + tokaFirstStats.total()}")
-
         }
 
         private fun printer(
             firstPlayer: OpponentProfile,
             secondPlayer: OpponentProfile,
             stats: Stats,
-            text: String
+            text: String,
         ) {
             println("Stats from $text game:")
             println("First player, ${firstPlayer.name}, wins: ${stats.wins}")
@@ -71,7 +78,7 @@ data class GameHolder(
             amount: Int,
             playerA: OpponentProfile,
             playerB: OpponentProfile,
-        ): Stats {
+        ): Pair<Stats, Stats> {
             lapTime()
             var gameHolder =
                 GameHolder(
@@ -96,7 +103,7 @@ data class GameHolder(
             println("Yellow, ${gameHolder.playerB.name}, wins: ${gameHolder.playerB.secondPlayStats.wins}")
             println("Draws: ${gameHolder.playerA.firstPlayStats.draws}")
             println("Total games: $gameCounter")
-            return gameHolder.playerA.firstPlayStats
+            return Pair(gameHolder.playerA.firstPlayStats, gameHolder.playerB.secondPlayStats)
         }
     }
 
@@ -143,19 +150,33 @@ data class GameHolder(
     fun updateWinners() {
         val winner = whoisWinner()
 
+        println("turnToken:  ${board.getOnTurnToken()}")
+        println("About to add this: ${1 + board.maxSize() - abs(board.getOnTurnToken())}")
+
         if (winner == null) {
             println("Game is still going.")
             return
         } else if (winner == 0) {
             playerA.firstPlayStats = playerA.firstPlayStats.draw()
             playerB.secondPlayStats = playerB.secondPlayStats.draw()
+
+//            playerB.secondPlayStats.cumulate(1 + board.maxSize() - abs(board.getOnTurnToken()))
         } else if (winner.sign == 1) {
             playerA.firstPlayStats = playerA.firstPlayStats.win()
             playerB.secondPlayStats = playerB.secondPlayStats.lose()
+
+            playerA.firstPlayStats = playerA.firstPlayStats.cumulate(1 + board.maxSize() - abs(board.getOnTurnToken()))
+//            playerB.secondPlayStats = playerB.secondPlayStats.cumulate(-abs(board.getOnTurnToken()))
         } else {
             playerA.firstPlayStats = playerA.firstPlayStats.lose()
             playerB.secondPlayStats = playerB.secondPlayStats.win()
+
+//            playerA.firstPlayStats = playerA.firstPlayStats.cumulate(-abs(board.getOnTurnToken()))
+            playerB.secondPlayStats =
+                playerB.secondPlayStats.cumulate(1 + board.maxSize() - abs(board.getOnTurnToken()))
         }
+        println("PlayerA: ${playerA.firstPlayStats.cumulativeScore}")
+        println("PlayerB: ${playerB.secondPlayStats.cumulativeScore}")
     }
 
     fun updateWinnersAndClearBoard(): GameHolder {
