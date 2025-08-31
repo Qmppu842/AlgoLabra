@@ -8,8 +8,8 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class MiniMaxV1NoHeuresticProfile(
-    var depth: Int = 10,
+class MiniMaxV1NoHeuristicProfile(
+    override var depth: Int = 10,
     override var timeLimit: Long = 100L,
 ) : OpponentProfile() {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())

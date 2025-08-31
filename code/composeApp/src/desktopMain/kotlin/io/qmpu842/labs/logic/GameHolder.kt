@@ -182,8 +182,8 @@ data class GameHolder(
 //            playerB.secondPlayStats = playerB.secondPlayStats.cumulate( abs(board.getOnTurnToken()))
             playerB.secondPlayStats = playerB.secondPlayStats.cumulate(winnerGain)
         }
-        println("PlayerA: ${playerA.firstPlayStats.cumulativeScore}")
-        println("PlayerB: ${playerB.secondPlayStats.cumulativeScore}")
+//        println("PlayerA: ${playerA.firstPlayStats.cumulativeScore}")
+//        println("PlayerB: ${playerB.secondPlayStats.cumulativeScore}")
     }
 
     fun updateWinnersAndClearBoard(): GameHolder {

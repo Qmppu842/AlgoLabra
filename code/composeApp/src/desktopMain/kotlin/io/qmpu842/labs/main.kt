@@ -7,9 +7,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import io.qmpu842.labs.helpers.ProfileHolder
+import io.qmpu842.labs.helpers.TournamentEngine
 import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
+import io.qmpu842.labs.logic.profiles.RandomProfile
+import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1NoHeuristicProfile
+import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1OldProfile
 import kotlinx.coroutines.delay
 
 fun main1() =
@@ -29,17 +32,49 @@ fun main1() =
         }
     }
 
-fun main() {
+fun main2() {
     GameHolder.runWithOutUiSplit(
-        10,
-        playerA = MiniMaxV1Profile(
-            depth = 6,
-        ),
-//        playerB = MiniMaxV1OldProfile(depth = 2),
-        playerB = ProfileHolder.rand
+        100,
+        playerA =
+            MiniMaxV1NoHeuristicProfile(
+                depth = 6,
+            ),
+        //        playerB = MiniMaxV1OldProfile(depth = 2),
+//        playerB = ProfileHolder.rand
+        playerB =
+            MiniMaxV1NoHeuristicProfile(
+                depth = 2,
+            ),
     )
 }
 
-fun main3(){
+fun main() {
+    val competitors =
+        listOf(
+            RandomProfile(),
+
+            MiniMaxV1Profile(depth = 2),
+            MiniMaxV1Profile(depth = 6),
+            MiniMaxV1Profile(depth = 8),
+            MiniMaxV1Profile(depth = 10),
+            
+            MiniMaxV1NoHeuristicProfile(depth = 2),
+            MiniMaxV1NoHeuristicProfile(depth = 6),
+            MiniMaxV1NoHeuristicProfile(depth = 8),
+            MiniMaxV1NoHeuristicProfile(depth = 10),
+
+            MiniMaxV1OldProfile(depth = 2),
+            MiniMaxV1OldProfile(depth = 6),
+            MiniMaxV1OldProfile(depth = 8),
+            MiniMaxV1OldProfile(depth = 10),
+
+        )
+    TournamentEngine.startTheTournament(
+        competitors,
+        amountOfGames = 10,
+    )
+}
+
+fun main3() {
     counter3()
 }

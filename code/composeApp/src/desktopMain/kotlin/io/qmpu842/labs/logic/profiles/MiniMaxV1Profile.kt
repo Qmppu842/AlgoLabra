@@ -10,7 +10,7 @@ import io.qmpu842.labs.otherSide
 import kotlin.math.*
 
 class MiniMaxV1Profile(
-    var depth: Int = 10,
+    override var depth: Int = 10,
     override var timeLimit: Long = TRILLION,
 ) : OpponentProfile() {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())

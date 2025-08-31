@@ -9,7 +9,7 @@ import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.*
 
 class MiniMaxV1OldProfile(
-    var depth: Int = 10,
+    override var depth: Int = 10,
     override var timeLimit: Long = TRILLION,
 ) : OpponentProfile() {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
