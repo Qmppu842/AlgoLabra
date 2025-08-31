@@ -44,12 +44,12 @@ data class GameHolder(
             println(
                 "Player A, ${playerA.name}, wins: ${ekaFirstStats.wins + tokaSecondStats.wins}," +
                     " score: ${ekaFirstStats.cumulativeScore + tokaSecondStats.cumulativeScore}," +
-                    " avg score: ${(ekaFirstStats.cumulativeScore + tokaSecondStats.cumulativeScore) / (ekaFirstStats.total() + tokaSecondStats.total())}",
+                    " avg score: ${0f +(ekaFirstStats.cumulativeScore + tokaSecondStats.cumulativeScore) / (ekaFirstStats.total() + tokaSecondStats.total())}",
             )
             println(
                 "Player B, ${playerB.name}, wins: ${ekaSecondStats.wins + tokaFirstStats.wins}," +
                     " score: ${ekaSecondStats.cumulativeScore + tokaFirstStats.cumulativeScore}," +
-                    " avg score: ${(ekaSecondStats.cumulativeScore + tokaFirstStats.cumulativeScore) / (ekaSecondStats.total() + tokaFirstStats.total())}",
+                    " avg score: ${0f +(ekaSecondStats.cumulativeScore + tokaFirstStats.cumulativeScore) / (ekaSecondStats.total() + tokaFirstStats.total())}",
             )
             println("Draws: ${ekaFirstStats.draws + tokaFirstStats.draws}")
             println("All games total: ${ekaFirstStats.total() + tokaFirstStats.total()}")
@@ -150,8 +150,10 @@ data class GameHolder(
     fun updateWinners() {
         val winner = whoisWinner()
 
-        println("turnToken:  ${board.getOnTurnToken()}")
-        println("About to add this: ${1 + board.maxSize() - abs(board.getOnTurnToken())}")
+//        println("turnToken:  ${board.getOnTurnToken()}")
+//        println("About to add this: ${1 + board.maxSize() - abs(board.getOnTurnToken())}")
+//        println("thing thing: ${1f / abs(board.getOnTurnToken())}")
+        val winnerGain = if(abs(board.getOnTurnToken()) > board.maxSize()) 0f else (board.maxSize() * 10f) / abs(board.getOnTurnToken())
 
         if (winner == null) {
             println("Game is still going.")
@@ -165,15 +167,20 @@ data class GameHolder(
             playerA.firstPlayStats = playerA.firstPlayStats.win()
             playerB.secondPlayStats = playerB.secondPlayStats.lose()
 
-            playerA.firstPlayStats = playerA.firstPlayStats.cumulate(1 + board.maxSize() - abs(board.getOnTurnToken()))
+//            playerA.firstPlayStats = playerA.firstPlayStats.cumulate(1F + board.maxSize() - abs(board.getOnTurnToken()))
+//            playerA.firstPlayStats = playerA.firstPlayStats.cumulate(400f / abs(board.getOnTurnToken()))
 //            playerB.secondPlayStats = playerB.secondPlayStats.cumulate(-abs(board.getOnTurnToken()))
+            playerA.firstPlayStats = playerA.firstPlayStats.cumulate(winnerGain)
         } else {
             playerA.firstPlayStats = playerA.firstPlayStats.lose()
             playerB.secondPlayStats = playerB.secondPlayStats.win()
 
 //            playerA.firstPlayStats = playerA.firstPlayStats.cumulate(-abs(board.getOnTurnToken()))
-            playerB.secondPlayStats =
-                playerB.secondPlayStats.cumulate(1 + board.maxSize() - abs(board.getOnTurnToken()))
+//            playerB.secondPlayStats =
+//                playerB.secondPlayStats.cumulate(1 + board.maxSize() - abs(board.getOnTurnToken()))
+//            playerB.secondPlayStats = playerB.secondPlayStats.cumulate(400f / abs(board.getOnTurnToken()))
+//            playerB.secondPlayStats = playerB.secondPlayStats.cumulate( abs(board.getOnTurnToken()))
+            playerB.secondPlayStats = playerB.secondPlayStats.cumulate(winnerGain)
         }
         println("PlayerA: ${playerA.firstPlayStats.cumulativeScore}")
         println("PlayerB: ${playerB.secondPlayStats.cumulativeScore}")

@@ -4,7 +4,7 @@ data class Stats(
     val wins: Int = 0,
     val draws: Int = 0,
     val losses: Int = 0,
-    val cumulativeScore: Int = 0
+    val cumulativeScore: Float = 0f
 ) {
     fun win(): Stats = this.copy(wins = wins + 1)
 
@@ -14,5 +14,5 @@ data class Stats(
 
     fun total() = wins+draws+losses
 
-    fun cumulate(score: Int): Stats = this.copy(cumulativeScore = cumulativeScore + score)
+    fun cumulate(score: Float): Stats = this.copy(cumulativeScore = cumulativeScore + score)
 }
