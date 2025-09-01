@@ -16,6 +16,7 @@ import io.qmpu842.labs.helpers.Settings
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.SecondHeuristicThing
+import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
 import kotlinx.coroutines.delay
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
@@ -43,7 +44,8 @@ fun TheGame(modifier: Modifier = Modifier) {
         mutableStateOf(
             GameHolder(
                 ProfileHolder.human,
-                ProfileHolder.minimaxDepth1TimeInf,
+//                ProfileHolder.minimaxDepth3TimeInf,
+                MiniMaxV1Profile(depth = 1, timeLimit = 2000),
                 bc =
                     BoardConfig(
                         width = 7,

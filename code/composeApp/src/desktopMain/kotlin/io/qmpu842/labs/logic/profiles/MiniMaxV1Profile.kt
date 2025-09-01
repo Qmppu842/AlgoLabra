@@ -33,34 +33,75 @@ class MiniMaxV1Profile(
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
         val startingTime = System.currentTimeMillis()
-        val thinn = board.getLastMove() ?: -1
-        val minimaxResult1 =
-            minimax2(
-                board = board,
-                depth = depth,
-                maximizingPlayer = true,
-                alpha = Int.MIN_VALUE,
-                beta = Int.MAX_VALUE,
-                forLastSide = -forSide,
-                neededForWin = board.boardConfig.neededForWin,
-                lastX = thinn,
-                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
-//                lastX = -1,
-//                lastY = -1,
-                token = abs(board.getOnTurnToken()),
-            )
+        val minimaxResult1 =iterativeDeepening(
+            board = board,
+            forSide = forSide,
+        )
+//        val thinn = board.getLastMove() ?: -1
+//        val minimaxResult1 =
+//            minimax2(
+//                board = board,
+//                depth = depth,
+//                maximizingPlayer = true,
+//                alpha = Int.MIN_VALUE,
+//                beta = Int.MAX_VALUE,
+//                forLastSide = -forSide,
+//                neededForWin = board.boardConfig.neededForWin,
+//                lastX = thinn,
+//                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
+////                lastX = -1,
+////                lastY = -1,
+//                token = abs(board.getOnTurnToken()),
+//            )
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startingTime
-        println("aaaa")
-        println(minimaxResult1.toString())
+//        println("aaaa")
+//        println(minimaxResult1.toString())
 //        val minimaxResult = minimaxResult1[0] ?: Pair( 0,0)
         val minimaxResult = minimaxResult1.lastEntry().value
-        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
-        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
+//        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
+//        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         return minimaxResult.second
     }
 
-    fun id() {
+    fun iterativeDeepening(
+        board: Board,
+        forSide: Int,
+    ): TreeMap<Int, Pair<Int, Int>> {
+        var theOrdering = board.getLegalsMiddleOutSeq()
+        var treeee = TreeMap<Int, Pair<Int, Int>>()
+        val thinn = board.getLastMove() ?: -1
+        var idDepth = 0
+        while (System.currentTimeMillis() < currentMaxTime || idDepth < depth) {
+            val aaaa =
+                treeee.values
+                    .reversed()
+                    .map { (_, move) -> move }
+                    .asSequence() + sequenceOf(-1)
+
+            println("aaaa ${aaaa.take(7).toString()}")
+
+            val minimaxResult1 =
+                minimax2(
+                    board = board,
+                    depth = idDepth,
+                    maximizingPlayer = true,
+                    alpha = Int.MIN_VALUE,
+                    beta = Int.MAX_VALUE,
+                    forLastSide = -forSide,
+                    neededForWin = board.boardConfig.neededForWin,
+                    lastX = thinn,
+                    lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
+                    token = abs(board.getOnTurnToken()),
+                    seqseq = if (treeee.isEmpty()) theOrdering else aaaa,
+                )
+            treeee = minimaxResult1
+            idDepth += 1
+            println("moimoim")
+            println("idDepth: $idDepth")
+            println("treee: ${treeee.toString()}")
+        }
+        return treeee
     }
 
     /**
@@ -175,13 +216,17 @@ class MiniMaxV1Profile(
                 board.board[move][things.second] = 0
 
 //                aasinSilta.add(minied)
-                println("minified on max side: ${minied.toString()}")
+//                println("minified on max side: $minied")
                 val highest = minied.lastEntry().value // ?: Pair(value, things.second)
-                var kohde = highest.first
-//                do{
-//
-//                }
-                uintiReissu[highest.first] = Pair(highest.first, things.second)
+//                println("highest: $highest")
+                var kohde = highest.first + 1
+                do {
+                    kohde -= 1
+                    val thhht = uintiReissu[kohde]
+//                    println("ticking")
+                } while (thhht != null)
+//                println("end kohde: $kohde")
+                uintiReissu[kohde] = Pair(highest.first, highest.second)
 
                 if (highest.first > value) {
                     bestMove = move
@@ -226,9 +271,16 @@ class MiniMaxV1Profile(
 //                    bestMove = move
 //                    value = minied.first
 //                }
-                println("minified on mini side: ${minied.toString()}")
+//                println("minified on mini side: $minied")
                 val lowest = minied.firstEntry().value
-                uintiReissu[lowest.first] = Pair(-lowest.first, things.second)
+//                uintiReissu[lowest.first] = Pair(-lowest.first, things.second)
+
+                var kohde = lowest.first - 1
+                do {
+                    kohde += 1
+                    val thhht = uintiReissu[kohde]
+                } while (thhht != null)
+                uintiReissu[kohde] = Pair(lowest.first, lowest.second)
 
                 if (lowest.first < value) {
                     bestMove = move
