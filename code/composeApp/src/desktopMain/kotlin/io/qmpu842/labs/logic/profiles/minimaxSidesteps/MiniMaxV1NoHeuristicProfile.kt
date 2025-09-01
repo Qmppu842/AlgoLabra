@@ -2,6 +2,7 @@ package io.qmpu842.labs.logic.profiles.minimaxSidesteps
 
 import io.qmpu842.labs.helpers.MINIMAX_LOSE
 import io.qmpu842.labs.helpers.MINIMAX_WIN
+import io.qmpu842.labs.helpers.TRILLION
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.abs
@@ -10,7 +11,7 @@ import kotlin.math.min
 
 class MiniMaxV1NoHeuristicProfile(
     override var depth: Int = 10,
-    override var timeLimit: Long = 100L,
+    override var timeLimit: Long = TRILLION,
 ) : OpponentProfile() {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
 

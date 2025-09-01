@@ -8,18 +8,19 @@ import kotlin.math.round
 object TournamentEngine {
     private const val K = 32
     private const val MAGNITUDE = 400
+    private const val STARTING_ELO = 1500
 
-    fun startTheTournament(
+    fun startTheTournament1(
         competitors: List<OpponentProfile>,
         amountOfGames: Int = 10,
     ) {
 //        val statHolder = HashMap<Int, Pair<Stats, Stats>>(competitors.size)
-        val eloHolder = HashMap<Int, Int>(competitors.size)
+        val eloRatings = HashMap<Int, Int>(competitors.size)
         val idToName = HashMap<Int, String>(competitors.size)
 
         competitors.forEach { opp ->
 //            statHolder[opp.id] = Pair(Stats(), Stats())
-            eloHolder[opp.id] = 1500
+            eloRatings[opp.id] = 1500
             idToName[opp.id] = opp.name + if (opp.depth != -1) ", depth ${opp.depth}" else ""
         }
         var totalGames = 0
@@ -33,8 +34,8 @@ object TournamentEngine {
                         playerB = playerB,
                         bc = BoardConfig(),
                     )
-                val playerAElo = eloHolder[playerA.id] ?: 1500
-                val playerBElo = eloHolder[playerB.id] ?: 1500
+                val playerAElo = eloRatings[playerA.id] ?: 1500
+                val playerBElo = eloRatings[playerB.id] ?: 1500
                 var expectedForA = eloExpected(playerAElo, playerBElo)
                 var expectedForB = eloExpected(playerBElo, playerAElo)
 
@@ -49,21 +50,8 @@ object TournamentEngine {
                         val endEloA: Int = (playerAElo + K * (0.5 + (0.5 * winner) - expectedForA)).toInt()
                         val endEloB: Int = (playerBElo + K * (0.5 + (0.5 * -winner) - expectedForB)).toInt()
 
-//                        var endEloA = 0
-//                        var endEloB = 0
-//                        if (winner == 0){
-//                            endEloA = (playerAElo + K  * (0.5 - expectedForA)).toInt()
-//                            endEloB = (playerBElo + K  * (0.5 - expectedForB)).toInt()
-//                        }else if(winner == 1){
-//                            endEloA = (playerAElo + K  * (1 - expectedForA)).toInt()
-//                            endEloB = (playerBElo + K  * (0 - expectedForB)).toInt()
-//                        } else if (winner == -1){
-//                            endEloA = (playerAElo + K  * (0 - expectedForA)).toInt()
-//                            endEloB = (playerBElo + K  * (1 - expectedForB)).toInt()
-//                        }
-
-                        eloHolder[playerA.id] = endEloA
-                        eloHolder[playerB.id] = endEloB
+                        eloRatings[playerA.id] = endEloA
+                        eloRatings[playerB.id] = endEloB
 
                         expectedForA = eloExpected(endEloA, endEloB)
                         expectedForB = eloExpected(endEloB, endEloA)
@@ -76,13 +64,92 @@ object TournamentEngine {
         val endTime = System.currentTimeMillis()
 
         println("And the games are done! It took ${endTime - startTime} ms, so ~${round((endTime - startTime) / 1000f)}s")
-        println("In total of ${totalGames} games, games per one way paring: ${amountOfGames}")
+        println("Or ~${round((endTime - startTime) / 1000f / 60f)}m")
+        println("Or ~${round((endTime - startTime) / 3600000f)}h")
+        println("In total of $totalGames games, games per one way paring: $amountOfGames")
         println("Now for the Elo rankings:")
 
-        val thing = eloHolder.entries.sortedBy { (_, value) -> -value }
+        val thing = eloRatings.entries.sortedBy { (_, value) -> -value }
         thing.forEachIndexed { index, (key, value) ->
             println("$index: at $value, ${idToName[key]}")
         }
+    }
+
+    fun startTheTournament(
+        competitors: List<OpponentProfile>,
+        amountOfGames: Int = 10,
+    ) {
+        val eloRatings = HashMap<Int, Int>(competitors.size)
+        var eloHolder = HashMap<Int, Int>(competitors.size)
+        val idToName = HashMap<Int, String>(competitors.size)
+
+        competitors.forEach { opp ->
+            eloRatings[opp.id] = STARTING_ELO
+//            idToName[opp.id] = opp.name + if (opp.depth != -1) ", depth ${opp.depth}" else ""
+            idToName[opp.id] = opp.name + ", depth ${opp.depth}, timelimit ${opp.timeLimit}"
+        }
+        val competitors = competitors.reversed()
+        var totalGames = 0
+        val startTime = System.currentTimeMillis()
+        val endGames = amountOfGames * (competitors.size   * (competitors.size-1))
+        lambo@while (totalGames < endGames) {
+            val competitors = competitors.shuffled(MyRandom.random)
+            for (playerA in competitors) {
+                for (playerB in competitors) {
+                    if (playerA.id == playerB.id) continue
+                    playAGame(playerA, playerB, eloRatings, eloHolder)
+
+                    totalGames += 1
+                    println("Game $totalGames/${endGames}")
+                    if (totalGames > endGames) break@lambo
+                }
+            }
+            eloHolder.forEach { (key, value) ->
+                eloRatings[key] = eloRatings[key]!! + value
+            }
+            eloHolder = HashMap(competitors.size)
+        }
+        val endTime = System.currentTimeMillis()
+
+        println("And the games are done! It took ${endTime - startTime} ms, so ~${round((endTime - startTime) / 1000f)}s")
+        println("Or ~${round((endTime - startTime) / 1000f / 60f)}m")
+        println("Or ~${round((endTime - startTime) / 3600000f)}h")
+        println("In total of $totalGames games, games per one way paring: $amountOfGames")
+        println("Now for the Elo rankings:")
+
+        val thing = eloRatings.entries.sortedBy { (_, value) -> -value }
+        thing.forEachIndexed { index, (key, value) ->
+            println("$index: at $value, ${idToName[key]}")
+        }
+    }
+
+    private fun playAGame(
+        playerA: OpponentProfile,
+        playerB: OpponentProfile,
+        eloRatings: HashMap<Int, Int>,
+        eloHolder: HashMap<Int, Int>
+    ) {
+        var gameHolder =
+            GameHolder(
+                playerA = playerA,
+                playerB = playerB,
+                bc = BoardConfig(),
+            )
+        val playerAElo = eloRatings[playerA.id] ?: STARTING_ELO
+        val playerBElo = eloRatings[playerB.id] ?: STARTING_ELO
+        val expectedForA = eloExpected(playerAElo, playerBElo)
+        val expectedForB = eloExpected(playerBElo, playerAElo)
+
+        while (!gameHolder.hasGameStopped()) {
+            gameHolder = gameHolder.dropTokenLimited()
+        }
+        val winner = gameHolder.whoisWinner() ?: 0
+
+        val eloChangeA: Int = (K * (0.5 + (0.5 * winner) - expectedForA)).toInt()
+        val eloChangeB: Int = (K * (0.5 + (0.5 * -winner) - expectedForB)).toInt()
+
+        eloHolder[playerA.id] = (eloHolder[playerA.id] ?: 0) + eloChangeA
+        eloHolder[playerB.id] = (eloHolder[playerB.id] ?: 0) + eloChangeB
     }
 
     private fun eloExpected(

@@ -10,7 +10,6 @@ import androidx.compose.ui.window.rememberWindowState
 import io.qmpu842.labs.helpers.TournamentEngine
 import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
-import io.qmpu842.labs.logic.profiles.RandomProfile
 import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1NoHeuristicProfile
 import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1OldProfile
 import kotlinx.coroutines.delay
@@ -51,23 +50,35 @@ fun main2() {
 fun main() {
     val competitors =
         listOf(
-            RandomProfile(),
+//            RandomProfile(),
 
-            MiniMaxV1Profile(depth = 2),
-            MiniMaxV1Profile(depth = 6),
-            MiniMaxV1Profile(depth = 8),
-            MiniMaxV1Profile(depth = 10),
-            
-            MiniMaxV1NoHeuristicProfile(depth = 2),
-            MiniMaxV1NoHeuristicProfile(depth = 6),
-            MiniMaxV1NoHeuristicProfile(depth = 8),
+//            MiniMaxV1NoHeuristicProfile(depth = 2),
+//            MiniMaxV1NoHeuristicProfile(depth = 6),
+//            MiniMaxV1NoHeuristicProfile(depth = 7),
+//            MiniMaxV1NoHeuristicProfile(depth = 8),
+//            MiniMaxV1NoHeuristicProfile(depth = 9),
             MiniMaxV1NoHeuristicProfile(depth = 10),
+//            MiniMaxV1NoHeuristicProfile(depth = 12),
 
-            MiniMaxV1OldProfile(depth = 2),
-            MiniMaxV1OldProfile(depth = 6),
-            MiniMaxV1OldProfile(depth = 8),
+//            MiniMaxV1OldProfile(depth = 2),
+//            MiniMaxV1OldProfile(depth = 6),
+//            MiniMaxV1OldProfile(depth = 7),
+//            MiniMaxV1OldProfile(depth = 8),
+//            MiniMaxV1OldProfile(depth = 9),
             MiniMaxV1OldProfile(depth = 10),
+//            MiniMaxV1OldProfile(depth = 12),
 
+//            MiniMaxV1Profile(depth = 2),
+//            MiniMaxV1Profile(depth = 6),
+//            MiniMaxV1Profile(depth = 7),
+//            MiniMaxV1Profile(depth = 8),
+//            MiniMaxV1Profile(depth = 9),
+            MiniMaxV1Profile(depth = 10),
+//            MiniMaxV1Profile(depth = 12),
+
+//            MiniMaxV1NoHeuristicProfile(depth = 42, timeLimit = 1000),
+//            MiniMaxV1OldProfile(depth = 42, timeLimit = 1000),
+//            MiniMaxV1Profile(depth = 42, timeLimit = 1000),
         )
     TournamentEngine.startTheTournament(
         competitors,
