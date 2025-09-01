@@ -14,13 +14,13 @@ import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1NoHeuristicProfi
 import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1OldProfile
 import kotlinx.coroutines.delay
 
-fun main1() =
+fun main() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
             title = "Connect 4,  Bots",
             state = rememberWindowState(width = Dp.Unspecified, height = Dp.Unspecified),
-            alwaysOnTop = true,
+//            alwaysOnTop = true,
         ) {
 //            Comment this launchedEffect away if you want to play more than 5 minutes
             LaunchedEffect(true) {
@@ -47,7 +47,7 @@ fun main2() {
     )
 }
 
-fun main() {
+fun main4() {
     val competitors =
         listOf(
 //            RandomProfile(),

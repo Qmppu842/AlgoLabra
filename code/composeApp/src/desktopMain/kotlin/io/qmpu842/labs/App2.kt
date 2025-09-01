@@ -42,18 +42,19 @@ fun TheGame(modifier: Modifier = Modifier) {
     var gameHolder by remember {
         mutableStateOf(
             GameHolder(
-                ProfileHolder.rand,
-                ProfileHolder.minimaxDepth6TimeInf,
-                bc = BoardConfig(
-                    width = 7,
-                    height = 6,
-                    neededForWin = 4
-                ),
+                ProfileHolder.human,
+                ProfileHolder.minimaxDepth1TimeInf,
+                bc =
+                    BoardConfig(
+                        width = 7,
+                        height = 6,
+                        neededForWin = 4,
+                    ),
             ),
         )
     }
 
-    //All the methods wrapped into holders
+    // All the methods wrapped into holders
     val dropTokenAction: (Int) -> Unit = { column ->
         gameHolder = gameHolder.dropTokenLimited(column)
     }
@@ -89,7 +90,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             }
         }.SettingNormalAutoPlay(
             gameHolder = gameHolder,
-                settings = settings,
+            settings = settings,
         )
 
     // The Actual ui drawing things
@@ -109,7 +110,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             forSide = gameHolder.board.getOnTurnToken().sign,
             wellFunction = SecondHeuristicThing::combinedWells,
             dropTokenAction = dropTokenAction,
-            settings = settings
+            settings = settings,
         )
 
         ControlPanel(
@@ -314,7 +315,6 @@ fun HeuristicWells(
         }
     }
 }
-
 
 /**
  * This controls if games start automatically when game has ended
