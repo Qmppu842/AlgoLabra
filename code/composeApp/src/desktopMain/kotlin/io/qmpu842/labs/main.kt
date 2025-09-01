@@ -57,8 +57,9 @@ fun main() {
 //            MiniMaxV1NoHeuristicProfile(depth = 7),
 //            MiniMaxV1NoHeuristicProfile(depth = 8),
 //            MiniMaxV1NoHeuristicProfile(depth = 9),
-            MiniMaxV1NoHeuristicProfile(depth = 10),
-//            MiniMaxV1NoHeuristicProfile(depth = 12),
+//            MiniMaxV1NoHeuristicProfile(depth = 10),
+            MiniMaxV1NoHeuristicProfile(depth = 11),
+            MiniMaxV1NoHeuristicProfile(depth = 12),
 
 //            MiniMaxV1OldProfile(depth = 2),
 //            MiniMaxV1OldProfile(depth = 6),
@@ -66,15 +67,17 @@ fun main() {
 //            MiniMaxV1OldProfile(depth = 8),
 //            MiniMaxV1OldProfile(depth = 9),
             MiniMaxV1OldProfile(depth = 10),
-//            MiniMaxV1OldProfile(depth = 12),
+            MiniMaxV1OldProfile(depth = 11),
+            MiniMaxV1OldProfile(depth = 12),
 
 //            MiniMaxV1Profile(depth = 2),
 //            MiniMaxV1Profile(depth = 6),
 //            MiniMaxV1Profile(depth = 7),
 //            MiniMaxV1Profile(depth = 8),
 //            MiniMaxV1Profile(depth = 9),
-            MiniMaxV1Profile(depth = 10),
-//            MiniMaxV1Profile(depth = 12),
+//            MiniMaxV1Profile(depth = 10),
+            MiniMaxV1Profile(depth = 11),
+            MiniMaxV1Profile(depth = 12),
 
 //            MiniMaxV1NoHeuristicProfile(depth = 42, timeLimit = 1000),
 //            MiniMaxV1OldProfile(depth = 42, timeLimit = 1000),
@@ -82,7 +85,7 @@ fun main() {
         )
     TournamentEngine.startTheTournament(
         competitors,
-        amountOfGames = 10,
+        amountOfGames = 5,
     )
 }
 
