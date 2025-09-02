@@ -8,13 +8,17 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import io.qmpu842.labs.helpers.TournamentEngine
+import io.qmpu842.labs.helpers.Zo
 import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
 import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1NoHeuristicProfile
 import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1OldProfile
 import kotlinx.coroutines.delay
 
-fun main() =
+/**
+ * The normal main when you want ot see and/or play against something.
+ */
+fun main1() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -31,6 +35,9 @@ fun main() =
         }
     }
 
+/**
+ * The main to run without ui 1v1
+ */
 fun main2() {
     GameHolder.runWithOutUiSplit(
         100,
@@ -47,6 +54,9 @@ fun main2() {
     )
 }
 
+/**
+ * The main for using the tournament system without ui
+ */
 fun main4() {
     val competitors =
         listOf(
@@ -89,6 +99,16 @@ fun main4() {
     )
 }
 
+/**
+ * The main to list different types of possible lines in board
+ */
 fun main3() {
     counter3()
+}
+
+fun main(){
+    val zoo = Zo(3)
+
+    println("zoo: $zoo")
+    println("the hash: ${zoo.hashCode()}")
 }
