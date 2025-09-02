@@ -33,10 +33,11 @@ class MiniMaxV1Profile(
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
         val startingTime = System.currentTimeMillis()
-        val minimaxResult1 =iterativeDeepening(
-            board = board,
-            forSide = forSide,
-        )
+        val minimaxResult1 =
+            iterativeDeepening(
+                board = board,
+                forSide = forSide,
+            )
 //        val thinn = board.getLastMove() ?: -1
 //        val minimaxResult1 =
 //            minimax2(
@@ -49,8 +50,8 @@ class MiniMaxV1Profile(
 //                neededForWin = board.boardConfig.neededForWin,
 //                lastX = thinn,
 //                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
-////                lastX = -1,
-////                lastY = -1,
+// //                lastX = -1,
+// //                lastY = -1,
 //                token = abs(board.getOnTurnToken()),
 //            )
         val endTime = System.currentTimeMillis()
@@ -72,14 +73,14 @@ class MiniMaxV1Profile(
         var treeee = TreeMap<Int, Pair<Int, Int>>()
         val thinn = board.getLastMove() ?: -1
         var idDepth = 0
-        while (System.currentTimeMillis() < currentMaxTime || idDepth < depth) {
+        while (System.currentTimeMillis() < currentMaxTime && idDepth < depth) {
+            println("new iteration at depth $idDepth")
             val aaaa =
                 treeee.values
                     .reversed()
                     .map { (_, move) -> move }
                     .asSequence() + sequenceOf(-1)
-
-            println("aaaa ${aaaa.take(7).toString()}")
+            println("aaaa1 ${aaaa.toList()}")
 
             val minimaxResult1 =
                 minimax2(
@@ -93,13 +94,16 @@ class MiniMaxV1Profile(
                     lastX = thinn,
                     lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
                     token = abs(board.getOnTurnToken()),
-                    seqseq = if (treeee.isEmpty()) theOrdering else aaaa,
+                    seqseq = if (treeee.size < 2) theOrdering else aaaa,
                 )
             treeee = minimaxResult1
             idDepth += 1
             println("moimoim")
+            println("depth: ${this.depth}")
             println("idDepth: $idDepth")
-            println("treee: ${treeee.toString()}")
+            println("treee: $treeee")
+            println("aaaa ${aaaa.toList()}")
+            println("idDepth < depth ${idDepth < depth}")
         }
         return treeee
     }
@@ -191,6 +195,8 @@ class MiniMaxV1Profile(
 //        val aasinSilta = mutableListOf<Pair<Int, Int>>()
 //        val uintiReissu = TreeMap<Int, Pair<Int, Int>>()
 
+//        println("moves: ${moves.takeWhile { i -> i != -1 }.toList()}")
+
         if (maximizingPlayer) {
             var value = Int.MIN_VALUE
             var bestMove = 0
@@ -280,7 +286,7 @@ class MiniMaxV1Profile(
                     kohde += 1
                     val thhht = uintiReissu[kohde]
                 } while (thhht != null)
-                uintiReissu[kohde] = Pair(lowest.first, lowest.second)
+                uintiReissu[kohde] = Pair(-lowest.first, lowest.second)
 
                 if (lowest.first < value) {
                     bestMove = move

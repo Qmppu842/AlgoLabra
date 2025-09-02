@@ -45,7 +45,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             GameHolder(
                 ProfileHolder.human,
 //                ProfileHolder.minimaxDepth3TimeInf,
-                MiniMaxV1Profile(depth = 1, timeLimit = 2000),
+                MiniMaxV1Profile(depth = 4, timeLimit = 2000000),
                 bc =
                     BoardConfig(
                         width = 7,
