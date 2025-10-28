@@ -18,7 +18,7 @@ import kotlinx.coroutines.delay
 /**
  * The normal main when you want ot see and/or play against something.
  */
-fun main1() =
+fun main() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -106,7 +106,7 @@ fun main3() {
     counter3()
 }
 
-fun main(){
+fun main5(){
     val zoo = Zo(3)
 
     println("zoo: $zoo")
