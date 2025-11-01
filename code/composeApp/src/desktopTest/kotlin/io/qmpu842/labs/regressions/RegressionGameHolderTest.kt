@@ -4,8 +4,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.qmpu842.labs.helpers.BoardConfig
-import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.logic.GameHolder
+import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
 
 class RegressionGameHolderTest :
     FunSpec({
@@ -13,8 +13,8 @@ class RegressionGameHolderTest :
         test("hasGameStopped") {
             var gameHolder =
                 GameHolder(
-                    playerA = ProfileHolder.minimaxDepth4TimeInf,
-                    playerB = ProfileHolder.minimaxDepth4TimeInf,
+                    playerA = MiniMaxV1Profile(depth = 4),
+                    playerB = MiniMaxV1Profile(depth = 4),
                     bc = BoardConfig(),
                 )
 

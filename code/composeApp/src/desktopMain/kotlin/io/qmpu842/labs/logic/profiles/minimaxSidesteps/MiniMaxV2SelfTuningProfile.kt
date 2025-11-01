@@ -1,13 +1,14 @@
-package io.qmpu842.labs.logic.profiles
+package io.qmpu842.labs.logic.profiles.minimaxSidesteps
 
 import io.qmpu842.labs.helpers.MINIMAX_LOSE
 import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
+import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.*
 
 class MiniMaxV2SelfTuningProfile(
-    var depth: Int = 10,
+    override var depth: Int = 10,
     override var timeLimit: Long = 100L,
 ) : OpponentProfile() {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())

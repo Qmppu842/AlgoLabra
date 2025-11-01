@@ -7,8 +7,9 @@ import io.qmpu842.labs.logic.Board
 abstract class OpponentProfile {
     val rand = MyRandom.random
     val id: Int = rand.nextInt()
+    open var depth: Int = -1
 
-    open val timeLimit:Long = 100
+    open val timeLimit: Long = 100
 
     var firstPlayStats: Stats = Stats()
     var secondPlayStats: Stats = Stats()
@@ -17,7 +18,7 @@ abstract class OpponentProfile {
      * Name of the profile
      */
     val name: String
-        get(){
+        get() {
             return "${this::class.simpleName}"
         }
 
@@ -29,5 +30,6 @@ abstract class OpponentProfile {
      */
     abstract fun nextMove(
         board: Board,
-        forSide: Int): Int
+        forSide: Int,
+    ): Int
 }
