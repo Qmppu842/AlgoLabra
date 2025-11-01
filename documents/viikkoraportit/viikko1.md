@@ -5,44 +5,44 @@ Aloin miettimään kahden kilpikonnan lauttana käyttämistä mutta sitten muist
 
 ## Mitä olen tehnyt tällä viikolla?
 
-Tappelin gradlen kanssa aivan liika ja sitten luovutin kun hyväksyin sen että edes päivän vanhoissa nightly dependecy:
-issä ei ollut tarvittavia ominaisuuksia.  
-Sitten kirjottelin näytä dokumenttejä mitä juuri nyt lueskelet.
+Jatkan kesällä aloittamaani projektia joten nämä vaiheet ovat jo tehtyjä.
+Tosin minulla oli virheellinen ajatus mitä palaveerasimme Hannun kanssa ja nyt pitäisi olla selkeämpää.
 
 ## Miten ohjelma on edistynyt?
 
-Sain lopulta kotlin multiplatform setupin toimimaan niin että se sisältää laajoja testaus frameworkkejä sekä testi
-coverage raporttien luonnin.  
-Sekä toteutin nämä raportit.
+Nollasin viikko raportit jotta on helpompi seurata menoa.
 
 ## Mitä opin tällä viikolla / tänään?
 
-Jälleen kerran opin ja todistin itselleni että gradle on puhdasta kipua.   
-Ja ihan turhaan vielä kaikki kaikessa.  
-[Ktor:in setup wizard](https://start.ktor.io/settings?name=ktor-sample&website=example.com&artifact=com.example.ktor-sample&kotlinVersion=2.1.10&ktorVersion=3.2.1&buildSystem=GRADLE_KTS&buildSystemArgs.version_catalog=true&engine=NETTY&configurationIn=YAML&addSampleCode=true&plugins=asyncapi)
-on jo melkein siellä, vielä kun se olisi geneerinen niin huh huh.  
-Opin myös käyttämään jetbrainsin alpha vaiheessa olevaa gradlen kilpailijaa, amper:ia.  
-[Amper](https://github.com/JetBrains/amper) vaikutti suoraviivaisemmalta kuin gradle mutta se oli liian alkuvaiheissa
-tähän väliin oikeasti pohdittavaksi.
+Opin että minun oletus heurestiikasta oli virheellinen, ja tämä oli johtanut monen moneen hukatuun tuntiin.
+Olin olettanut että heurestiikan pitää/voisi tapahtua aina viimeisestä siirrosta, mutta tämä ei (tietenkään) toiminut
+millään tasolla,
+ja viimeinen niitti tuli kun rakensin kilpailu mahdollisuuden jossa pystyin asettamaan eri heurestiikat vastakkain ja
+mikään minun heurestiikkani ei vaikuttanut voitto prosenttiin.
+
+Toinen virheellinen oletus oli:  
+Oletin että iteratiivinen syvenemin tapahtuisi niin että kaikki siirrot järjestettäisiin uudelleen vain ylimmällä
+kerroksella.  
+Mutta totuus onkin että joka lauta tilanteelle pidetään kirjaa sen parhaasta siirrosta, kun siirtoja tarkastellaan
+iteratiivisesti niin täältä mapista otetaan se parhaaksi oletettu siirto ensimmäiseksi tutkintaan.
 
 ## Mikä jäi epäselväksi tai tuottanut vaikeuksia?
 
-Gradle on niin kovaa kipua että se kyllä syö ison palan halua ja energiaa kokeilla uusia ja cooleja frameworkkeja sekä
-kirjastoja.
+Pohdiskelin vähän että miten saisin järkevästi toteutettua funktionaalisesti heurestiikan ja/tai minimaxin osia jotta
+voisin simppelisti antaa ne vain argumentteinä.
+Se olisi mukavaa ja silloin ei tarvisi sekoittaa maailamaa kopioidulla koodilla.
+Jotain ideaa minulla siihen on jo toki.
 
 ## Mitä teen seuraavaksi?
 
-Seuraavaksi teen nopean käyttiksen ja alan pohtimaan alustavan käyttöohjeen tekoa.  
-Sitten joku alustava pelin voiton tunnistus jotta pääsee näkemään asioita.  
-Kun nämä on tehty voin alkaa siirtyä kunnolla minimaxin kimppuun.
+Aloitan tekemällä jonkun tason heurestiikan ja katson miltä sen kanssa tuntuu maailma
 
 ## Ajan käyttö:
 
-| Päivä    | aika | syy                       |
-|----------|------|---------------------------|
-| 05-10/07 | ???  | Gradle tappelu -.-        |
-| 10/07    | 6h   | Alustus                   |
-| 11/07    | 6h   | Dokumentointi ja research |
-| 13/07    | 3h   | Dokumentoinnin muotoilu   |
-| 10-13/07 | ~15h | This weeks total          |
-| 10-13/07 | 15h  | Total Total               |
+| Päivä       | aika | syy                     |
+|-------------|------|-------------------------|
+| 10/07-03/09 | 150h | historia                |
+| 1/11        | 1h   | Dokumentaatio resettaus |
+| 1/11        | 1h   | This weeks total        |
+| 27/10-1/11  | 1h   | Total Total rebooted    |
+| 10/07-??/12 | 150h | Total Total             |
