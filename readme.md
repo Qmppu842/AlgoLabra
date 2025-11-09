@@ -14,7 +14,7 @@ Updates are loading...
 ## Koodi
 
 Täällä asustaa itse koodi:   [koodin pikalinkki](code/composeApp/src/desktopMain/kotlin/io/qmpu842/labs)  
-Täällä asustaa minimax koodi:   [minimax pikalinkki](code/composeApp/src/desktopMain/kotlin/io/qmpu842/labs/logic/profiles/MiniMaxV1Profile.kt)
+Täällä asustaa minimax koodi:   [minimax pikalinkki](code/composeApp/src/desktopMain/kotlin/io/qmpu842/labs/logic/profiles/MiniMaxV3Profile.kt)
 
 
 ## Testit
