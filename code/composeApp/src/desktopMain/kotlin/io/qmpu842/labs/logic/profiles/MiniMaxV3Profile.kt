@@ -1,23 +1,53 @@
-package io.qmpu842.labs.logic.profiles.minimaxSidesteps
+package io.qmpu842.labs.logic.profiles
 
 import io.qmpu842.labs.helpers.MINIMAX_LOSE
 import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.helpers.TRILLION
 import io.qmpu842.labs.logic.Board
-import io.qmpu842.labs.logic.profiles.OpponentProfile
+import io.qmpu842.labs.logic.heuristics.HeuristicArgs
+import io.qmpu842.labs.logic.heuristics.HeuristicFun
+import io.qmpu842.labs.logic.heuristics.HeuristicUser
+import io.qmpu842.labs.logic.heuristics.lastMovesValueV5
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class MiniMaxV1NoHeuristicProfile(
+class MiniMaxV3Profile(
     override var depth: Int = 10,
     override var timeLimit: Long = TRILLION,
-) : OpponentProfile() {
+    override val heuristic: HeuristicFun = ::lastMovesValueV5,
+) : OpponentProfile(),
+    HeuristicUser {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
 
+    companion object {
+        operator fun invoke(
+            depths: List<Int>,
+            timeLimits: List<Long> = listOf(TRILLION),
+            heuristicFunList: List<HeuristicFun>,
+        ): List<MiniMaxV3Profile> {
+            val profiles = mutableListOf<MiniMaxV3Profile>()
+            for (depth in depths) {
+                for (timeLimit in timeLimits) {
+                    for (heuristicFun in heuristicFunList) {
+                        profiles.add(MiniMaxV3Profile(depth = depth, timeLimit = timeLimit, heuristic = heuristicFun))
+                    }
+                }
+            }
+
+            return profiles
+        }
+    }
+
+//    override val name: String
+//        get() = "${this::class.simpleName}(${::heuristic.toString()})"
+//    override val name: String
+//        get() {
+//            println("name: ${MiniMaxV3Profile::heuristic.hashCode()}")
+//            return "${this::class.simpleName}(${::heuristic.toString()})"
+//        }
+
     var currentMaxTime = Long.MAX_VALUE
-
-
 
     override fun nextMove(
         board: Board,
@@ -25,7 +55,7 @@ class MiniMaxV1NoHeuristicProfile(
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
         val startingTime = System.currentTimeMillis()
-        val thinn = board.getLastMove() ?: -1
+        val lastMoveX = board.getLastMove() ?: -1
         val minimaxResult =
             minimax2(
                 board = board,
@@ -35,8 +65,8 @@ class MiniMaxV1NoHeuristicProfile(
                 beta = Int.MAX_VALUE,
                 forLastSide = -forSide,
                 neededForWin = board.boardConfig.neededForWin,
-                lastX = thinn,
-                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
+                lastX = lastMoveX,
+                lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
                 token = abs(board.getOnTurnToken()),
             )
         val endTime = System.currentTimeMillis()
@@ -85,7 +115,18 @@ class MiniMaxV1NoHeuristicProfile(
         val time = System.currentTimeMillis()
 
         if (depth == 0 || time >= currentMaxTime) {
-            return Pair(0, lastX) // No heuristics here
+            return Pair(
+                heuristic(
+                    HeuristicArgs(
+                        board = board,
+                        x = lastX,
+                        y = lastY,
+                        forSide = forLastSide * if (maximizingPlayer) -1 else 1,
+                        neededForWin = neededForWin,
+                    ),
+                ),
+                lastX,
+            )
         }
         val moves = board.getLegalsMiddleOutSeq()
         var alpha2 = alpha

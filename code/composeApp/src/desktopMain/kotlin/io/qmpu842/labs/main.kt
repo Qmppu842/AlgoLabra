@@ -10,9 +10,9 @@ import androidx.compose.ui.window.rememberWindowState
 import io.qmpu842.labs.helpers.TournamentEngine
 import io.qmpu842.labs.helpers.Zo
 import io.qmpu842.labs.logic.GameHolder
-import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
-import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1NoHeuristicProfile
-import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1OldProfile
+import io.qmpu842.labs.logic.heuristics.lastMovesValueV5
+import io.qmpu842.labs.logic.heuristics.zeroHeuristics
+import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 import kotlinx.coroutines.delay
 
 /**
@@ -42,57 +42,25 @@ fun main2() {
     GameHolder.runWithOutUiSplit(
         100,
         playerA =
-            MiniMaxV1NoHeuristicProfile(
+            MiniMaxV3Profile(
                 depth = 6,
+                heuristic = ::zeroHeuristics
             ),
-        //        playerB = MiniMaxV1OldProfile(depth = 2),
 //        playerB = ProfileHolder.rand
         playerB =
-            MiniMaxV1NoHeuristicProfile(
+            MiniMaxV3Profile(
                 depth = 2,
+                heuristic = ::zeroHeuristics
             ),
     )
 }
 
 /**
  * The main for using the tournament system without ui
+ * Every profile will play against every other profile
  */
 fun main4() {
-    val competitors =
-        listOf(
-//            RandomProfile(),
-
-//            MiniMaxV1NoHeuristicProfile(depth = 2),
-//            MiniMaxV1NoHeuristicProfile(depth = 6),
-//            MiniMaxV1NoHeuristicProfile(depth = 7),
-//            MiniMaxV1NoHeuristicProfile(depth = 8),
-//            MiniMaxV1NoHeuristicProfile(depth = 9),
-//            MiniMaxV1NoHeuristicProfile(depth = 10),
-            MiniMaxV1NoHeuristicProfile(depth = 11),
-            MiniMaxV1NoHeuristicProfile(depth = 12),
-
-//            MiniMaxV1OldProfile(depth = 2),
-//            MiniMaxV1OldProfile(depth = 6),
-//            MiniMaxV1OldProfile(depth = 7),
-//            MiniMaxV1OldProfile(depth = 8),
-//            MiniMaxV1OldProfile(depth = 9),
-            MiniMaxV1OldProfile(depth = 10),
-            MiniMaxV1OldProfile(depth = 11),
-            MiniMaxV1OldProfile(depth = 12),
-
-//            MiniMaxV1Profile(depth = 2),
-//            MiniMaxV1Profile(depth = 6),
-//            MiniMaxV1Profile(depth = 7),
-//            MiniMaxV1Profile(depth = 8),
-//            MiniMaxV1Profile(depth = 9),
-//            MiniMaxV1Profile(depth = 10),
-            MiniMaxV1Profile(depth = 11),
-            MiniMaxV1Profile(depth = 12),
-
-//            MiniMaxV1NoHeuristicProfile(depth = 42, timeLimit = 1000),
-//            MiniMaxV1OldProfile(depth = 42, timeLimit = 1000),
-//            MiniMaxV1Profile(depth = 42, timeLimit = 1000),
-        )
+    val competitors = MiniMaxV3Profile(depths =listOf(10,11,12), heuristicFunList = listOf(::zeroHeuristics,::lastMovesValueV5))
     TournamentEngine.startTheTournament(
         competitors,
         amountOfGames = 5,
