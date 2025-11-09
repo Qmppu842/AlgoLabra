@@ -17,7 +17,7 @@ abstract class OpponentProfile {
     /**
      * Name of the profile
      */
-    val name: String
+    open val name: String
         get() {
             return "${this::class.simpleName}"
         }

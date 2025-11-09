@@ -17,6 +17,7 @@ import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.SecondHeuristicThing
 import io.qmpu842.labs.logic.heuristics.lastMovesValueV5
+import io.qmpu842.labs.logic.heuristics.zeroHeuristics
 import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 import kotlinx.coroutines.delay
 import onlydesktop.composeapp.generated.resources.Res
@@ -44,7 +45,8 @@ fun TheGame(modifier: Modifier = Modifier) {
     var gameHolder by remember {
         mutableStateOf(
             GameHolder(
-                ProfileHolder.rand,
+//                ProfileHolder.rand,
+                MiniMaxV3Profile(depth = 4, heuristic = ::zeroHeuristics),
 //                ProfileHolder.minimaxDepth12TimeInf,
                 MiniMaxV3Profile(depth = 4, heuristic = ::lastMovesValueV5),
 //                MiniMaxV1Profile(depth = 4, timeLimit = 2000000),

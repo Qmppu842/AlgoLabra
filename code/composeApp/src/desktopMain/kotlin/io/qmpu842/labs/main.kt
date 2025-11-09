@@ -57,6 +57,7 @@ fun main2() {
 
 /**
  * The main for using the tournament system without ui
+ * Every profile will play against every other profile
  */
 fun main4() {
     val competitors = MiniMaxV3Profile(depths =listOf(10,11,12), heuristicFunList = listOf(::zeroHeuristics,::lastMovesValueV5))

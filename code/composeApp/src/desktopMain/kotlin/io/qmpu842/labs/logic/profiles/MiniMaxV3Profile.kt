@@ -39,6 +39,14 @@ class MiniMaxV3Profile(
         }
     }
 
+//    override val name: String
+//        get() = "${this::class.simpleName}(${::heuristic.toString()})"
+//    override val name: String
+//        get() {
+//            println("name: ${MiniMaxV3Profile::heuristic.hashCode()}")
+//            return "${this::class.simpleName}(${::heuristic.toString()})"
+//        }
+
     var currentMaxTime = Long.MAX_VALUE
 
     override fun nextMove(
@@ -47,7 +55,7 @@ class MiniMaxV3Profile(
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
         val startingTime = System.currentTimeMillis()
-        val thinn = board.getLastMove() ?: -1
+        val lastMoveX = board.getLastMove() ?: -1
         val minimaxResult =
             minimax2(
                 board = board,
@@ -57,8 +65,8 @@ class MiniMaxV3Profile(
                 beta = Int.MAX_VALUE,
                 forLastSide = -forSide,
                 neededForWin = board.boardConfig.neededForWin,
-                lastX = thinn,
-                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
+                lastX = lastMoveX,
+                lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
                 token = abs(board.getOnTurnToken()),
             )
         val endTime = System.currentTimeMillis()
