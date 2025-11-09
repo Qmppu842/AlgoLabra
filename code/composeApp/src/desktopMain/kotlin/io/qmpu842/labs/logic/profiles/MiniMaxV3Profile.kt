@@ -16,8 +16,28 @@ class MiniMaxV3Profile(
     override var depth: Int = 10,
     override var timeLimit: Long = TRILLION,
     override val heuristic: HeuristicFun = ::lastMovesValueV5,
-) : OpponentProfile(), HeuristicUser {
+) : OpponentProfile(),
+    HeuristicUser {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
+
+    companion object {
+        operator fun invoke(
+            depths: List<Int>,
+            timeLimits: List<Long> = listOf(TRILLION),
+            heuristicFunList: List<HeuristicFun>,
+        ): List<MiniMaxV3Profile> {
+            val profiles = mutableListOf<MiniMaxV3Profile>()
+            for (depth in depths) {
+                for (timeLimit in timeLimits) {
+                    for (heuristicFun in heuristicFunList) {
+                        profiles.add(MiniMaxV3Profile(depth = depth, timeLimit = timeLimit, heuristic = heuristicFun))
+                    }
+                }
+            }
+
+            return profiles
+        }
+    }
 
     var currentMaxTime = Long.MAX_VALUE
 

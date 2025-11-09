@@ -13,11 +13,11 @@ import androidx.compose.ui.unit.dp
 import io.qmpu842.labs.helpers.BoardConfig
 import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.helpers.Settings
-import io.qmpu842.labs.helpers.TRILLION
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.SecondHeuristicThing
-import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1dot5Profile
+import io.qmpu842.labs.logic.heuristics.lastMovesValueV5
+import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 import kotlinx.coroutines.delay
 import onlydesktop.composeapp.generated.resources.Res
 import onlydesktop.composeapp.generated.resources.empty_cell
@@ -46,7 +46,7 @@ fun TheGame(modifier: Modifier = Modifier) {
             GameHolder(
                 ProfileHolder.rand,
 //                ProfileHolder.minimaxDepth12TimeInf,
-                MiniMaxV1dot5Profile(depth = 4, timeLimit = TRILLION),
+                MiniMaxV3Profile(depth = 4, heuristic = ::lastMovesValueV5),
 //                MiniMaxV1Profile(depth = 4, timeLimit = 2000000),
                 bc =
                     BoardConfig(
