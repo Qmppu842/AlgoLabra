@@ -6,6 +6,9 @@ import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.helpers.TRILLION
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
+import io.qmpu842.labs.logic.heuristics.HeuristicFun
+import io.qmpu842.labs.logic.heuristics.HeuristicUser
+import io.qmpu842.labs.logic.heuristics.zeroHeuristics
 import io.qmpu842.labs.otherSide
 import java.util.*
 import kotlin.math.*
@@ -13,7 +16,8 @@ import kotlin.math.*
 class MiniMaxV1Profile(
     override var depth: Int = 10,
     override var timeLimit: Long = TRILLION,
-) : OpponentProfile() {
+    override val heuristic: HeuristicFun = ::zeroHeuristics,
+) : OpponentProfile(), HeuristicUser {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
 
     var currentMaxTime = Long.MAX_VALUE

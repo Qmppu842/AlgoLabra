@@ -10,7 +10,9 @@ import androidx.compose.ui.window.rememberWindowState
 import io.qmpu842.labs.helpers.TournamentEngine
 import io.qmpu842.labs.helpers.Zo
 import io.qmpu842.labs.logic.GameHolder
+import io.qmpu842.labs.logic.heuristics.zeroHeuristics
 import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
+import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1NoHeuristicProfile
 import io.qmpu842.labs.logic.profiles.minimaxSidesteps.MiniMaxV1OldProfile
 import kotlinx.coroutines.delay
@@ -42,15 +44,23 @@ fun main2() {
     GameHolder.runWithOutUiSplit(
         100,
         playerA =
-            MiniMaxV1NoHeuristicProfile(
+            MiniMaxV3Profile(
                 depth = 6,
+                heuristic = ::zeroHeuristics
             ),
+//        MiniMaxV1NoHeuristicProfile(
+//            depth = 6,
+//        ),
         //        playerB = MiniMaxV1OldProfile(depth = 2),
 //        playerB = ProfileHolder.rand
         playerB =
-            MiniMaxV1NoHeuristicProfile(
+            MiniMaxV3Profile(
                 depth = 2,
+                heuristic = ::zeroHeuristics
             ),
+//            MiniMaxV1NoHeuristicProfile(
+//                depth = 2,
+//            ),
     )
 }
 
