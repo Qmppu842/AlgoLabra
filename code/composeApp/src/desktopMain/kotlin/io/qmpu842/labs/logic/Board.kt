@@ -5,6 +5,11 @@ import kotlin.math.abs
 import kotlin.math.round
 import kotlin.math.sign
 
+/**
+ * @param board Array<IntArray> contains positives, negatives and zero numbers.
+ * @param boardConfig look boardConfig for better info
+ * @param history list containing all columns in order they had something put in them.
+ */
 data class Board(
     val board: Array<IntArray>,
     val boardConfig: BoardConfig,
@@ -103,9 +108,18 @@ data class Board(
     }
 
     /**
-     * @return the last token put in to the board
+     * @return the last column that had token put in to.
      */
     fun getLastMove(): Int? = history.lastOrNull()
+
+    /**
+     * @return returns int pair, first one is the row and second is the column
+     * It will return -1, -1 if no moves has been made on the board.
+     */
+    fun getLastTokenLocation(): Pair<Int, Int> {
+        val token = getLastMove() ?: return Pair(-1, -1)
+        return Pair(getWellSpace(token), token)
+    }
 
     /**
      * @return list of all the wells with space
