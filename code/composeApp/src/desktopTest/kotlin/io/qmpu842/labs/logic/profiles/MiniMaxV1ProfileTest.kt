@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.qmpu842.labs.helpers.*
 import io.qmpu842.labs.logic.Board
+import io.qmpu842.labs.logic.heuristics.HeuristicArgs
 
 class MiniMaxV1ProfileTest :
     FunSpec({
@@ -29,11 +30,15 @@ class MiniMaxV1ProfileTest :
             board = board.dropToken(4, -10)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 4,
-                y = 5,
-                forSide = -1,
+            minimax.heuristic(
+                // TODO: I should move these, now that they are not needed nor belong to here anymore.
+                HeuristicArgs(
+                    board = board,
+                    x = 4,
+                    y = 5,
+                    forSide = -1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
 
@@ -56,11 +61,14 @@ class MiniMaxV1ProfileTest :
             board = board.dropToken(3, 11)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 3,
-                y = 2,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 3,
+                    y = 2,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
 
@@ -81,19 +89,25 @@ class MiniMaxV1ProfileTest :
             val minimax = MiniMaxV3Profile(depth = 1)
 
             board = board.dropToken(4, -10)
-            minimax.lastMovesValue5(
-                board = board,
-                x = 4,
-                y = 5,
-                forSide = -1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 4,
+                    y = 5,
+                    forSide = -1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
 
             board = board.dropToken(3, 11)
-            minimax.lastMovesValue5(
-                board = board,
-                x = 3,
-                y = 2,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 3,
+                    y = 2,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
 
@@ -108,11 +122,14 @@ class MiniMaxV1ProfileTest :
             }
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 0,
-                y = 2,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 0,
+                    y = 2,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
 
@@ -121,24 +138,27 @@ class MiniMaxV1ProfileTest :
                 Board(
                     board =
                         arrayOf(
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
                             intArrayOf(0, 0, 0, 0, -4, 3),
                             intArrayOf(0, 0, 0, 0, -2, 1),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
 
             board = board.dropToken(2, 5)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 2,
-                y = 5,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 2,
+                    y = 5,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe TRAP_WIN
         }
 
@@ -147,11 +167,11 @@ class MiniMaxV1ProfileTest :
                 Board(
                     board =
                         arrayOf(
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
                             intArrayOf(0, 0, 0, 0, -4, 3),
                             intArrayOf(0, 0, 0, 0, -2, 1),
                         ),
@@ -160,36 +180,42 @@ class MiniMaxV1ProfileTest :
             board = board.dropToken(4, 5)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 4,
-                y = 5,
-                forSide = 1,
-            ) shouldBe 99 //TODO
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 4,
+                    y = 5,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
+            ) shouldBe 99 // TODO
         }
         test("lastMovesValue5 with win #7") {
             var board =
                 Board(
                     board =
                         arrayOf(
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  -6, 5),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, -6, 5),
                             intArrayOf(0, 0, 0, 0, -4, 3),
                             intArrayOf(0, 0, 0, 0, -2, 1),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
 
             board = board.dropToken(1, 7)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 1,
-                y = 5,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 1,
+                    y = 5,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
 
@@ -198,24 +224,27 @@ class MiniMaxV1ProfileTest :
                 Board(
                     board =
                         arrayOf(
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  -6, 5),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, -6, 5),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
                             intArrayOf(0, 0, 0, 0, -4, 3),
                             intArrayOf(0, 0, 0, 0, -2, 1),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
 
             board = board.dropToken(2, 7)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 2,
-                y = 5,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 2,
+                    y = 5,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
 
@@ -224,10 +253,10 @@ class MiniMaxV1ProfileTest :
                 Board(
                     board =
                         arrayOf(
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0, 0, 0,  0, 5),
-                            intArrayOf(0, 0, 0, 0,  0, -6),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 5),
+                            intArrayOf(0, 0, 0, 0, 0, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
                             intArrayOf(0, 0, 0, 0, -4, 3),
                             intArrayOf(0, 0, 0, 0, -2, 1),
                         ),
@@ -236,11 +265,14 @@ class MiniMaxV1ProfileTest :
             board = board.dropLockedToken(2)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 2,
-                y = 5,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 2,
+                    y = 5,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe 0
         }
         test("lastMovesValue5 #9") {
@@ -248,24 +280,27 @@ class MiniMaxV1ProfileTest :
                 Board(
                     board =
                         arrayOf(
-                            intArrayOf(0, 0, 0, 7,   5, -4),
-                            intArrayOf(0, 0, 0, 0,   0, 0),
-                            intArrayOf(0, 0, 0, 0,   3, -2),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0,11, 9,  -8, -6),
-                            intArrayOf(0, 0, 0, 0,   0, 1),
-                            intArrayOf(0, 0, 0, 0,  -12, -10),
+                            intArrayOf(0, 0, 0, 7, 5, -4),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 11, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 1),
+                            intArrayOf(0, 0, 0, 0, -12, -10),
                         ),
                 )
 
-            board = board.dropLockedToken(1 )
+            board = board.dropLockedToken(1)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 1,
-                y = 5,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 1,
+                    y = 5,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
 
@@ -274,24 +309,27 @@ class MiniMaxV1ProfileTest :
                 Board(
                     board =
                         arrayOf(
-                            intArrayOf(0, 0, -14, 7,   5, -4),
-                            intArrayOf(0, 0, 0, 0,   0, 0),
-                            intArrayOf(0, 0, 0, 0,   3, -2),
-                            intArrayOf(0, 0, 0, 0,  0, 0),
-                            intArrayOf(0, 0,11, 9,  -8, -6),
-                            intArrayOf(0, 0, 0, 0,   13, 1),
-                            intArrayOf(0, 0, 0, 0,  -12, -10),
+                            intArrayOf(0, 0, -14, 7, 5, -4),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 3, -2),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 11, 9, -8, -6),
+                            intArrayOf(0, 0, 0, 0, 13, 1),
+                            intArrayOf(0, 0, 0, 0, -12, -10),
                         ),
                 )
 
-            board = board.dropLockedToken(1 )
+            board = board.dropLockedToken(1)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 1,
-                y = 5,
-                forSide = 1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 1,
+                    y = 5,
+                    forSide = 1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
 
@@ -300,24 +338,27 @@ class MiniMaxV1ProfileTest :
                 Board(
                     board =
                         arrayOf(
-                            intArrayOf(0, 0, 0,  0,  0,   9),
-                            intArrayOf(0, 0, 0,  0,  0,  -8),
-                            intArrayOf(0, 0, 0,  0,  -6,  5),
-                            intArrayOf(0, 0, 0,  0,  -4,  3),
-                            intArrayOf(0, 0, 0, -12, -2,  1),
-                            intArrayOf(0, 0, 0,  0,  11, -10),
-                            intArrayOf(0, 0, 0,  0,  13,  7),
+                            intArrayOf(0, 0, 0, 0, 0, 9),
+                            intArrayOf(0, 0, 0, 0, 0, -8),
+                            intArrayOf(0, 0, 0, 0, -6, 5),
+                            intArrayOf(0, 0, 0, 0, -4, 3),
+                            intArrayOf(0, 0, 0, -12, -2, 1),
+                            intArrayOf(0, 0, 0, 0, 11, -10),
+                            intArrayOf(0, 0, 0, 0, 13, 7),
                         ),
                 )
 
             board = board.dropLockedToken(1)
 
             val minimax = MiniMaxV3Profile()
-            minimax.lastMovesValue5(
-                board = board,
-                x = 1,
-                y = 4,
-                forSide = -1,
+            minimax.heuristic(
+                HeuristicArgs(
+                    board = board,
+                    x = 1,
+                    y = 4,
+                    forSide = -1,
+                    neededForWin = 4,
+                ),
             ) shouldBe HEURESTIC_WIN
         }
         test("MiniMax #1") {
