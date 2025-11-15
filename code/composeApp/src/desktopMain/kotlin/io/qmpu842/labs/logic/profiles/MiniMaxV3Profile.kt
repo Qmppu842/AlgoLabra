@@ -23,6 +23,16 @@ class MiniMaxV3Profile(
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
 
     companion object {
+        /**
+         *  With this you can handily get multiple versions' of minimax.
+         *  Especially handy for tournaments.
+         *  Just pass list of all these params:
+         *  @param depths what depths should be
+         *  @param timeLimits what time limits there should be
+         *  @param heuristicFunList what heuristic functions to use.
+         *
+         * @return list of profile that contain all the possible combinations of these lists.
+         */
         operator fun invoke(
             depths: List<Int>,
             timeLimits: List<Long> = listOf(TRILLION),
@@ -57,7 +67,7 @@ class MiniMaxV3Profile(
         forSide: Int,
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
-        val startingTime = System.currentTimeMillis()
+//        val startingTime = System.currentTimeMillis()
         val lastMoveX = board.getLastMove() ?: -1
         val minimaxResult =
             minimax2(
@@ -72,8 +82,8 @@ class MiniMaxV3Profile(
                 lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
                 token = abs(board.getOnTurnToken()),
             )
-        val endTime = System.currentTimeMillis()
-        val totalTime = endTime - startingTime
+//        val endTime = System.currentTimeMillis()
+//        val totalTime = endTime - startingTime
 //        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
 //        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         return minimaxResult.second
