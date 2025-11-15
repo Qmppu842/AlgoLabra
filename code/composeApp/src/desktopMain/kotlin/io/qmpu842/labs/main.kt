@@ -44,13 +44,13 @@ fun main2() {
         playerA =
             MiniMaxV3Profile(
                 depth = 6,
-                heuristic = ::zeroHeuristics
+                heuristic = ::zeroHeuristics,
             ),
 //        playerB = ProfileHolder.rand
         playerB =
             MiniMaxV3Profile(
                 depth = 2,
-                heuristic = ::zeroHeuristics
+                heuristic = ::zeroHeuristics,
             ),
     )
 }
@@ -60,7 +60,8 @@ fun main2() {
  * Every profile will play against every other profile
  */
 fun main4() {
-    val competitors = MiniMaxV3Profile(depths =listOf(10,11,12), heuristicFunList = listOf(::zeroHeuristics,::lastMovesValueV5))
+    val competitors =
+        MiniMaxV3Profile(depths = listOf(10, 11, 12), heuristicFunList = listOf(::zeroHeuristics, ::lastMovesValueV5))
     TournamentEngine.startTheTournament(
         competitors,
         amountOfGames = 5,
@@ -71,10 +72,11 @@ fun main4() {
  * The main to list different types of possible lines in board
  */
 fun main3() {
-    counter3()
+//    counter3()
+    counterSensible()
 }
 
-fun main5(){
+fun main5() {
     val zoo = Zo(3)
 
     println("zoo: $zoo")
