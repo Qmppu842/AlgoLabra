@@ -7,7 +7,7 @@ import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.heuristics.HeuristicArgs
 import io.qmpu842.labs.logic.heuristics.HeuristicFun
 import io.qmpu842.labs.logic.heuristics.HeuristicUser
-import io.qmpu842.labs.logic.heuristics.lastMovesValueV5
+import io.qmpu842.labs.logic.heuristics.zeroHeuristics
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -15,7 +15,7 @@ import kotlin.math.min
 class MiniMaxV3Profile(
     override var depth: Int = 10,
     override var timeLimit: Long = TRILLION,
-    override val heuristic: HeuristicFun = ::lastMovesValueV5,
+    override val heuristic: HeuristicFun = ::zeroHeuristics,
 ) : OpponentProfile(),
     HeuristicUser {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())

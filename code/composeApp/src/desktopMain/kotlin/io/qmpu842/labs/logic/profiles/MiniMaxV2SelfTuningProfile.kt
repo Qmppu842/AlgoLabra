@@ -1,10 +1,9 @@
-package io.qmpu842.labs.logic.profiles.minimaxSidesteps
+package io.qmpu842.labs.logic.profiles
 
 import io.qmpu842.labs.helpers.MINIMAX_LOSE
 import io.qmpu842.labs.helpers.MINIMAX_WIN
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.Way
-import io.qmpu842.labs.logic.profiles.OpponentProfile
 import kotlin.math.*
 
 class MiniMaxV2SelfTuningProfile(

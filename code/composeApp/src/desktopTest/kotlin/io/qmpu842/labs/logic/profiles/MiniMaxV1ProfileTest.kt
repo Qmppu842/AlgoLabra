@@ -28,7 +28,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropToken(4, -10)
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 4,
@@ -55,7 +55,7 @@ class MiniMaxV1ProfileTest :
             board = board.dropToken(5, -10)
             board = board.dropToken(3, 11)
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 3,
@@ -78,7 +78,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1)
+            val minimax = MiniMaxV3Profile(depth = 1)
 
             board = board.dropToken(4, -10)
             minimax.lastMovesValue5(
@@ -107,7 +107,7 @@ class MiniMaxV1ProfileTest :
                 board = board.dropLockedToken(0)
             }
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 0,
@@ -133,7 +133,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropToken(2, 5)
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 2,
@@ -159,7 +159,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropToken(4, 5)
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 4,
@@ -184,7 +184,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropToken(1, 7)
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 1,
@@ -210,7 +210,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropToken(2, 7)
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 2,
@@ -235,7 +235,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropLockedToken(2)
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 2,
@@ -260,7 +260,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropLockedToken(1 )
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 1,
@@ -286,7 +286,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropLockedToken(1 )
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 1,
@@ -312,7 +312,7 @@ class MiniMaxV1ProfileTest :
 
             board = board.dropLockedToken(1)
 
-            val minimax = MiniMaxV1Profile()
+            val minimax = MiniMaxV3Profile()
             minimax.lastMovesValue5(
                 board = board,
                 x = 1,
@@ -334,7 +334,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, -10),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = MILLION)
             val result =
                 minimax.minimax2(
                     board = board,
@@ -357,7 +357,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = MILLION)
             val result =
                 minimax.minimax2(
                     board = board,
@@ -380,7 +380,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, -8, -6),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = MILLION)
             val result =
                 minimax.minimax2(
                     board = board,
@@ -403,7 +403,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = MILLION)
             val result =
                 minimax.minimax2(
                     board = board,
@@ -426,7 +426,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, 7),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = MILLION)
             val result =
                 minimax.minimax2(
                     board = board,
@@ -449,7 +449,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = MILLION)
             val result =
                 minimax.minimax2(
                     board = board,
@@ -472,7 +472,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = TRILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = TRILLION)
             val result =
                 minimax.minimax2(
                     board = board,
@@ -497,7 +497,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, 7),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = MILLION)
             val result =
                 minimax.minimax2(
                     board = board,
@@ -520,7 +520,7 @@ class MiniMaxV1ProfileTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
-            val minimax = MiniMaxV1Profile(depth = 1, timeLimit = MILLION)
+            val minimax = MiniMaxV3Profile(depth = 1, timeLimit = MILLION)
             val result =
                 minimax.minimax2(
                     board = board,
