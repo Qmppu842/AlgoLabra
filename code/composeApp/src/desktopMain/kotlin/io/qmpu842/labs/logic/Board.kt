@@ -225,6 +225,7 @@ data class Board(
      * @param token the token to drop
      *
      * @return the modified board
+     * @return Pair where first is the board, and second is the y value where the token ended. -1 if did not have space.
      */
     fun dropTokenWithOutHistory(
         column: Int,
