@@ -49,7 +49,7 @@ fun TheGame(modifier: Modifier = Modifier) {
                 MiniMaxV3Profile(depth = 4, heuristic = ::zeroHeuristics),
 //                ProfileHolder.minimaxDepth12TimeInf,
                 MiniMaxV3Profile(depth = 4, heuristic = ::lastMovesValueV5),
-//                MiniMaxV1Profile(depth = 4, timeLimit = 2000000),
+//                MiniMaxV3Profile(depth = 4, timeLimit = 2000000),
                 bc =
                     BoardConfig(
                         width = 7,
