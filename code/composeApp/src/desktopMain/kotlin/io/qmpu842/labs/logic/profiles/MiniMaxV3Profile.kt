@@ -1,3 +1,4 @@
+//noinspection DuplicatedCode
 package io.qmpu842.labs.logic.profiles
 
 import io.qmpu842.labs.helpers.MINIMAX_LOSE
@@ -12,6 +13,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+//noinspection DuplicatedCode
 class MiniMaxV3Profile(
     override var depth: Int = 10,
     override var timeLimit: Long = TRILLION,
@@ -49,6 +51,7 @@ class MiniMaxV3Profile(
 
     var currentMaxTime = Long.MAX_VALUE
 
+    //noinspection DuplicatedCode
     override fun nextMove(
         board: Board,
         forSide: Int,

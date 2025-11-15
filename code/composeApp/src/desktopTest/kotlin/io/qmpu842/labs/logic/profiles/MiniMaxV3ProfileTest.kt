@@ -6,7 +6,7 @@ import io.qmpu842.labs.helpers.*
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.heuristics.HeuristicArgs
 
-class MiniMaxV1ProfileTest :
+class MiniMaxV3ProfileTest :
     FunSpec({
 
         beforeTest {
