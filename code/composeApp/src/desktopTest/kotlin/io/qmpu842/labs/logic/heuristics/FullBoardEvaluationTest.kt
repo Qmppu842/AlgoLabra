@@ -13,7 +13,14 @@ data class BoardToEval(
 //    val heuristicArgs: HeuristicArgs,
     val forSide: Int,
     val expectedPotential: IntRange,
-)
+) {
+    constructor(boardAsString: String, evalFunction: HeuristicFun, forSide: Int, expectedPotential: Int) : this(
+        boardAsString,
+        evalFunction,
+        forSide,
+        expectedPotential..expectedPotential,
+    )
+}
 // {
 //    companion object{
 //        operator fun invoke(boardAsString: String){
@@ -54,15 +61,20 @@ class FullBoardEvaluationTest :
                     boardAsString = "",
                     evalFunction = ::fullBoardEvaluation,
                     forSide = 1,
-                    expectedPotential = -1..1,
-                ),
-                BoardToEval(
-                    boardAsString = "",
-                    evalFunction = ::fullBoardEvaluation,
-                    forSide = 1,
                     expectedPotential = 0..0,
                 ),
-            ) { (boardAsString, evalFunction, forSide,expectedPotential) ->
+                BoardToEval(
+                    boardAsString = "4",
+                    evalFunction = ::fullBoardEvaluation,
+                    forSide = 1,
+                    expectedPotential = 7,
+                ),                BoardToEval(
+                    boardAsString = "0",
+                    evalFunction = ::fullBoardEvaluation,
+                    forSide = 1,
+                    expectedPotential = 3,
+                ),
+            ) { (boardAsString, evalFunction, forSide, expectedPotential) ->
 
                 val bc = BoardConfig()
                 val board =
