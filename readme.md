@@ -9,6 +9,8 @@ Updates are loading...
 ## Viikkoraportit
 
 - [Viikko 1](documents/viikkoraportit/viikko1.md)
+- [Viikko 2](documents/viikkoraportit/viikko2.md)
+- [Viikko 3](documents/viikkoraportit/viikko3.md)
 
 
 ## Koodi

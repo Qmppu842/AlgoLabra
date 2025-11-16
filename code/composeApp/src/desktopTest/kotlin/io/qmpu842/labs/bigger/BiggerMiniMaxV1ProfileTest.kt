@@ -7,17 +7,17 @@ import io.qmpu842.labs.helpers.BoardConfig
 import io.qmpu842.labs.helpers.TRILLION
 import io.qmpu842.labs.logic.Board
 import io.qmpu842.labs.logic.GameHolder
-import io.qmpu842.labs.logic.profiles.MiniMaxV1Profile
+import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 import io.qmpu842.labs.logic.profiles.OpponentProfile
 
 data class GameToPlay(
     val playerA: OpponentProfile =
-        MiniMaxV1Profile(
+        MiniMaxV3Profile(
             depth = 9,
             timeLimit = TRILLION,
         ),
     val playerB: OpponentProfile =
-        MiniMaxV1Profile(
+        MiniMaxV3Profile(
             depth = 9,
             timeLimit = TRILLION,
         ),
@@ -26,12 +26,12 @@ data class GameToPlay(
 ) {
     constructor(depth: Int = 9, start: String, end: String) : this(
         playerA =
-            MiniMaxV1Profile(
+            MiniMaxV3Profile(
                 depth = depth,
                 timeLimit = TRILLION,
             ),
         playerB =
-            MiniMaxV1Profile(
+            MiniMaxV3Profile(
                 depth = depth,
                 timeLimit = TRILLION,
             ),
@@ -55,7 +55,7 @@ class BiggerMiniMaxV1ProfileTest :
         test("nextMove original") {
             val bc = BoardConfig()
             val minimax =
-                MiniMaxV1Profile(
+                MiniMaxV3Profile(
                     depth = 9,
                     timeLimit = TRILLION,
                 )

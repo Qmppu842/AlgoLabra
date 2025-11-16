@@ -1,6 +1,5 @@
 package io.qmpu842.labs
 
-
 fun counter1() {
     val resultSet = mutableSetOf<String>()
 //    var totalAmount = 0
@@ -227,12 +226,12 @@ fun cutAndMirror(
 ): Boolean {
     val thing =
         emptyList<String>() +
-                res + mirror(res) +
+            res + mirror(res) +
 //                cutSides(res) +
 //                cutSides(mirror(res))
 //            cutSidesExtreme(res) +
 //            cutSidesExtreme(mirror(res)) +
-                emptyList()
+            emptyList()
     thing.forEach { t ->
         if (toSet.contains(t)) {
             return true
@@ -244,3 +243,28 @@ fun cutAndMirror(
 fun cutSides(key: String): List<String> = listOf(key.take(key.length - 1), key.takeLast(key.length - 1))
 
 fun cutSidesExtreme(key: String): List<String> = listOf(key.take(key.length - 2), key.takeLast(key.length - 2))
+
+fun counterSensible() {
+    val resultSet = mutableSetOf<String>()
+    val allowed = listOf('+', '-', 'o')
+//    val dicti = hashMapOf<String, Int>()
+
+    val all =
+        (1..7).fold(listOf("")) { acc, _ ->
+            acc.flatMap { prefix -> allowed.map { prefix + it } }
+        }
+
+    all.forEach { text ->
+        if (!resultSet.contains(text)) {
+            if (!resultSet.contains(text.reversed())) {
+                resultSet.add(text)
+            }
+        }
+    }
+
+    println("Set: $resultSet")
+    println("total amount: ${resultSet.size}")
+    resultSet.forEach { t ->
+        println("\"$t\",")
+    }
+}

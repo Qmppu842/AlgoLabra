@@ -1,74 +1,36 @@
-//noinspection DuplicatedCode
 package io.qmpu842.labs.logic.profiles
 
 import io.qmpu842.labs.helpers.MINIMAX_LOSE
 import io.qmpu842.labs.helpers.MINIMAX_WIN
-import io.qmpu842.labs.helpers.TRILLION
+import io.qmpu842.labs.helpers.SoBaaaad2
 import io.qmpu842.labs.logic.Board
-import io.qmpu842.labs.logic.heuristics.HeuristicArgs
-import io.qmpu842.labs.logic.heuristics.HeuristicFun
-import io.qmpu842.labs.logic.heuristics.HeuristicUser
-import io.qmpu842.labs.logic.heuristics.zeroHeuristics
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-
+import io.qmpu842.labs.logic.Way
+import kotlin.math.*
 //noinspection DuplicatedCode
-class MiniMaxV3Profile(
+class MiniMaxV2SelfTuningProfile(
     override var depth: Int = 10,
-    override var timeLimit: Long = TRILLION,
-    override val heuristic: HeuristicFun = ::zeroHeuristics,
-) : OpponentProfile(),
-    HeuristicUser {
+    override var timeLimit: Long = 100L,
+) : OpponentProfile() {
     constructor(depth: Int, timeLimit: Int) : this(depth = depth, timeLimit = timeLimit.toLong())
-
-    companion object {
-        /**
-         *  With this you can handily get multiple versions' of minimax.
-         *  Especially handy for tournaments.
-         *  Just pass list of all these params:
-         *  @param depths what depths should be
-         *  @param timeLimits what time limits there should be
-         *  @param heuristicFunList what heuristic functions to use.
-         *
-         * @return list of profile that contain all the possible combinations of these lists.
-         */
-        operator fun invoke(
-            depths: List<Int>,
-            timeLimits: List<Long> = listOf(TRILLION),
-            heuristicFunList: List<HeuristicFun>,
-        ): List<MiniMaxV3Profile> {
-            val profiles = mutableListOf<MiniMaxV3Profile>()
-            for (depth in depths) {
-                for (timeLimit in timeLimits) {
-                    for (heuristicFun in heuristicFunList) {
-                        profiles.add(MiniMaxV3Profile(depth = depth, timeLimit = timeLimit, heuristic = heuristicFun))
-                    }
-                }
-            }
-
-            return profiles
-        }
-    }
-
-//    override val name: String
-//        get() = "${this::class.simpleName}(${::heuristic.toString()})"
-//    override val name: String
-//        get() {
-//            println("name: ${MiniMaxV3Profile::heuristic.hashCode()}")
-//            return "${this::class.simpleName}(${::heuristic.toString()})"
-//        }
 
     var currentMaxTime = Long.MAX_VALUE
 
-    //noinspection DuplicatedCode
+    /**
+     * This is dumb
+     * it only purpose is that min and max imports stay even if I comment a/b part in minimax.
+     */
+    fun dumm() {
+        val asd = min(1, 3)
+        val qwe = max(1, 3)
+    }
+
     override fun nextMove(
         board: Board,
         forSide: Int,
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
-//        val startingTime = System.currentTimeMillis()
-        val lastMoveX = board.getLastMove() ?: -1
+        val startingTime = System.currentTimeMillis()
+        val thinn = board.getLastMove() ?: -1
         val minimaxResult =
             minimax2(
                 board = board,
@@ -78,14 +40,16 @@ class MiniMaxV3Profile(
                 beta = Int.MAX_VALUE,
                 forLastSide = -forSide,
                 neededForWin = board.boardConfig.neededForWin,
-                lastX = lastMoveX,
-                lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
+                lastX = thinn,
+                lastY = if (thinn != -1) board.getWellSpace(thinn) else -1,
+//                lastX = -1,
+//                lastY = -1,
                 token = abs(board.getOnTurnToken()),
             )
-//        val endTime = System.currentTimeMillis()
-//        val totalTime = endTime - startingTime
-//        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
-//        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
+        val endTime = System.currentTimeMillis()
+        val totalTime = endTime - startingTime
+        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
+        println("The Minimax self tuning valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         return minimaxResult.second
     }
 
@@ -115,6 +79,8 @@ class MiniMaxV3Profile(
         val hasStopped = isBoardFull(board.board)
 
         if (terminal) {
+            SoBaaaad2.updateOnWin(board, lastX, lastY, forLastSide, this.depth - depth)
+            SoBaaaad2.updateOnLose(board, lastX, lastY, -forLastSide, this.depth - depth)
             return if (!maximizingPlayer) {
                 Pair(MINIMAX_WIN + depth, lastX)
             } else {
@@ -129,14 +95,12 @@ class MiniMaxV3Profile(
 
         if (depth == 0 || time >= currentMaxTime) {
             return Pair(
-                heuristic(
-                    HeuristicArgs(
-                        board = board,
-                        x = lastX,
-                        y = lastY,
-                        forSide = forLastSide * if (maximizingPlayer) -1 else 1,
-                        neededForWin = neededForWin,
-                    ),
+                lastMovesValue5(
+                    board = board,
+                    x = lastX,
+                    y = lastY,
+                    forSide = forLastSide * if (maximizingPlayer) -1 else 1,
+                    neededForWin = neededForWin,
                 ),
                 lastX,
             )
@@ -212,5 +176,103 @@ class MiniMaxV3Profile(
             if (board[aaa][0] == 0) return false
         }
         return true
+    }
+
+    fun lastMovesValue5(
+        board: Board,
+        x: Int,
+        y: Int,
+        forSide: Int,
+        neededForWin: Int = 4,
+    ): Int {
+        var holder = 0
+        for (way in Way.half) {
+            val opposite = Way.opp[way.ordinal]
+            val resOma =
+                checkLine(
+                    board2 = board,
+                    x = x + way.x,
+                    y = y + way.y,
+                    sign = forSide,
+                    way = way,
+                )
+
+            val resOmaback =
+                checkLine(
+                    board2 = board,
+                    x = x + opposite.x,
+                    y = y + opposite.y,
+                    sign = forSide,
+                    way = opposite,
+                )
+//            val combo = resOmaback.reversed() + board.board[x][y] + resOma
+            val combo = resOmaback.reversed() + "+" + resOma
+//            if (combo.size < neededForWin) continue
+            if (combo.length < neededForWin) continue
+//            println("combo: $combo")
+            val ggfgf = SoBaaaad2.getter(combo)
+//            println("ggfgf value: $ggfgf")
+            if (abs(ggfgf) > holder) {
+                holder = ggfgf
+            }
+        }
+        return holder
+    }
+
+    /**
+     * Counts how many of each thing in the line
+     * @param x todo
+     * @param y todo
+     * @param sign what things to count -1/+1/0
+     * @param way what way the line should go
+     *
+     * @return the amount of sign countered before other sign broke the chain
+     */
+    fun checkLine(
+        board2: Board,
+        x: Int,
+        y: Int,
+        sign: Int,
+        way: Way,
+    ): String {
+        val board = board2.board
+        var x1 = x
+        var y1 = y
+        val xMax = board.size
+        var thinnge = ""
+        while (x1 in 0 until xMax) {
+            val row = board[x1]
+            if (y1 !in 0..<row.size) break
+            val mm = row[y1].sign * sign
+//            println("row[y1]: ${row[y1]}")
+//            println("mm: $mm")
+            if (mm == 1) {
+                thinnge += "+"
+            } else if (mm == -1) {
+                thinnge += "-"
+            } else {
+                if (way != Way.Down && way != Way.Up) {
+                    var y2 = y1
+                    var merkki = row[y2]
+                    var counter = -1
+                    while (merkki == 0 && y2 < row.size) {
+                        merkki = row[y2]
+                        counter += 1
+                        y2 += 1
+                    }
+                    thinnge +=
+                        if (counter > 1) {
+                            if (counter % 2 == 1) "¤" else "*"
+                        } else {
+                            "o"
+                        }
+                } else {
+                    thinnge += "o"
+                }
+            }
+            x1 += way.x
+            y1 += way.y
+        }
+        return thinnge
     }
 }
