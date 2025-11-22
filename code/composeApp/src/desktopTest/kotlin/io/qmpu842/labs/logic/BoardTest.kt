@@ -365,7 +365,6 @@ class BoardTest :
             list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0, -1)
         }
 
-
         test("getLegalsMiddleOutSeq on empty odd board #22") {
             var board =
                 Board(
@@ -381,7 +380,7 @@ class BoardTest :
                 list.add(move)
                 print(move)
                 if (move == -1) break
-                for (move1 in  board.getLegalsMiddleOutSeq()) {
+                for (move1 in board.getLegalsMiddleOutSeq()) {
                     list2.add(move1)
                     print(move1)
                     if (move1 == -1) break
@@ -390,7 +389,6 @@ class BoardTest :
             list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0, -1)
         }
 
-
         test("getLegalsMiddleOutSeq on empty odd board #2222") {
             var board =
                 Board(
@@ -398,8 +396,12 @@ class BoardTest :
                     boardHeight = 6,
                     neededForWin = 4,
                 )
-            fun thinggg (boarde: Board, list: MutableList<Int>): MutableList<Int> {
-                for (move1 in  boarde.getLegalsMiddleOutSeq()) {
+
+            fun thinggg(
+                boarde: Board,
+                list: MutableList<Int>,
+            ): MutableList<Int> {
+                for (move1 in boarde.getLegalsMiddleOutSeq()) {
                     list.add(move1)
                     print(move1)
                     if (move1 == -1) break
@@ -414,7 +416,7 @@ class BoardTest :
                 list.add(move)
                 print(move)
                 if (move == -1) break
-                for (move1 in  board.getLegalsMiddleOutSeq()) {
+                for (move1 in board.getLegalsMiddleOutSeq()) {
                     list2.add(move1)
                     print(move1)
                     if (move1 == -1) break
@@ -738,5 +740,89 @@ class BoardTest :
 
             board = board.dropToken(0, -12)
             board.isLastPlayWinning(4) shouldBe true
+        }
+
+        test("getVerticalLineValues with empty board") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(0, 0)
+        }
+
+        test("getVerticalLineValues with stacked lines of three") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, -6, 5),
+                            intArrayOf(0, 0, 0, 0, -4, 3),
+                            intArrayOf(0, 0, 0, 0, -2, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(0, 0)
+        }
+
+        test("getVerticalLineValues with two vertical towers of three") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, -6, -4, -2),
+                            intArrayOf(0, 0, 0, 5, 3, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(9, 9)
+        }
+        test("getVerticalLineValues with two vertical towers of two") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, -4, -2),
+                            intArrayOf(0, 0, 0, 0, 3, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(4, 4)
+        }
+
+        test("getVerticalLineValues with six vertical towers of three and two") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, -4, -2),
+                            intArrayOf(0, 0, 0, 5, 3, 1),
+                            intArrayOf(0, 0, 0, 0, -8, -6),
+                            intArrayOf(0, 0, 0, 11, 9, 7),
+                            intArrayOf(0, 0, 0, 0, -12, -10),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(18, 12)
         }
     })
