@@ -536,6 +536,9 @@ data class Board(
     val rightSeina = (0..<boardConfig.height).map { y -> Point(0, y) }
     val leftSeina = (0..<boardConfig.height).map { y -> Point(boardConfig.width - 1, y) }
 
+    val rightSeinaJaPohja = (pohja + rightSeina).toSet().toList()
+    val leftSeinaJaKatto = (katto + leftSeina).toSet().toList()
+
     /**
      * What a monster of function
      * Maybe I will get around making it neat and tidy.
@@ -639,8 +642,8 @@ data class Board(
 //            while (!((nextX >= boardConfig.width || nextX < 0) && (nextY >= boardConfig.height || nextY < 0))) {
             println("new point: $point")
             while (true) {
-                if (!(nextX < boardConfig.width  && nextX >= 0)) break
-                if (!(nextY < boardConfig.height  && nextY >= 0)) break
+                if (!(nextX < boardConfig.width && nextX >= 0)) break
+                if (!(nextY < boardConfig.height && nextY >= 0)) break
 
                 val current = board[nextX][nextY].sign
 //                val current = board[nextY][nextX].sign
@@ -663,15 +666,16 @@ data class Board(
                     if (value2 == -1) {
                         justValue -= 10
                     }
-
+                }
+                if (counter >= winn-1) {
                     if (justValue > 0) {
                         println("mahollista kamaa: $justValue")
                         if (justValue % 10.0 == 0.0) {
                             val amount = justValue / 10
-                            totalPlayer2 += amount  * amount
+                            totalPlayer2 += amount * amount
                             println("totalPlayer2: $totalPlayer2")
                         } else if (justValue < 10) {
-                            totalPlayer1 += justValue  * justValue
+                            totalPlayer1 += justValue * justValue
                             println("totalplayer1: $totalPlayer1")
                         }
                     }
