@@ -12,9 +12,9 @@
 
 ## Ajan käyttö:
 
-| Päivä       | aika | syy                  |
-|-------------|------|----------------------|
-| 23/11       | 1h   | ??                   |
-| 29/11       | ??h  | ??                   |
-| 22-29/11    | ??h  | This weeks total     |
-| 27/10-22/11 | 21h  | Total Total rebooted |
+| Päivä       | aika | syy                       |
+|-------------|------|---------------------------|
+| 23/11       | 6h   | Iteratiivinen syvemenimen |
+| 29/11       | ??h  | ??                        |
+| 22-29/11    | ??h  | This weeks total          |
+| 27/10-22/11 | 21h  | Total Total rebooted      |

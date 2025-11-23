@@ -12,6 +12,7 @@ import io.qmpu842.labs.logic.GameHolder
 import io.qmpu842.labs.logic.heuristics.fullBoardEvaluation
 import io.qmpu842.labs.logic.heuristics.lastMovesValueV5
 import io.qmpu842.labs.logic.heuristics.zeroHeuristics
+import io.qmpu842.labs.logic.profiles.MiniMaxV25Profile
 import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 
 /**
@@ -77,25 +78,25 @@ fun main4() {
  */
 fun main() {
     val depths = listOf(10)
-//    val heurs = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation)
-    val heurs = listOf(::fullBoardEvaluation)
-    val times:List<Long> = listOf( 500, 1000)
+    val heurs = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation)
+//    val heurs = listOf(::fullBoardEvaluation)
+    val times: List<Long> = listOf(500, 1000)
 
     val competitors =
         MiniMaxV3Profile(
-            depths = depths,
+            depths = listOf(10),
             heuristicFunList = heurs,
             timeLimits = times,
         )
 
-//    val oldGuard =
-//        MiniMaxV25Profile(
-//            depths = depths,
-//            heuristicFunList = heurs,
-//            timeLimits = times,
-//        )
+    val oldGuard =
+        MiniMaxV25Profile(
+            depths = listOf(2, 6, 8),
+            heuristicFunList = heurs,
+            timeLimits = listOf(1000),
+        )
     TournamentEngine.startTheTournament(
-        competitors,//+oldGuard,
+        competitors + oldGuard,
         amountOfGames = 5,
     )
 }

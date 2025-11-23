@@ -67,7 +67,7 @@ class MiniMaxV25Profile(
 //        val startingTime = System.currentTimeMillis()
         val lastMoveX = board.getLastMove() ?: -1
         val minimaxResult =
-            minimax2(
+            minimax25(
                 board = board,
                 depth = depth,
                 maximizingPlayer = true,
@@ -93,7 +93,7 @@ class MiniMaxV25Profile(
      *  Why this way?
      *  Because the first round of minimax does nothing, only after it can do the first moves
      */
-    fun minimax2(
+    fun minimax25(
         board: Board,
         depth: Int = this.depth,
         maximizingPlayer: Boolean = true,
@@ -151,7 +151,7 @@ class MiniMaxV25Profile(
                 if (move == -1) break
                 val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
-                    minimax2(
+                    minimax25(
                         board = things.first,
                         depth = depth - 1,
                         maximizingPlayer = false,
@@ -180,7 +180,7 @@ class MiniMaxV25Profile(
                 if (move == -1) break
                 val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
-                    minimax2(
+                    minimax25(
                         board = things.first,
                         depth = depth - 1,
                         maximizingPlayer = true,
