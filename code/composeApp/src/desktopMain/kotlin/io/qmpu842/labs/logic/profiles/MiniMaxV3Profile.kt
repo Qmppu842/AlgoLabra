@@ -60,7 +60,10 @@ class MiniMaxV3Profile(
 //        }
 
     override val name: String
-        get() =  "${this::class.simpleName}"
+        get() {
+            val process = "$heuristic".split(" ")[1].split("(")[0]
+            return "${this::class.simpleName}($process)"
+        }
 
     var currentMaxTime = Long.MAX_VALUE
 
