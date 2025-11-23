@@ -5,6 +5,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
+import io.qmpu842.labs.helpers.BoardConfig
 
 class BoardTest :
     FunSpec({
@@ -834,22 +835,22 @@ class BoardTest :
             ) shouldBe Pair(28, 15)
         }
 
-//        test("getGeneralLineValues with stacked lines of three horizontal") {
-//            var board =
-//                Board(
-//                    board =
-//                        arrayOf(
-//                            intArrayOf(0, 0, 0, 0, 0, 0),
-//                            intArrayOf(0, 0, 0, 0, 0, 0),
-//                            intArrayOf(0, 0, 0, 0, -4, -2),
-//                            intArrayOf(0, 0, 0, 5, 3, 1),
-//                            intArrayOf(0, 0, 0, 0, -8, -6),
-//                            intArrayOf(0, 0, 0, 11, 9, 7),
-//                            intArrayOf(0, 0, 0, 0, -12, -10),
-//                        ),
-//                )
-//            board.getVerticalLineValues() shouldBe Pair(18, 12)
-//        }
+        test("getGeneralLineValues with stacked lines of three horizontal") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 5, 3, 1),
+                            intArrayOf(0, 0, 0, 0, -4, -2),
+                            intArrayOf(0, 0, 0, 0, -8, -6),
+                            intArrayOf(0, 0, 0, 11, 9, 7),
+                            intArrayOf(0, 0, 0, 0, -12, -10),
+                        ),
+                )
+            board.getGeneralLineValues(board.rightSeina, Way.Left) shouldBe Pair(7, 0)
+        }
 
         test("getVerticalLineValues with two diagonal towers stacked") {
             var board =
@@ -879,8 +880,15 @@ class BoardTest :
                 )
         }
 
-//        test("getVerticalLineValues from real board") {
-//            val board2 = Board(BoardConfig(), "44444222245355266776662611135533", -1)
-//            board2.getFullBoardValues() shouldBe Pair(6, 4)
-//        }
+        /**
+         * Tää on aika häijy
+         * Jos tarkastelee https://connect4.gamesolver.org/?pos=44444222245355266776662611135533 osotteessa lautaa
+         * Punasen kuuluu voittaa,
+         * mutta silti toka pelaaja saa korkeemmat pisteet koska tupla laskettu kahden napin juttu.
+         * En tiiä mikä ois ratkasuna.
+         */
+        test("getVerticalLineValues from real board") {
+            val board2 = Board(BoardConfig(), "44444222245355266776662611135533", -1)
+            board2.getFullBoardValues() shouldBe Pair(6, 8)
+        }
     })

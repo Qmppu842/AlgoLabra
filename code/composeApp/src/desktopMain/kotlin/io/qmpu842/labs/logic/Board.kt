@@ -507,19 +507,19 @@ data class Board(
         var player1 = 0
         var player2 = 0
 
-        val (vert1, vert2) = getVerticalLineValues()
+        val (vert1, vert2) = getGeneralLineValues(katto, Way.Down)
         player1 += vert1
         player2 += vert2
 
-        val (hori1, hori2) = getHorizontalLineValues()
+        val (hori1, hori2) = getGeneralLineValues(rightSeina, Way.Left)
         player1 += hori1
         player2 += hori2
 
-        val (diagUp1, diagUp2) = getDiagonalUpLineValues()
+        val (diagUp1, diagUp2) = getGeneralLineValues(rightSeinaJaPohja, Way.LeftUp)
         player1 += diagUp1
         player2 += diagUp2
 
-        val (diagDown1, diagDown2) = getDiagonalDownLineValues()
+        val (diagDown1, diagDown2) = getGeneralLineValues(leftSeinaJaPohja, Way.UpRight)
         player1 += diagDown1
         player2 += diagDown2
 
@@ -538,6 +538,7 @@ data class Board(
 
     val rightSeinaJaPohja = (pohja + rightSeina).toSet().toList()
     val leftSeinaJaKatto = (katto + leftSeina).toSet().toList()
+    val leftSeinaJaPohja = (pohja + leftSeina).toSet().toList()
 
     /**
      * What a monster of function
@@ -640,7 +641,7 @@ data class Board(
             var counter = 0
             var justValue = 0
 //            while (!((nextX >= boardConfig.width || nextX < 0) && (nextY >= boardConfig.height || nextY < 0))) {
-            println("new point: $point")
+//            println("new point: $point")
             while (true) {
                 if (!(nextX < boardConfig.width && nextX >= 0)) break
                 if (!(nextY < boardConfig.height && nextY >= 0)) break
@@ -652,12 +653,12 @@ data class Board(
                 } else if (current == -1) {
                     justValue += 10
                 }
-                println("justValue: $justValue")
-                println("counter: $counter")
+//                println("justValue: $justValue")
+//                println("counter: $counter")
 //                println("(x|y): ($nextX|$nextY) = ${board[nextX][nextY]}")
 //                println("(y|x): ($nextY|$nextX) = ${board[nextY][nextX]}")
                 if (counter >= winn) {
-                    println("nyt sisällä")
+//                    println("nyt sisällä")
                     val value2 = board[nextX - way.x * winn][nextY - way.y * winn].sign
 //                    val value2 = board[nextY - way.y * winn][nextX - way.x * winn].sign
                     if (value2 == 1) {
@@ -669,14 +670,14 @@ data class Board(
                 }
                 if (counter >= winn-1) {
                     if (justValue > 0) {
-                        println("mahollista kamaa: $justValue")
+//                        println("mahollista kamaa: $justValue")
                         if (justValue % 10.0 == 0.0) {
                             val amount = justValue / 10
                             totalPlayer2 += amount * amount
-                            println("totalPlayer2: $totalPlayer2")
+//                            println("totalPlayer2: $totalPlayer2")
                         } else if (justValue < 10) {
                             totalPlayer1 += justValue * justValue
-                            println("totalplayer1: $totalPlayer1")
+//                            println("totalplayer1: $totalPlayer1")
                         }
                     }
                 }
@@ -692,7 +693,7 @@ data class Board(
 //                if (!(nextY < boardConfig.height && nextY >= 0)) break
             }
         }
-        println("loppu")
+//        println("loppu")
         return Pair(totalPlayer1, totalPlayer2)
     }
 }
