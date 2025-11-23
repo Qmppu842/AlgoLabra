@@ -5,6 +5,7 @@ import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.shouldBe
+import io.qmpu842.labs.helpers.BoardConfig
 
 class BoardTest :
     FunSpec({
@@ -365,7 +366,6 @@ class BoardTest :
             list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0, -1)
         }
 
-
         test("getLegalsMiddleOutSeq on empty odd board #22") {
             var board =
                 Board(
@@ -381,7 +381,7 @@ class BoardTest :
                 list.add(move)
                 print(move)
                 if (move == -1) break
-                for (move1 in  board.getLegalsMiddleOutSeq()) {
+                for (move1 in board.getLegalsMiddleOutSeq()) {
                     list2.add(move1)
                     print(move1)
                     if (move1 == -1) break
@@ -390,7 +390,6 @@ class BoardTest :
             list shouldContainInOrder listOf(3, 4, 2, 5, 1, 6, 0, -1)
         }
 
-
         test("getLegalsMiddleOutSeq on empty odd board #2222") {
             var board =
                 Board(
@@ -398,8 +397,12 @@ class BoardTest :
                     boardHeight = 6,
                     neededForWin = 4,
                 )
-            fun thinggg (boarde: Board, list: MutableList<Int>): MutableList<Int> {
-                for (move1 in  boarde.getLegalsMiddleOutSeq()) {
+
+            fun thinggg(
+                boarde: Board,
+                list: MutableList<Int>,
+            ): MutableList<Int> {
+                for (move1 in boarde.getLegalsMiddleOutSeq()) {
                     list.add(move1)
                     print(move1)
                     if (move1 == -1) break
@@ -414,7 +417,7 @@ class BoardTest :
                 list.add(move)
                 print(move)
                 if (move == -1) break
-                for (move1 in  board.getLegalsMiddleOutSeq()) {
+                for (move1 in board.getLegalsMiddleOutSeq()) {
                     list2.add(move1)
                     print(move1)
                     if (move1 == -1) break
@@ -738,5 +741,154 @@ class BoardTest :
 
             board = board.dropToken(0, -12)
             board.isLastPlayWinning(4) shouldBe true
+        }
+
+        test("getGeneralLineValues with empty board") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(0, 0)
+        }
+
+        test("getGeneralLineValues with stacked lines of three") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, -6, 5),
+                            intArrayOf(0, 0, 0, 0, -4, 3),
+                            intArrayOf(0, 0, 0, 0, -2, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(0, 3)
+        }
+
+        test("getGeneralLineValues with two vertical towers of three") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, -6, -4, -2),
+                            intArrayOf(0, 0, 0, 5, 3, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(14, 14)
+            board.getGeneralLineValues(
+                startingPoints = board.katto,
+                way = Way.Down,
+            ) shouldBe Pair(14, 14)
+        }
+        test("getGeneralLineValues with two vertical towers of two") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, -4, -2),
+                            intArrayOf(0, 0, 0, 0, 3, 1),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(5, 5)
+        }
+
+        test("getGeneralLineValues with six vertical towers of three and two") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, -4, -2),
+                            intArrayOf(0, 0, 0, 5, 3, 1),
+                            intArrayOf(0, 0, 0, 0, -8, -6),
+                            intArrayOf(0, 0, 0, 11, 9, 7),
+                            intArrayOf(0, 0, 0, 0, -12, -10),
+                        ),
+                )
+            board.getVerticalLineValues() shouldBe Pair(28, 15)
+            board.getGeneralLineValues(
+                startingPoints = board.katto,
+                way = Way.Down,
+            ) shouldBe Pair(28, 15)
+        }
+
+        test("getGeneralLineValues with stacked lines of three horizontal") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 5, 3, 1),
+                            intArrayOf(0, 0, 0, 0, -4, -2),
+                            intArrayOf(0, 0, 0, 0, -8, -6),
+                            intArrayOf(0, 0, 0, 11, 9, 7),
+                            intArrayOf(0, 0, 0, 0, -12, -10),
+                        ),
+                )
+            board.getGeneralLineValues(board.rightSeina, Way.Left) shouldBe Pair(7, 0)
+        }
+
+        test("getVerticalLineValues with two diagonal towers stacked") {
+            var board =
+                Board(
+                    board =
+                        arrayOf(
+                            intArrayOf(0, 0, 0, 0, 0, 1),
+                            intArrayOf(0, 0, 0, 0, 9, -2),
+                            intArrayOf(0, 0, 0, 5, -4, 3),
+                            intArrayOf(0, 0, 0, -8, 7, -6),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                            intArrayOf(0, 0, 0, 0, 0, 0),
+                        ),
+                )
+
+            board.getGeneralLineValues((board.pohja + board.rightSeina).toSet().toList(), Way.LeftUp) shouldBe
+                Pair(
+                    19,
+                    15,
+                )
+
+            board.getGeneralLineValues(board.rightSeinaJaPohja, Way.LeftUp) shouldBe
+                Pair(
+                    19,
+                    15,
+                )
+        }
+
+        /**
+         * Tää on aika häijy
+         * Jos tarkastelee https://connect4.gamesolver.org/?pos=44444222245355266776662611135533 osotteessa lautaa
+         * Punasen kuuluu voittaa,
+         * mutta silti toka pelaaja saa korkeemmat pisteet koska tupla laskettu kahden napin juttu.
+         * En tiiä mikä ois ratkasuna.
+         */
+        test("getVerticalLineValues from real board") {
+            val board2 = Board(BoardConfig(), "44444222245355266776662611135533", -1)
+            board2.getFullBoardValues() shouldBe Pair(6, 8)
         }
     })

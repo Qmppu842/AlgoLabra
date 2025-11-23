@@ -19,3 +19,6 @@ typealias HeuristicFun = (HeuristicArgs) -> Int
 interface HeuristicUser {
     val heuristic: HeuristicFun
 }
+
+@Target(AnnotationTarget.FUNCTION)
+annotation class HeurName(val nimi: String)

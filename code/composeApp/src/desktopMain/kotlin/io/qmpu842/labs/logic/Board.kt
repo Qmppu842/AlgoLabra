@@ -69,7 +69,7 @@ data class Board(
             board.forEachIndexed { index, well ->
                 well.forEach { target ->
                     if (target != 0) {
-                        wellMap.put(abs(target), index)
+                        wellMap[abs(target)] = index
                     }
                 }
             }
@@ -501,5 +501,199 @@ data class Board(
             allSize += ints.size
         }
         return allSize
+    }
+
+    fun getFullBoardValues(): Pair<Int, Int> {
+        var player1 = 0
+        var player2 = 0
+
+        val (vert1, vert2) = getGeneralLineValues(katto, Way.Down)
+        player1 += vert1
+        player2 += vert2
+
+        val (hori1, hori2) = getGeneralLineValues(rightSeina, Way.Left)
+        player1 += hori1
+        player2 += hori2
+
+        val (diagUp1, diagUp2) = getGeneralLineValues(rightSeinaJaPohja, Way.LeftUp)
+        player1 += diagUp1
+        player2 += diagUp2
+
+        val (diagDown1, diagDown2) = getGeneralLineValues(leftSeinaJaPohja, Way.UpRight)
+        player1 += diagDown1
+        player2 += diagDown2
+
+        return Pair(player1, player2)
+    }
+
+    data class Point(
+        val x: Int,
+        val y: Int,
+    )
+
+    val katto = (0..<boardConfig.width).map { x -> Point(x, 0) }
+    val pohja = (0..<boardConfig.width).map { x -> Point(x, boardConfig.height - 1) }
+    val rightSeina = (0..<boardConfig.height).map { y -> Point(0, y) }
+    val leftSeina = (0..<boardConfig.height).map { y -> Point(boardConfig.width - 1, y) }
+
+    val rightSeinaJaPohja = (pohja + rightSeina).toSet().toList()
+    val leftSeinaJaKatto = (katto + leftSeina).toSet().toList()
+    val leftSeinaJaPohja = (pohja + leftSeina).toSet().toList()
+
+    /**
+     * What a monster of function
+     * Maybe I will get around making it neat and tidy.
+     * (Narrator: No, he won't, and he already knows it, but yet he keeps the hope alive.)
+     */
+    fun getVerticalLineValues1(): Pair<Int, Int> {
+        var justTotalValue = 0
+        var totalPlayer1 = 0
+        var totalPlayer2 = 0
+        val winn = boardConfig.neededForWin
+
+//        val verticalLines = board
+        for (xIndex in 0..<board.size) {
+            val line = board[xIndex]
+            if (line.size < winn) continue
+
+            var justValue = 0
+//            var currentEka = 0
+//            var currentToka = 0
+            for (yIndex in 0..<line.size) {
+                val value = line[yIndex]
+                val sing = value.sign
+                if (sing == 1) {
+//                    currentEka += 1
+                    justValue += 1
+                }
+                if (sing == -1) {
+                    justValue += 10
+                }
+//                println("the sign:  $sing")
+                if (yIndex > winn) {
+//                    println("karsinta")
+                    val value2 = line[yIndex - winn - 1].sign
+                    if (value2 == 1) {
+//                    currentEka += 1
+                        justValue -= 1
+                    }
+                    if (value2 == -1) {
+                        justValue -= 10
+                    }
+//                    println("just value: $justValue")
+                    if (justValue > 0) {
+                        if (justValue % 10.0 == 0.0) {
+//                            currentToka += 1
+                            val amount = justValue / 10
+                            totalPlayer2 += amount * amount
+//                            println("toka player total: $totalPlayer2")
+                        } else if (justValue < 10) {
+//                            currentEka += 1
+                            totalPlayer1 += justValue * justValue
+//                            println("eka player total: $totalPlayer1")
+                        }
+                    }
+                }
+            }
+        }
+
+        return Pair(totalPlayer1, totalPlayer2)
+    }
+
+    fun getVerticalLineValues(): Pair<Int, Int> =
+        getGeneralLineValues(
+            startingPoints = katto,
+            way = Way.Down,
+        )
+
+    fun getHorizontalLineValues(): Pair<Int, Int> {
+        var justTotalValue = 0
+        var totalPlayer1 = 0
+        var totalPlayer2 = 0
+        val winn = boardConfig.neededForWin
+
+        val alkuPisteet = listOf(1)
+
+        return Pair(totalPlayer1, totalPlayer2)
+    }
+
+    fun getDiagonalUpLineValues(): Pair<Int, Int> {
+        TODO()
+        return Pair(0, 0)
+    }
+
+    fun getDiagonalDownLineValues(): Pair<Int, Int> {
+        TODO()
+        return Pair(0, 0)
+    }
+
+    fun getGeneralLineValues(
+        startingPoints: List<Point>,
+        way: Way,
+    ): Pair<Int, Int> {
+        var totalPlayer1 = 0
+        var totalPlayer2 = 0
+        val winn = boardConfig.neededForWin
+
+        for (point in startingPoints) {
+            var nextX = point.x // + way.x
+            var nextY = point.y // + way.y
+            var counter = 0
+            var justValue = 0
+//            while (!((nextX >= boardConfig.width || nextX < 0) && (nextY >= boardConfig.height || nextY < 0))) {
+//            println("new point: $point")
+            while (true) {
+                if (!(nextX < boardConfig.width && nextX >= 0)) break
+                if (!(nextY < boardConfig.height && nextY >= 0)) break
+
+                val current = board[nextX][nextY].sign
+//                val current = board[nextY][nextX].sign
+                if (current == 1) {
+                    justValue += 1
+                } else if (current == -1) {
+                    justValue += 10
+                }
+//                println("justValue: $justValue")
+//                println("counter: $counter")
+//                println("(x|y): ($nextX|$nextY) = ${board[nextX][nextY]}")
+//                println("(y|x): ($nextY|$nextX) = ${board[nextY][nextX]}")
+                if (counter >= winn) {
+//                    println("nyt sisällä")
+                    val value2 = board[nextX - way.x * winn][nextY - way.y * winn].sign
+//                    val value2 = board[nextY - way.y * winn][nextX - way.x * winn].sign
+                    if (value2 == 1) {
+                        justValue -= 1
+                    }
+                    if (value2 == -1) {
+                        justValue -= 10
+                    }
+                }
+                if (counter >= winn-1) {
+                    if (justValue > 0) {
+//                        println("mahollista kamaa: $justValue")
+                        if (justValue % 10.0 == 0.0) {
+                            val amount = justValue / 10
+                            totalPlayer2 += amount * amount
+//                            println("totalPlayer2: $totalPlayer2")
+                        } else if (justValue < 10) {
+                            totalPlayer1 += justValue * justValue
+//                            println("totalplayer1: $totalPlayer1")
+                        }
+                    }
+                }
+
+                nextX += way.x
+                nextY += way.y
+//                println("(x|y)2: ($nextX|$nextY)")
+                counter += 1
+//                if (nextX >= boardConfig.width || nextX < 0) break
+//                if (nextY >= boardConfig.height || nextY < 0) break
+//
+//                if (!(nextX < boardConfig.width && nextX >= 0) )break
+//                if (!(nextY < boardConfig.height && nextY >= 0)) break
+            }
+        }
+//        println("loppu")
+        return Pair(totalPlayer1, totalPlayer2)
     }
 }

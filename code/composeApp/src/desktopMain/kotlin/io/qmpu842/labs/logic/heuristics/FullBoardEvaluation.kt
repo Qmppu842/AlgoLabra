@@ -2,7 +2,18 @@ package io.qmpu842.labs.logic.heuristics
 
 import kotlin.math.sign
 
+@HeurName("fullBoardEvaluation")
 fun fullBoardEvaluation(heuristicArgs: HeuristicArgs): Int {
+    val (board, x, y, forSide, neededForWin) = heuristicArgs
+    val (eka, toka) = board.getFullBoardValues()
+
+//    if (forSide)
+//    val ads = eka * forSide.sign + toka * forSide.sign * -1
+
+    return eka * forSide.sign + toka * forSide.sign * -1
+}
+
+fun fullBoardEvaluation2(heuristicArgs: HeuristicArgs): Int {
     val (board, x, y, forSide, neededForWin) = heuristicArgs
 
     val checkArea = neededForWin * 2 - 1
@@ -33,8 +44,7 @@ fun fullBoardEvaluation(heuristicArgs: HeuristicArgs): Int {
 //        val
     }
 
-    val starters = mutableSetOf<Pair<Int,Int>>()
-
+    val starters = mutableSetOf<Pair<Int, Int>>()
 
     return forSide * fullPotentialPositive + forSide * -1 * fullPotentialNegative
 }

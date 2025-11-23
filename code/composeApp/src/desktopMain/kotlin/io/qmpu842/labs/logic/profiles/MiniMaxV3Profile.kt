@@ -59,6 +59,9 @@ class MiniMaxV3Profile(
 //            return "${this::class.simpleName}(${::heuristic.toString()})"
 //        }
 
+    override val name: String
+        get() =  "${this::class.simpleName}"
+
     var currentMaxTime = Long.MAX_VALUE
 
     //noinspection DuplicatedCode

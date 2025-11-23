@@ -2,7 +2,6 @@
 
 package io.qmpu842.labs
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -10,15 +9,15 @@ import androidx.compose.ui.window.rememberWindowState
 import io.qmpu842.labs.helpers.TournamentEngine
 import io.qmpu842.labs.helpers.Zo
 import io.qmpu842.labs.logic.GameHolder
+import io.qmpu842.labs.logic.heuristics.fullBoardEvaluation
 import io.qmpu842.labs.logic.heuristics.lastMovesValueV5
 import io.qmpu842.labs.logic.heuristics.zeroHeuristics
 import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
-import kotlinx.coroutines.delay
 
 /**
  * The normal main when you want ot see and/or play against something.
  */
-fun main() =
+fun main1() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -27,10 +26,10 @@ fun main() =
 //            alwaysOnTop = true,
         ) {
 //            Comment this launchedEffect away if you want to play more than 5 minutes
-            LaunchedEffect(true) {
-                delay(300_000)
-                this@application.exitApplication()
-            }
+//            LaunchedEffect(true) {
+//                delay(300_000)
+//                this@application.exitApplication()
+//            }
             App2()
         }
     }
@@ -59,9 +58,12 @@ fun main2() {
  * The main for using the tournament system without ui
  * Every profile will play against every other profile
  */
-fun main4() {
+fun main() {
     val competitors =
-        MiniMaxV3Profile(depths = listOf(10, 11, 12), heuristicFunList = listOf(::zeroHeuristics, ::lastMovesValueV5))
+        MiniMaxV3Profile(
+            depths = listOf(2, ),
+            heuristicFunList = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation),
+        )
     TournamentEngine.startTheTournament(
         competitors,
         amountOfGames = 5,
