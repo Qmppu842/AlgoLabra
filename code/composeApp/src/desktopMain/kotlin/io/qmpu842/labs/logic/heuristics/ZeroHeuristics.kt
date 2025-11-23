@@ -2,6 +2,7 @@ package io.qmpu842.labs.logic.heuristics
 
 import io.qmpu842.labs.logic.Board
 
+@HeurName("zeroHeuristics")
 fun zeroHeuristics(
     heuristicArgs: HeuristicArgs =
         HeuristicArgs(
