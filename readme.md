@@ -11,6 +11,7 @@ Updates are loading...
 - [Viikko 1](documents/viikkoraportit/viikko1.md)
 - [Viikko 2](documents/viikkoraportit/viikko2.md)
 - [Viikko 3](documents/viikkoraportit/viikko3.md)
+- [Viikko 4](documents/viikkoraportit/viikko4.md)
 
 
 ## Koodi
