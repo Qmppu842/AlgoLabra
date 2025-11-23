@@ -58,7 +58,7 @@ fun main2() {
  * The main for using the tournament system without ui
  * Every profile will play against every other profile
  */
-fun main() {
+fun main4() {
     val competitors =
         MiniMaxV3Profile(
             depths = listOf(2),
@@ -67,6 +67,35 @@ fun main() {
         )
     TournamentEngine.startTheTournament(
         competitors,
+        amountOfGames = 5,
+    )
+}
+
+/**
+ * The main for using the tournament system without ui
+ * Every profile will play against every other profile
+ */
+fun main() {
+    val depths = listOf(10)
+//    val heurs = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation)
+    val heurs = listOf(::fullBoardEvaluation)
+    val times:List<Long> = listOf( 500, 1000)
+
+    val competitors =
+        MiniMaxV3Profile(
+            depths = depths,
+            heuristicFunList = heurs,
+            timeLimits = times,
+        )
+
+//    val oldGuard =
+//        MiniMaxV25Profile(
+//            depths = depths,
+//            heuristicFunList = heurs,
+//            timeLimits = times,
+//        )
+    TournamentEngine.startTheTournament(
+        competitors,//+oldGuard,
         amountOfGames = 5,
     )
 }

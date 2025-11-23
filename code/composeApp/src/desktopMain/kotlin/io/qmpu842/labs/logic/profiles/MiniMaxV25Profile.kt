@@ -13,7 +13,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class MiniMaxV3Profile(
+class MiniMaxV25Profile(
     override var depth: Int = 10,
     override var timeLimit: Long = TRILLION,
     override val heuristic: HeuristicFun = ::zeroHeuristics,
@@ -36,12 +36,12 @@ class MiniMaxV3Profile(
             depths: List<Int>,
             timeLimits: List<Long> = listOf(TRILLION),
             heuristicFunList: List<HeuristicFun>,
-        ): List<MiniMaxV3Profile> {
-            val profiles = mutableListOf<MiniMaxV3Profile>()
+        ): List<MiniMaxV25Profile> {
+            val profiles = mutableListOf<MiniMaxV25Profile>()
             for (depth in depths) {
                 for (timeLimit in timeLimits) {
                     for (heuristicFun in heuristicFunList) {
-                        profiles.add(MiniMaxV3Profile(depth = depth, timeLimit = timeLimit, heuristic = heuristicFun))
+                        profiles.add(MiniMaxV25Profile(depth = depth, timeLimit = timeLimit, heuristic = heuristicFun))
                     }
                 }
             }
@@ -58,8 +58,8 @@ class MiniMaxV3Profile(
 
     var currentMaxTime = Long.MAX_VALUE
 
-    //    override
-    fun nextMove1(
+        override
+    fun nextMove(
         board: Board,
         forSide: Int,
     ): Int {
@@ -86,61 +86,7 @@ class MiniMaxV3Profile(
         return minimaxResult.second
     }
 
-    override fun nextMove(
-        board: Board,
-        forSide: Int,
-    ): Int {
-        currentMaxTime = System.currentTimeMillis() + timeLimit
-        return iterativeDeepening(board, forSide)
-    }
 
-    var bestMoveSet = HashMap<String, Int>()
-
-    init {
-
-        bestMoveSet = HashMap()
-//        bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
-    }
-
-    fun iterativeDeepening(
-        board: Board,
-        forSide: Int,
-    ): Int {
-        val lastMoveX = board.getLastMove() ?: -1
-        var time = System.currentTimeMillis()
-        var depthi = 1
-
-//        bestMoveSet = HashMap()
-//        bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
-
-        val thing = bestMoveSet[board.toString()]
-        if (thing == null) {
-            bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
-        }
-//        var maxDepth = 0
-        while (time < currentMaxTime) {
-//            maxDepth = max(maxDepth, depthi)
-//            println("now running to depth: $depthi")
-            val minimaxResult =
-                minimax2(
-                    board = board,
-                    depth = depthi,
-                    maximizingPlayer = true,
-                    alpha = Int.MIN_VALUE,
-                    beta = Int.MAX_VALUE,
-                    forLastSide = -forSide,
-                    neededForWin = board.boardConfig.neededForWin,
-                    lastX = lastMoveX,
-                    lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
-                    token = abs(board.getOnTurnToken()),
-                )
-            bestMoveSet[board.toString()] = minimaxResult.second
-            depthi++
-            time = System.currentTimeMillis()
-        }
-//        println("Achieved depth: $depthi")
-        return bestMoveSet[board.toString()]!!
-    }
 
     /**
      * @param forLastSide you should put here the value of last turns side.
@@ -194,9 +140,7 @@ class MiniMaxV3Profile(
                 lastX,
             )
         }
-        val bestMoveOfAllTime = bestMoveSet[board.toString()]
-        val moves =
-            if (bestMoveOfAllTime == null) board.getLegalsMiddleOutSeq() else sequenceOf(bestMoveOfAllTime) + board.getLegalsMiddleOutSeq()
+        val moves = board.getLegalsMiddleOutSeq()
         var alpha2 = alpha
         var beta2 = beta
 
@@ -205,7 +149,6 @@ class MiniMaxV3Profile(
             var bestMove = 0
             for (move in moves) {
                 if (move == -1) break
-                if (move == bestMoveOfAllTime) continue
                 val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
                     minimax2(
@@ -229,14 +172,12 @@ class MiniMaxV3Profile(
                 alpha2 = max(alpha2, value)
                 if (beta2 <= alpha2) break
             }
-            bestMoveSet[board.toString()] = bestMove
             return Pair(value, bestMove)
         } else {
             var value = Int.MAX_VALUE
             var bestMove = 0
             for (move in moves) {
                 if (move == -1) break
-                if (move == bestMoveOfAllTime) continue
                 val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
                     minimax2(
@@ -260,7 +201,6 @@ class MiniMaxV3Profile(
                 beta2 = min(beta2, value)
                 if (beta2 <= alpha2) break
             }
-            bestMoveSet[board.toString()] = bestMove
             return Pair(value, bestMove)
         }
     }

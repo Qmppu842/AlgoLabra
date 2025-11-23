@@ -596,4 +596,9 @@ data class Board(
         }
         return Pair(totalPlayer1, totalPlayer2)
     }
+
+    override fun toString(): String {
+        val result = buildString { board.forEach { ints -> ints.forEach { i -> append("" + i) } } }
+        return result
+    }
 }
