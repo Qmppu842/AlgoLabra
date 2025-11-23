@@ -61,12 +61,13 @@ fun main2() {
 fun main() {
     val competitors =
         MiniMaxV3Profile(
-            depths = listOf(4, 6, 8),
+            depths = listOf(2, 4, 6, 8),
             heuristicFunList = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation),
+            timeLimits = listOf(100, 500, 1000),
         )
     TournamentEngine.startTheTournament(
         competitors,
-        amountOfGames = 15,
+        amountOfGames = 5,
     )
 }
 

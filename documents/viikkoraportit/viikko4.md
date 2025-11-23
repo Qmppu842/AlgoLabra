@@ -21,6 +21,9 @@ Alla oleva kuva on pieni tournamentti ja sen tulokset:
 
 ![UusHeurestiikkaTournament.png](UusHeurestiikkaTournament.png)
 
+Ja täällä vielä isompi turnaus missä oli hauska nähdä että fullboard käytännössä aina on paras (huh, vihdoin ja viimein).  
+![UusHeurestiikkaTournamentSuperIso.png](../bonus_kuvia/UusHeurestiikkaTournamentSuperIso.png)
+
 ## Mikä jäi epäselväksi tai tuottanut vaikeuksia?
 
 Ei isommin mikään, omaa perus säätöä mutta kyllä se tästä.
