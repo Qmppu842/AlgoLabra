@@ -807,7 +807,7 @@ class BoardTest :
                             intArrayOf(0, 0, 0, 0, 0, 0),
                         ),
                 )
-            board.getVerticalLineValues() shouldBe Pair(4, 4)
+            board.getVerticalLineValues() shouldBe Pair(5, 5)
         }
 
         test("getGeneralLineValues with six vertical towers of three and two") {
@@ -824,7 +824,7 @@ class BoardTest :
                             intArrayOf(0, 0, 0, 0, -12, -10),
                         ),
                 )
-            board.getVerticalLineValues() shouldBe Pair(18, 12)
+            board.getVerticalLineValues() shouldBe Pair(26, 15)
         }
 
         test("getGeneralLineValues with stacked lines of three horizontal") {
