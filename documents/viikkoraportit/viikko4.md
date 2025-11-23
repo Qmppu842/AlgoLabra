@@ -15,6 +15,12 @@ Sitten kun tarvitset toisen kerran tee if lause mutta mietä rakennetta.
 Kolmannella kerralla generalisoi."
 On vallan toimiva matra mitä pitää yrittää muistaa.
 
+
+Oli myös jännä huomata miten hyvin jo tämä heurestiikka toimii.
+Alla oleva kuva on pieni tournamentti ja sen tulokset:
+
+![UusHeurestiikkaTournament.png](UusHeurestiikkaTournament.png)
+
 ## Mikä jäi epäselväksi tai tuottanut vaikeuksia?
 
 Ei isommin mikään, omaa perus säätöä mutta kyllä se tästä.
@@ -36,5 +42,6 @@ Iteratiivisen syvenemisen ja liike järjestämisen.
 | Päivä       | aika | syy                     |
 |-------------|------|-------------------------|
 | 22/11       | 6h   | Laudan evaluoinnin teko |
-| 22-22/11    | 6h   | This weeks total        |
-| 27/10-22/11 | 13h  | Total Total rebooted    |
+| 23/11       | 1h   | Pientä hieno säätöä     |
+| 22-23/11    | 7h   | This weeks total        |
+| 27/10-22/11 | 20h  | Total Total rebooted    |
