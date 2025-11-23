@@ -19,7 +19,7 @@ On vallan toimiva matra mitä pitää yrittää muistaa.
 Oli myös jännä huomata miten hyvin jo tämä heurestiikka toimii.
 Alla oleva kuva on pieni tournamentti ja sen tulokset:
 
-![UusHeurestiikkaTournament.png](UusHeurestiikkaTournament.png)
+![UusHeurestiikkaTournament.png](../bonus_kuvia/UusHeurestiikkaTournament.png)
 
 Ja täällä vielä isompi turnaus missä oli hauska nähdä että fullboard käytännössä aina on paras (huh, vihdoin ja viimein).  
 ![UusHeurestiikkaTournamentSuperIso.png](../bonus_kuvia/UusHeurestiikkaTournamentSuperIso.png)
@@ -45,6 +45,6 @@ Iteratiivisen syvenemisen ja liike järjestämisen.
 | Päivä       | aika | syy                     |
 |-------------|------|-------------------------|
 | 22/11       | 6h   | Laudan evaluoinnin teko |
-| 23/11       | 1h   | Pientä hieno säätöä     |
-| 22-23/11    | 7h   | This weeks total        |
-| 27/10-22/11 | 20h  | Total Total rebooted    |
+| 23/11       | 2h   | Pientä hieno säätöä     |
+| 22-23/11    | 8h   | This weeks total        |
+| 27/10-22/11 | 21h  | Total Total rebooted    |
