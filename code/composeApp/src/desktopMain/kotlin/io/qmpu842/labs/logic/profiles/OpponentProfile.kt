@@ -14,12 +14,15 @@ abstract class OpponentProfile {
     var firstPlayStats: Stats = Stats()
     var secondPlayStats: Stats = Stats()
 
+    val combinedStats: Stats
+        get() = firstPlayStats + secondPlayStats
+
     /**
      * Name of the profile
      */
     open val name: String
         get() {
-            return "${this::class.simpleName}"
+            return "${this::class.simpleName}, depth ${depth}, timelimit $timeLimit"
         }
 
     /**
@@ -32,4 +35,8 @@ abstract class OpponentProfile {
         board: Board,
         forSide: Int,
     ): Int
+
+    open fun resetSelf(): OpponentProfile {
+        return this
+    }
 }

@@ -12,6 +12,7 @@ import io.qmpu842.labs.logic.heuristics.zeroHeuristics
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.round
 
 class MiniMaxV3Profile(
     override var depth: Int = 10,
@@ -39,9 +40,24 @@ class MiniMaxV3Profile(
         ): List<MiniMaxV3Profile> {
             val profiles = mutableListOf<MiniMaxV3Profile>()
             for (depth in depths) {
-                for (timeLimit in timeLimits) {
-                    for (heuristicFun in heuristicFunList) {
-                        profiles.add(MiniMaxV3Profile(depth = depth, timeLimit = timeLimit, heuristic = heuristicFun))
+                for (heuristicFun in heuristicFunList) {
+                    if (depth == -1) {
+                        for (timeLimit in timeLimits) {
+                            profiles.add(
+                                MiniMaxV3Profile(
+                                    depth = depth,
+                                    timeLimit = timeLimit,
+                                    heuristic = heuristicFun,
+                                ),
+                            )
+                        }
+                    } else {
+                        profiles.add(
+                            MiniMaxV3Profile(
+                                depth = depth,
+                                heuristic = heuristicFun,
+                            ),
+                        )
                     }
                 }
             }
@@ -50,21 +66,84 @@ class MiniMaxV3Profile(
         }
     }
 
+    private val process = "$heuristic".split(" ")[1].split("(")[0]
     override val name: String
         get() {
-            val process = "$heuristic".split(" ")[1].split("(")[0]
-            return "${this::class.simpleName}($process)"
+            return "${this::class.simpleName}($process), depth ${depth}, timelimit ${timeLimit}"
         }
 
     var currentMaxTime = Long.MAX_VALUE
 
-    //    override
-    fun nextMove1(
+    override fun nextMove(
         board: Board,
         forSide: Int,
     ): Int {
         currentMaxTime = System.currentTimeMillis() + timeLimit
-//        val startingTime = System.currentTimeMillis()
+        return if (depth == -1) {
+            iterativeDeepening(board, forSide)
+        } else {
+            justMinimaxNoDeepening(board = board, forSide = forSide)
+        }
+    }
+
+    var bestMoveSet = HashMap<String, Int>()
+
+    init {
+
+        bestMoveSet = HashMap()
+//        bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
+    }
+
+    override fun resetSelf(): OpponentProfile {
+        bestMoveSet = HashMap()
+        return super.resetSelf()
+    }
+
+    fun iterativeDeepening(
+        board: Board,
+        forSide: Int,
+    ): Int {
+        val lastMoveX = board.getLastMove() ?: -1
+        var time = System.currentTimeMillis()
+        var currentMaxDepth = 1
+
+//        bestMoveSet = HashMap()
+//        bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
+
+        val currentBestMove = bestMoveSet[board.toString()]
+        if (currentBestMove == null) {
+            bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
+        }
+//        var maxDepth = 0
+        while (time < currentMaxTime) {
+//            maxDepth = max(maxDepth, depthi)
+//            println("now running to depth: $depthi")
+            val minimaxResult =
+                minimax2(
+                    board = board,
+                    depth = currentMaxDepth,
+                    maximizingPlayer = true,
+                    alpha = Int.MIN_VALUE,
+                    beta = Int.MAX_VALUE,
+                    forLastSide = -forSide,
+                    neededForWin = board.boardConfig.neededForWin,
+                    lastX = lastMoveX,
+                    lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
+                    token = abs(board.getOnTurnToken()),
+                )
+            bestMoveSet[board.toString()] = minimaxResult.second
+            currentMaxDepth++
+            time = System.currentTimeMillis()
+        }
+        println("Achieved depth: $currentMaxDepth")
+        return bestMoveSet[board.toString()]!!
+    }
+
+    fun justMinimaxNoDeepening(
+        board: Board,
+        forSide: Int,
+    ): Int {
+        val startingTime = System.currentTimeMillis()
         val lastMoveX = board.getLastMove() ?: -1
         val minimaxResult =
             minimax2(
@@ -79,67 +158,11 @@ class MiniMaxV3Profile(
                 lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
                 token = abs(board.getOnTurnToken()),
             )
-//        val endTime = System.currentTimeMillis()
-//        val totalTime = endTime - startingTime
-//        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
-//        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
+        val endTime = System.currentTimeMillis()
+        val totalTime = endTime - startingTime
+        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
+        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         return minimaxResult.second
-    }
-
-    override fun nextMove(
-        board: Board,
-        forSide: Int,
-    ): Int {
-        currentMaxTime = System.currentTimeMillis() + timeLimit
-        return iterativeDeepening(board, forSide)
-    }
-
-    var bestMoveSet = HashMap<String, Int>()
-
-    init {
-
-        bestMoveSet = HashMap()
-//        bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
-    }
-
-    fun iterativeDeepening(
-        board: Board,
-        forSide: Int,
-    ): Int {
-        val lastMoveX = board.getLastMove() ?: -1
-        var time = System.currentTimeMillis()
-        var depthi = 1
-
-//        bestMoveSet = HashMap()
-//        bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
-
-        val thing = bestMoveSet[board.toString()]
-        if (thing == null) {
-            bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
-        }
-//        var maxDepth = 0
-        while (time < currentMaxTime) {
-//            maxDepth = max(maxDepth, depthi)
-//            println("now running to depth: $depthi")
-            val minimaxResult =
-                minimax2(
-                    board = board,
-                    depth = depthi,
-                    maximizingPlayer = true,
-                    alpha = Int.MIN_VALUE,
-                    beta = Int.MAX_VALUE,
-                    forLastSide = -forSide,
-                    neededForWin = board.boardConfig.neededForWin,
-                    lastX = lastMoveX,
-                    lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
-                    token = abs(board.getOnTurnToken()),
-                )
-            bestMoveSet[board.toString()] = minimaxResult.second
-            depthi++
-            time = System.currentTimeMillis()
-        }
-//        println("Achieved depth: $depthi")
-        return bestMoveSet[board.toString()]!!
     }
 
     /**
@@ -195,8 +218,9 @@ class MiniMaxV3Profile(
             )
         }
         val bestMoveOfAllTime = bestMoveSet[board.toString()]
-        val moves =
-            if (bestMoveOfAllTime == null) board.getLegalsMiddleOutSeq() else sequenceOf(bestMoveOfAllTime) + board.getLegalsMiddleOutSeq()
+//        val moves =
+//            if (bestMoveOfAllTime == null) board.getLegalsMiddleOutSeq() else sequenceOf(bestMoveOfAllTime) + board.getLegalsMiddleOutSeq()
+        val moves = board.getLegalsMiddleOutSeq()
         var alpha2 = alpha
         var beta2 = beta
 

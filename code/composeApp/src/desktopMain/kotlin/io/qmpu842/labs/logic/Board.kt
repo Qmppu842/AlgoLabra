@@ -487,7 +487,7 @@ data class Board(
     /**
      * @return true if board is full (based on history)
      */
-    fun isAtMaxSize(): Boolean {
+    fun isAtMaxSize1(): Boolean {
         var allSize = 0
         board.forEachIndexed { _, ints ->
             allSize += ints.size
@@ -495,13 +495,20 @@ data class Board(
         return history.size == allSize
     }
 
-    fun maxSize(): Int {
+
+    fun maxSize1(): Int {
         var allSize = 0
-        board.forEachIndexed { _, ints ->
+        for (ints in board) {
+//        board.forEachIndexed { _, ints ->
             allSize += ints.size
+//        }
         }
         return allSize
     }
+
+    fun isAtMaxSize() = maxSize() == history.size
+
+    fun maxSize() = boardConfig.width * boardConfig.height
 
     fun getFullBoardValues(): Pair<Int, Int> {
         var player1 = 0
