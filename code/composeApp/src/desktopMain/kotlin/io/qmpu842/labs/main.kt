@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.helpers.TournamentEngine
 import io.qmpu842.labs.helpers.Zo
 import io.qmpu842.labs.logic.GameHolder
@@ -17,7 +18,7 @@ import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 /**
  * The normal main when you want ot see and/or play against something.
  */
-fun main1() =
+fun main() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -35,33 +36,34 @@ fun main1() =
     }
 
 /**
- * The main to run without ui 1v1
+ * The main2 to run without ui 1v1
  */
 fun main2() {
     GameHolder.runWithOutUiSplit(
-        100,
+        1,
         playerA =
             MiniMaxV3Profile(
-                depth = 6,
-                heuristic = ::zeroHeuristics,
+                depth = -1,
+                heuristic = ::fullBoardEvaluation,
+                timeLimit = 50_000,
             ),
-//        playerB = ProfileHolder.rand
-        playerB =
-            MiniMaxV3Profile(
-                depth = 2,
-                heuristic = ::zeroHeuristics,
-            ),
+        playerB = ProfileHolder.rand,
+//        playerB =
+//            MiniMaxV3Profile(
+//                depth = 2,
+//                heuristic = ::fullBoardEvaluation,
+//            ),
     )
 }
 
 /**
- * The main for using the tournament system without ui
+ * The main4 for using the tournament system without ui
  * Every profile will play against every other profile
  */
-fun main() {
+fun main4() {
     val competitors =
         MiniMaxV3Profile(
-            depths = listOf(2, 4, 6, 8),
+            depths = listOf(2),
             heuristicFunList = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation),
             timeLimits = listOf(100, 500, 1000),
         )
@@ -72,7 +74,37 @@ fun main() {
 }
 
 /**
- * The main to list different types of possible lines in board
+ * The main6 for using the tournament system without ui
+ * Every profile will play against every other profile
+ */
+fun main6() {
+//    val depths = listOf(10)
+//    val heurs = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation)
+    val heurs = listOf(::fullBoardEvaluation)
+//    val times: List<Long> = listOf(500, 1000)
+
+    val competitors =
+        MiniMaxV3Profile(
+            depths = listOf(-1),
+            heuristicFunList = heurs,
+            timeLimits = listOf(1000),
+//            timeLimits = listOf(500, 1000,10_000),
+        )
+
+    val oldGuard =
+        MiniMaxV3Profile(
+            depths = listOf(2),
+//            depths = listOf(2, 4, 10),
+            heuristicFunList = heurs,
+        )
+    TournamentEngine.startTheTournament(
+        competitors + oldGuard,
+        amountOfGames = 5,
+    )
+}
+
+/**
+ * The main3 to list different types of possible lines in board
  */
 fun main3() {
 //    counter3()

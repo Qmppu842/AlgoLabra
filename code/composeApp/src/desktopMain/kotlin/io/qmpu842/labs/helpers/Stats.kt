@@ -5,12 +5,13 @@ data class Stats(
     val draws: Int = 0,
     val losses: Int = 0,
     val cumulativeScore: Float = 0f,
+    val winStreak: Int = 0,
 ) {
-    fun win(): Stats = this.copy(wins = wins + 1)
+    fun win(): Stats = this.copy(wins = wins + 1, winStreak = winStreak + 1)
 
-    fun draw(): Stats = this.copy(draws = draws + 1)
+    fun draw(): Stats = this.copy(draws = draws + 1, winStreak = 0)
 
-    fun lose(): Stats = this.copy(losses = losses + 1)
+    fun lose(): Stats = this.copy(losses = losses + 1, winStreak = 0)
 
     fun total() = wins + draws + losses
 
@@ -22,9 +23,6 @@ data class Stats(
             draws = draws + second.draws,
             losses = losses + second.losses,
             cumulativeScore = cumulativeScore + second.cumulativeScore,
+            winStreak = winStreak + second.winStreak,
         )
 }
-
-// operator fun Stats.plusAssign(second: Stats){
-//
-// }

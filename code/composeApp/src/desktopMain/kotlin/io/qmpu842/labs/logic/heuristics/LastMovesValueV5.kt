@@ -9,7 +9,6 @@ import kotlin.math.sqrt
  * This one pretends to be good one.
  * So this is last actually used with this name.
  */
-@HeurName("lastMovesValueV5")
 fun lastMovesValueV5(heuristicArgs: HeuristicArgs): Int {
     val (board, x, y, forSide, neededForWin) = heuristicArgs
 
