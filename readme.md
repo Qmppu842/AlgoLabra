@@ -12,7 +12,9 @@ Updates are loading...
 - [Viikko 2](documents/viikkoraportit/viikko2.md)
 - [Viikko 3](documents/viikkoraportit/viikko3.md)
 - [Viikko 4](documents/viikkoraportit/viikko4.md)
-
+- [Viikko 5](documents/viikkoraportit/viikko5.md)
+- [Viikko 6](documents/viikkoraportit/viikko6.md)
+- [Viikko 7](documents/viikkoraportit/viikko7.md)
 
 ## Koodi
 
