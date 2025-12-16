@@ -89,7 +89,7 @@ object TournamentEngine {
 //            idToName[opp.id] = opp.name + if (opp.depth != -1) ", depth ${opp.depth}" else ""
             idToName[opp.id] = opp.name //+ ", depth ${opp.depth}, timelimit ${opp.timeLimit}"
         }
-        eloRatings[competitors.first().id] = 1_300
+//        eloRatings[competitors.first().id] = 1_300
         val competitors = competitors.reversed()
         var totalGames = 0
         val startTime = System.currentTimeMillis()

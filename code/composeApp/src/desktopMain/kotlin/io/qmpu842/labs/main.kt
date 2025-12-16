@@ -18,7 +18,7 @@ import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 /**
  * The normal main when you want ot see and/or play against something.
  */
-fun main() =
+fun main1() =
     application {
         Window(
             onCloseRequest = ::exitApplication,
@@ -77,10 +77,10 @@ fun main4() {
  * The main6 for using the tournament system without ui
  * Every profile will play against every other profile
  */
-fun main6() {
+fun main() {
 //    val depths = listOf(10)
 //    val heurs = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation)
-    val heurs = listOf(::fullBoardEvaluation)
+    val heurs = listOf(::fullBoardEvaluation, ::zeroHeuristics)
 //    val times: List<Long> = listOf(500, 1000)
 
     val competitors =
@@ -93,12 +93,12 @@ fun main6() {
 
     val oldGuard =
         MiniMaxV3Profile(
-            depths = listOf(2),
-//            depths = listOf(2, 4, 10),
+//            depths = listOf(2),
+            depths = listOf(2, 4, 10),
             heuristicFunList = heurs,
         )
     TournamentEngine.startTheTournament(
-        competitors + oldGuard,
+        competitors + oldGuard + ProfileHolder.rand,
         amountOfGames = 5,
     )
 }

@@ -69,7 +69,7 @@ class MiniMaxV3Profile(
     private val process = "$heuristic".split(" ")[1].split("(")[0]
     override val name: String
         get() {
-            return "${this::class.simpleName}($process), depth ${depth}, timelimit ${timeLimit}"
+            return "${this::class.simpleName}($process), depth $depth, timelimit $timeLimit"
         }
 
     var currentMaxTime = Long.MAX_VALUE
@@ -78,6 +78,7 @@ class MiniMaxV3Profile(
         board: Board,
         forSide: Int,
     ): Int {
+        println("---next move---")
         currentMaxTime = System.currentTimeMillis() + timeLimit
         return if (depth == -1) {
             iterativeDeepening(board, forSide)
@@ -106,6 +107,7 @@ class MiniMaxV3Profile(
         val lastMoveX = board.getLastMove() ?: -1
         var time = System.currentTimeMillis()
         var currentMaxDepth = 1
+        val amountOfSpaceLeft = board.boardConfig.width * board.boardConfig.height - board.history.size + 1
 
 //        bestMoveSet = HashMap()
 //        bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
@@ -114,11 +116,12 @@ class MiniMaxV3Profile(
         if (currentBestMove == null) {
             bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
         }
+        var minimaxResult = Pair(0, 0)
 //        var maxDepth = 0
-        while (time < currentMaxTime) {
+        while (currentMaxDepth <= amountOfSpaceLeft && time < currentMaxTime) {
 //            maxDepth = max(maxDepth, depthi)
 //            println("now running to depth: $depthi")
-            val minimaxResult =
+            minimaxResult =
                 minimax2(
                     board = board,
                     depth = currentMaxDepth,
@@ -136,6 +139,10 @@ class MiniMaxV3Profile(
             time = System.currentTimeMillis()
         }
         println("Achieved depth: $currentMaxDepth")
+        val endTime = System.currentTimeMillis()
+        val totalTime = endTime - (currentMaxTime - this.timeLimit)
+        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $currentMaxDepth")
+        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         return bestMoveSet[board.toString()]!!
     }
 
@@ -218,9 +225,9 @@ class MiniMaxV3Profile(
             )
         }
         val bestMoveOfAllTime = bestMoveSet[board.toString()]
-//        val moves =
-//            if (bestMoveOfAllTime == null) board.getLegalsMiddleOutSeq() else sequenceOf(bestMoveOfAllTime) + board.getLegalsMiddleOutSeq()
-        val moves = board.getLegalsMiddleOutSeq()
+        val moves =
+            if (bestMoveOfAllTime == null) board.getLegalsMiddleOutSeq() else sequenceOf(bestMoveOfAllTime) + board.getLegalsMiddleOutSeq()
+//        val moves = board.getLegalsMiddleOutSeq()
         var alpha2 = alpha
         var beta2 = beta
 
@@ -229,7 +236,7 @@ class MiniMaxV3Profile(
             var bestMove = 0
             for (move in moves) {
                 if (move == -1) break
-                if (move == bestMoveOfAllTime) continue
+//                if (move == bestMoveOfAllTime) continue
                 val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
                     minimax2(
@@ -260,7 +267,7 @@ class MiniMaxV3Profile(
             var bestMove = 0
             for (move in moves) {
                 if (move == -1) break
-                if (move == bestMoveOfAllTime) continue
+//                if (move == bestMoveOfAllTime) continue
                 val things = board.dropTokenWithOutHistory(move, -forLastSide * token)
                 val minied =
                     minimax2(
