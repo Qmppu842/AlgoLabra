@@ -10,9 +10,7 @@ import io.qmpu842.labs.helpers.ProfileHolder
 import io.qmpu842.labs.helpers.TournamentEngine
 import io.qmpu842.labs.helpers.Zo
 import io.qmpu842.labs.logic.GameHolder
-import io.qmpu842.labs.logic.heuristics.fullBoardEvaluation
-import io.qmpu842.labs.logic.heuristics.lastMovesValueV5
-import io.qmpu842.labs.logic.heuristics.zeroHeuristics
+import io.qmpu842.labs.logic.heuristics.*
 import io.qmpu842.labs.logic.profiles.MiniMaxV3Profile
 
 /**
@@ -40,14 +38,19 @@ fun main1() =
  */
 fun main2() {
     GameHolder.runWithOutUiSplit(
-        1,
+        3,
         playerA =
             MiniMaxV3Profile(
                 depth = -1,
                 heuristic = ::fullBoardEvaluation,
-                timeLimit = 50_000,
+                timeLimit = 1_000,
             ),
-        playerB = ProfileHolder.rand,
+        playerB =
+            MiniMaxV3Profile(
+                depth = 8,
+                heuristic = ::fullBoardEvaluation,
+            ),
+//        playerB = ProfileHolder.rand,
 //        playerB =
 //            MiniMaxV3Profile(
 //                depth = 2,
@@ -77,7 +80,7 @@ fun main4() {
  * The main6 for using the tournament system without ui
  * Every profile will play against every other profile
  */
-fun main() {
+fun main6() {
 //    val depths = listOf(10)
 //    val heurs = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation)
     val heurs = listOf(::fullBoardEvaluation, ::zeroHeuristics)
@@ -99,6 +102,44 @@ fun main() {
         )
     TournamentEngine.startTheTournament(
         competitors + oldGuard + ProfileHolder.rand,
+        amountOfGames = 5,
+    )
+}
+
+/**
+ * The main7 for using the tournament system without ui
+ * Every profile will play against every other profile
+ */
+fun main() {
+//    val depths = listOf(10)
+//    val heurs = listOf(::zeroHeuristics, ::lastMovesValueV5, ::fullBoardEvaluation)
+    val heurs = listOf(::fullBoardEvaluation, ::zeroHeuristics)
+//    val times: List<Long> = listOf(500, 1000)
+
+    val competitors =
+        MiniMaxV3Profile(
+            depths = listOf(-1),
+            heuristicFunList = heurs,
+            timeLimits = listOf(1000),
+//            timeLimits = listOf(500, 1000,10_000),
+        )
+
+    val oldGuard =
+        MiniMaxV3Profile(
+//            depths = listOf(2),
+            depths = listOf(10),
+            heuristicFunList = heurs,
+        )
+
+    val chatgpt =
+        MiniMaxV3Profile(
+            depths = listOf(-1),
+            timeLimits = listOf(1000),
+            heuristicFunList = listOf(::fullPowerByChatGPT, ::fullBoardEvaluationThreatAwareByChatGPT),
+        )
+    TournamentEngine.startTheTournament(
+        competitors + oldGuard + ProfileHolder.rand + chatgpt,
+//        competitors + oldGuard + ProfileHolder.rand,
         amountOfGames = 5,
     )
 }

@@ -210,6 +210,8 @@ data class Board(
         column: Int,
         token: Int,
     ): Board {
+        if (column == -1) return this
+
         val theWell = board[column]
         var lastZero = -1
         theWell.forEachIndexed { index, theY ->

@@ -87,14 +87,14 @@ object TournamentEngine {
         competitors.forEach { opp ->
             eloRatings[opp.id] = STARTING_ELO
 //            idToName[opp.id] = opp.name + if (opp.depth != -1) ", depth ${opp.depth}" else ""
-            idToName[opp.id] = opp.name //+ ", depth ${opp.depth}, timelimit ${opp.timeLimit}"
+            idToName[opp.id] = opp.name // + ", depth ${opp.depth}, timelimit ${opp.timeLimit}"
         }
 //        eloRatings[competitors.first().id] = 1_300
         val competitors = competitors.reversed()
         var totalGames = 0
         val startTime = System.currentTimeMillis()
         val endGames = amountOfGames * (competitors.size * (competitors.size - 1))
-        lambo@ while (totalGames < endGames) {
+        tournamentLoop@ while (totalGames < endGames) {
             val competitors = competitors.shuffled(MyRandom.random)
             for (playerA in competitors) {
                 for (playerB in competitors) {
@@ -105,7 +105,7 @@ object TournamentEngine {
 
                     totalGames += 1
                     println("Game $totalGames/$endGames")
-                    if (totalGames > endGames) break@lambo
+                    if (totalGames > endGames) break@tournamentLoop
                     eloHolder.forEach { (key, value) ->
                         eloRatings[key] = eloRatings[key]!! + value
                     }
@@ -136,8 +136,8 @@ object TournamentEngine {
         eloRatings: HashMap<Int, Int>,
         eloHolder: HashMap<Int, Int>,
     ) {
-        println("EloRatings: $eloRatings")
-        println("EloHolder: $eloHolder")
+//        println("EloRatings: $eloRatings")
+//        println("EloHolder: $eloHolder")
 
         val maxWinStreak = max(playerA.combinedStats.winStreak, playerB.combinedStats.winStreak)
 
@@ -150,14 +150,14 @@ object TournamentEngine {
         val playerAElo = eloRatings[playerA.id] ?: STARTING_ELO
         val playerBElo = eloRatings[playerB.id] ?: STARTING_ELO
 
-        println("Alotus elo A: $playerAElo")
-        println("Alotus elo B: $playerBElo")
+//        println("Alotus elo A: $playerAElo")
+//        println("Alotus elo B: $playerBElo")
 
         val expectedForA = eloExpected(playerAElo, playerBElo)
         val expectedForB = eloExpected(playerBElo, playerAElo)
 
-        println("Odotettu elo A: $expectedForA")
-        println("Odotettu elo B: $expectedForB")
+//        println("Odotettu elo A: $expectedForA")
+//        println("Odotettu elo B: $expectedForB")
 
         while (!gameHolder.hasGameStopped()) {
             gameHolder = gameHolder.dropTokenLimited()

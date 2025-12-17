@@ -78,7 +78,7 @@ class MiniMaxV3Profile(
         board: Board,
         forSide: Int,
     ): Int {
-        println("---next move---")
+//        println("---next move---")
         currentMaxTime = System.currentTimeMillis() + timeLimit
         return if (depth == -1) {
             iterativeDeepening(board, forSide)
@@ -116,7 +116,7 @@ class MiniMaxV3Profile(
         if (currentBestMove == null) {
             bestMoveSet[board.toString()] = board.getLegalsMiddleOutSeq().first()
         }
-        var minimaxResult = Pair(0, 0)
+        var minimaxResult: Pair<Int, Int> = Pair(0, 0)
 //        var maxDepth = 0
         while (currentMaxDepth <= amountOfSpaceLeft && time < currentMaxTime) {
 //            maxDepth = max(maxDepth, depthi)
@@ -210,7 +210,7 @@ class MiniMaxV3Profile(
 
         val time = System.currentTimeMillis()
 
-        if (depth == 0 || time >= currentMaxTime) {
+        if (depth == 0 || (time >= currentMaxTime && depth == -1)) {
             return Pair(
                 heuristic(
                     HeuristicArgs(
