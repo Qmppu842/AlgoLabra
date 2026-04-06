@@ -89,6 +89,8 @@ class MiniMaxV3Profile(
 
     var bestMoveSet = HashMap<String, Int>()
 
+    var lastMoveEval = 0
+
     init {
 
         bestMoveSet = HashMap()
@@ -118,6 +120,7 @@ class MiniMaxV3Profile(
         }
         var minimaxResult: Pair<Int, Int> = Pair(0, 0)
 //        var maxDepth = 0
+        var currentbest = Int.MIN_VALUE
         while (currentMaxDepth <= amountOfSpaceLeft && time < currentMaxTime) {
 //            maxDepth = max(maxDepth, depthi)
 //            println("now running to depth: $depthi")
@@ -134,7 +137,17 @@ class MiniMaxV3Profile(
                     lastY = if (lastMoveX != -1) board.getWellSpace(lastMoveX) else -1,
                     token = abs(board.getOnTurnToken()),
                 )
-            bestMoveSet[board.toString()] = minimaxResult.second
+//            currentbest = minimaxResult.first
+            println("currentMaxDepth: $currentMaxDepth")
+            println("lohi: ${minimaxResult}")
+            if (bestMoveSet[board.toString()] == null || minimaxResult.first > currentbest){
+//            if (bestMoveSet[board.toString()] == null || abs(minimaxResult.first) - currentMaxDepth-1 > bestMoveSet[board.toString()]!!){
+                println("the value ${minimaxResult.first} ")
+                println("it was the bestmove [$board] to ${minimaxResult.second}")
+                bestMoveSet[board.toString()] = minimaxResult.second
+                println("updated the bestmove [$board] to ${minimaxResult.second}")
+            }
+//            println("bestMoveSet[board.toString()] $bestMoveSet")
             currentMaxDepth++
             time = System.currentTimeMillis()
         }
@@ -143,6 +156,9 @@ class MiniMaxV3Profile(
         val totalTime = endTime - (currentMaxTime - this.timeLimit)
         println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $currentMaxDepth")
         println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
+        lastMoveEval = minimaxResult.first
+        println("lastMoveEval $lastMoveEval")
+        println("adssad: ${bestMoveSet[board.toString()]}")
         return bestMoveSet[board.toString()]!!
     }
 
@@ -169,6 +185,7 @@ class MiniMaxV3Profile(
         val totalTime = endTime - startingTime
         println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
         println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
+        lastMoveEval = minimaxResult.first
         return minimaxResult.second
     }
 

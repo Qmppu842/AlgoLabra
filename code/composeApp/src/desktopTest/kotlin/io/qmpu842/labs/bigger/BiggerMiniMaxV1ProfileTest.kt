@@ -24,16 +24,16 @@ data class GameToPlay(
     val start: String,
     val end: String,
 ) {
-    constructor(depth: Int = 9, start: String, end: String) : this(
+    constructor(depth: Int = -1, start: String, end: String, timelimit: Long = TRILLION) : this(
         playerA =
             MiniMaxV3Profile(
                 depth = depth,
-                timeLimit = TRILLION,
+                timeLimit = timelimit,
             ),
         playerB =
             MiniMaxV3Profile(
                 depth = depth,
-                timeLimit = TRILLION,
+                timeLimit = timelimit,
             ),
         start,
         end,
