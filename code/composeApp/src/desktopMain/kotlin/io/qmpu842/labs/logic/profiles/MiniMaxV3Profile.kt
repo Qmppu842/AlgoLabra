@@ -138,27 +138,17 @@ class MiniMaxV3Profile(
                     token = abs(board.getOnTurnToken()),
                 )
 //            currentbest = minimaxResult.first
-            println("currentMaxDepth: $currentMaxDepth")
-            println("lohi: ${minimaxResult}")
+//            println("currentMaxDepth: $currentMaxDepth")
             if (bestMoveSet[board.toString()] == null || minimaxResult.first > currentbest){
-//            if (bestMoveSet[board.toString()] == null || abs(minimaxResult.first) - currentMaxDepth-1 > bestMoveSet[board.toString()]!!){
-                println("the value ${minimaxResult.first} ")
-                println("it was the bestmove [$board] to ${minimaxResult.second}")
                 bestMoveSet[board.toString()] = minimaxResult.second
-                println("updated the bestmove [$board] to ${minimaxResult.second}")
             }
-//            println("bestMoveSet[board.toString()] $bestMoveSet")
             currentMaxDepth++
             time = System.currentTimeMillis()
         }
         println("Achieved depth: $currentMaxDepth")
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - (currentMaxTime - this.timeLimit)
-        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $currentMaxDepth")
-        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         lastMoveEval = minimaxResult.first
-        println("lastMoveEval $lastMoveEval")
-        println("adssad: ${bestMoveSet[board.toString()]}")
         return bestMoveSet[board.toString()]!!
     }
 
@@ -182,9 +172,9 @@ class MiniMaxV3Profile(
                 token = abs(board.getOnTurnToken()),
             )
         val endTime = System.currentTimeMillis()
-        val totalTime = endTime - startingTime
-        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
-        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
+//        val totalTime = endTime - startingTime
+//        println("It took me ${round(totalTime / 1000f)}s (or ${totalTime}ms) to do depth $depth")
+//        println("The ${this.name} valinnat: ${minimaxResult.first} | ${minimaxResult.second}")
         lastMoveEval = minimaxResult.first
         return minimaxResult.second
     }

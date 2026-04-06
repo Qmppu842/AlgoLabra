@@ -138,29 +138,12 @@ class SeeFutureTest : FunSpec({
                 playerB = playerB,
                 bc = bc,
             )
-            var startingThingA = 0
-            var startingThingB = 0
 
-            var profile1 = (gameHolder.playerOnTurn() as MiniMaxV3Profile)
-            gameHolder = gameHolder.dropTokenLimited()
-            var value232 = abs(profile1.lastMoveEval)
 
-            var profile2 = (gameHolder.playerOnTurn() as MiniMaxV3Profile)
-            gameHolder = gameHolder.dropTokenLimited()
-            var value23 = abs(profile2.lastMoveEval)
-
-            println("value232 $value232")
-            println("value23 $value23")
-
-            repeat(end.length - start.length - 2) {
+            repeat(end.length - start.length) {
                 var profile = (gameHolder.playerOnTurn() as MiniMaxV3Profile)
                 gameHolder = gameHolder.dropTokenLimited()
-                var value = profile.lastMoveEval
-                println("value ${ abs(value)+ it}")
-                println("it $it")
-//                abs(value)+ it shouldBeOneOf listOf(value232, value23)
-                abs(value) shouldBeGreaterThanOrEqual HUNDRED_K
-
+                abs(profile.lastMoveEval) shouldBeGreaterThanOrEqual HUNDRED_K
             }
 
             gameHolder.whoisWinner() shouldBe if (end.length % 2 == 0) -1 else 1
